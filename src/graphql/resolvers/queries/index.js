@@ -1,5 +1,5 @@
-import echo from './echo';
+import sessions from './sessions';
 
 export default {
-  ...echo,
+  ...sessions,
 };
