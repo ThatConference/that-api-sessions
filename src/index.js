@@ -1,18 +1,39 @@
 /* eslint-disable import/prefer-default-export */
 import 'dotenv/config';
 import connect from 'connect';
-import * as Sentry from '@sentry/node';
-import uuid from 'uuid/v4';
 import cors from 'cors';
+import debug from 'debug';
+import { Firestore } from '@google-cloud/firestore';
+import pino from 'pino';
+import pinoExpress from 'pino-express';
 import responseTime from 'response-time';
+import uuid from 'uuid/v4';
+import * as Sentry from '@sentry/node';
 
 import apolloGraphServer from './graphql';
+import expressLoggingOptions from './expressLogOptions';
+
+const dlog = debug('that-api-sessions:index');
 
 const api = connect();
+
+const logger = pino({
+  level: process.env.LOG_LEVEL || 'info',
+  prettyPrint: JSON.parse(process.env.LOG_PRETTY_PRINT || false)
+    ? { colorize: true }
+    : false,
+  mixin() {
+    return {
+      service: 'that-api-sessions',
+    };
+  },
+});
 
 const createConfig = () => ({
   dataSources: {
     sentry: Sentry,
+    logger,
+    firestore: new Firestore(),
   },
 });
 
@@ -43,41 +64,72 @@ const useSentry = async (req, res, next) => {
  *
  */
 const createUserContext = (req, res, next) => {
+  dlog('creating user context');
+
+  const enableMocking = () => {
+    if (!req.headers['that-enable-mocks']) return false;
+
+    dlog('mocking enabled');
+
+    const headerValues = req.headers['that-enable-mocks'].split(',');
+    const mocks = headerValues.map(i => i.trim().toUpperCase());
+
+    return !!mocks.includes('SESSIONS');
+  };
+
+  const correlationId = req.headers['that-correlation-id']
+    ? req.headers['that-correlation-id']
+    : uuid();
+
+  const contextLogger = req.log.child({ correlationId });
+
   req.userContext = {
     locale: req.headers.locale,
     authToken: req.headers.authorization,
     correlationId: req.headers['correlation-id']
       ? req.headers['correlation-id']
       : uuid(),
+    enableMocking: enableMocking(),
     sentry: Sentry,
+    logger: contextLogger,
   };
 
   next();
 };
 
 const apiHandler = async (req, res) => {
-  try {
-    const graphServer = apolloGraphServer(createConfig());
-    const graphApi = graphServer.createHandler();
+  dlog('api handler called');
 
-    graphApi(req, res);
-  } catch (e) {
-    Sentry.captureException(e);
-    res
-      .set('Content-Type', 'application/json')
-      .status(500)
-      .send(new Error(e));
-  }
+  const graphServer = apolloGraphServer(
+    createConfig(),
+    req.userContext.enableMocking,
+  );
+  const graphApi = graphServer.createHandler();
+
+  graphApi(req, res);
 };
 
+function failure(err, req, res, next) {
+  req.log.trace('Middleware Catch All');
+  req.log.error('catchall', err);
+
+  Sentry.captureException(err);
+
+  res
+    .set('Content-Type', 'application/json')
+    .status(500)
+    .json(err);
+}
 /**
  * http middleware function that follows adhering to express's middleware.
  * Last item in the middleware chain.
  * This is your api handler for your serverless function
  */
 export const graphEndpoint = api
-  .use(responseTime())
   .use(cors())
+  .use(responseTime())
+  .use(pinoExpress(logger, expressLoggingOptions))
   .use(useSentry)
   .use(createUserContext)
-  .use(apiHandler);
+  .use(apiHandler)
+  .use(failure);
