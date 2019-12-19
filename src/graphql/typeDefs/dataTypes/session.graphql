@@ -1,0 +1,31 @@
+"Session"
+type Session @key(fields: "id") {
+  id: ID!
+  speakers: [ID!]
+
+  title: String!
+  shortDescription: String
+  longDescription: String
+
+  type: SessionType
+  durationInMinutes: Int
+  targetAudience: [String]
+
+  prerequisites: [String]
+  agenda: String
+  supportingArtifacts: [Artifact]
+
+  primaryCategory: SessionCategory
+  secondaryCategory: SessionCategory
+
+  agreedToCodeOfConduct: Boolean
+  canRecord: Boolean
+  isUnderEighteen: Boolean
+
+  isCanelled: Boolean
+  schedule: Schedule
+
+  rating: [Rating]
+  createdDate: Date!
+  lastUpdated: Date!
+}

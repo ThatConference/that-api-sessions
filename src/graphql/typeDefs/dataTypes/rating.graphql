@@ -1,0 +1,4 @@
+type Rating {
+  id: ID!
+  score: Int
+}

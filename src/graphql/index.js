@@ -1,5 +1,10 @@
-import { ApolloServer, gql } from 'apollo-server-cloud-functions';
+import {
+  ApolloServer,
+  gql,
+  addMockFunctionsToSchema,
+} from 'apollo-server-cloud-functions';
 import { buildFederatedSchema } from '@apollo/federation';
+// import { addMockFunctionsToSchema } from 'graphql-tools';
 
 // Graph Types and Resolvers
 import typeDefsRaw from './typeDefs';
@@ -19,10 +24,26 @@ const typeDefs = gql`
  *
  *     createGateway(userContext)
  */
-const createServer = ({ dataSources, ...rest }) =>
-  new ApolloServer({
+const createServer = ({ dataSources }, enableMocking = false) => {
+  let schema = {};
+  const { logger } = dataSources;
+
+  if (!enableMocking) {
+    schema = buildFederatedSchema([{ typeDefs, resolvers }]);
+  } else {
+    schema = buildFederatedSchema([{ typeDefs }]);
+
+    addMockFunctionsToSchema({
+      schema,
+      // eslint-disable-next-line global-require
+      mocks: require('./__mocks__').default(),
+      preserveResolvers: true, // so GetServiceDefinition works
+    });
+  }
+
+  return new ApolloServer({
     schemaDirectives: {},
-    schema: buildFederatedSchema([{ typeDefs, resolvers }]),
+    schema,
     introspection: JSON.parse(process.env.ENABLE_GRAPH_INTROSPECTION || false),
     playground: JSON.parse(process.env.ENABLE_GRAPH_PLAYGROUND)
       ? { endpoint: '/' }
@@ -39,9 +60,12 @@ const createServer = ({ dataSources, ...rest }) =>
     }),
 
     formatError: err => {
+      logger.warn('graphql error', err);
+
       dataSources.sentry.captureException(err);
       return err;
     },
   });
+};
 
 export default createServer;

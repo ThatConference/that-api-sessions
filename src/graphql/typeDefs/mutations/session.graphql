@@ -1,0 +1,5 @@
+type SessionMutation {
+  update(session: SessionUpdateInput!): Session!
+  cancel: Session!
+  castVote: ID!
+}

@@ -1,0 +1,55 @@
+input SessionCreateInput {
+  id: ID!
+  speakers: [ID!]
+
+  title: String!
+  shortDescription: String
+  longDescription: String
+
+  type: SessionType
+  durationInMinutes: Int
+  targetAudience: [String]
+
+  prerequisites: [String]
+  agenda: String
+
+  primaryCategory: SessionCategory
+  secondaryCategory: SessionCategory
+
+  agreedToCodeOfConduct: Boolean
+  canRecord: Boolean
+  isUnderEighteen: Boolean
+
+  isCanelled: Boolean
+
+  createdDate: Date!
+  lastUpdated: Date!
+}
+
+input SessionUpdateInput {
+  id: ID!
+  speakers: [ID!]
+
+  title: String!
+  shortDescription: String
+  longDescription: String
+
+  type: SessionType
+  durationInMinutes: Int
+  targetAudience: [String]
+
+  prerequisites: [String]
+  agenda: String
+
+  primaryCategory: SessionCategory
+  secondaryCategory: SessionCategory
+
+  agreedToCodeOfConduct: Boolean
+  canRecord: Boolean
+  isUnderEighteen: Boolean
+
+  isCanelled: Boolean
+
+  createdDate: Date!
+  lastUpdated: Date!
+}

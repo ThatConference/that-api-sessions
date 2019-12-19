@@ -1,0 +1,5 @@
+type SessionsMutation {
+  create(session: SessionCreateInput!): Session!
+  delete(id: ID!): ID
+  session(id: ID!): SessionMutation
+}

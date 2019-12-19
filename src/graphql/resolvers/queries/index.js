@@ -1,5 +1,11 @@
-import sessions from './sessions';
+import root from './root';
+
+import { fieldResolvers as sessionsFields } from './sessions';
 
 export default {
-  ...sessions,
+  ...root,
+};
+
+export const fieldResolvers = {
+  ...sessionsFields,
 };

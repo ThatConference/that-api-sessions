@@ -1,0 +1,6 @@
+type Artifact {
+  id: ID!
+  name: String!
+  url: URL!
+  description: String
+}
