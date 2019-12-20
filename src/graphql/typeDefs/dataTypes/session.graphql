@@ -1,7 +1,7 @@
 "Session"
 type Session @key(fields: "id") {
   id: ID!
-  speakers: [ID!]
+  speakers: [Profile]
 
   title: String!
   shortDescription: String
@@ -28,4 +28,8 @@ type Session @key(fields: "id") {
   rating: [Rating]
   createdDate: Date!
   lastUpdated: Date!
+}
+
+extend type Profile @key(fields: "id") {
+  id: ID! @external
 }
