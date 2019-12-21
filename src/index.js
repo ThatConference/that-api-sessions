@@ -5,16 +5,14 @@ import cors from 'cors';
 import debug from 'debug';
 import { Firestore } from '@google-cloud/firestore';
 import pino from 'pino';
-import pinoExpress from 'pino-express';
 import responseTime from 'response-time';
 import uuid from 'uuid/v4';
 import * as Sentry from '@sentry/node';
 
 import apolloGraphServer from './graphql';
-import expressLoggingOptions from './expressLogOptions';
 
+const firestore = new Firestore();
 const dlog = debug('that-api-sessions:index');
-
 const api = connect();
 
 const logger = pino({
@@ -29,26 +27,31 @@ const logger = pino({
   },
 });
 
+Sentry.init({
+  dsn: process.env.SENTRY_DSN,
+  environment: process.env.THAT_ENVIRONMENT,
+  debug: process.env.NODE_ENV === 'development',
+});
+
+Sentry.configureScope(scope => {
+  scope.setTag('thatApp', 'that-api-sessions');
+});
+
 const createConfig = () => ({
   dataSources: {
     sentry: Sentry,
     logger,
-    firestore: new Firestore(),
+    firestore,
   },
 });
 
 const useSentry = async (req, res, next) => {
-  Sentry.init({
-    dsn: process.env.SENTRY_DSN,
-    environment: process.env.THAT_ENVIRONMENT,
-    debug: true,
-  });
-
   Sentry.addBreadcrumb({
     category: 'that-api-sessions',
     message: 'init',
     level: Sentry.Severity.Info,
   });
+
   next();
 };
 
@@ -81,7 +84,7 @@ const createUserContext = (req, res, next) => {
     ? req.headers['that-correlation-id']
     : uuid();
 
-  const contextLogger = req.log.child({ correlationId });
+  const contextLogger = logger.child({ correlationId });
 
   req.userContext = {
     locale: req.headers.locale,
@@ -110,8 +113,10 @@ const apiHandler = async (req, res) => {
 };
 
 function failure(err, req, res, next) {
-  req.log.trace('Middleware Catch All');
-  req.log.error('catchall', err);
+  dlog('error %o', err);
+
+  logger.error(err);
+  logger.trace('Middleware Catch All');
 
   Sentry.captureException(err);
 
@@ -128,7 +133,6 @@ function failure(err, req, res, next) {
 export const graphEndpoint = api
   .use(cors())
   .use(responseTime())
-  .use(pinoExpress(logger, expressLoggingOptions))
   .use(useSentry)
   .use(createUserContext)
   .use(apiHandler)
