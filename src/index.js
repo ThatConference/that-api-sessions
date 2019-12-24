@@ -8,12 +8,13 @@ import pino from 'pino';
 import responseTime from 'response-time';
 import uuid from 'uuid/v4';
 import * as Sentry from '@sentry/node';
-
 import apolloGraphServer from './graphql';
+import { version } from '../package.json';
 
 const firestore = new Firestore();
 const dlog = debug('that-api-sessions:index');
 const api = connect();
+const defaultVersion = `that-api-sessions@${version}`;
 
 const logger = pino({
   level: process.env.LOG_LEVEL || 'info',
@@ -31,6 +32,7 @@ Sentry.init({
   dsn: process.env.SENTRY_DSN,
   environment: process.env.THAT_ENVIRONMENT,
   debug: process.env.NODE_ENV === 'development',
+  release: process.env.SENTRY_VERSION || defaultVersion,
 });
 
 Sentry.configureScope(scope => {
