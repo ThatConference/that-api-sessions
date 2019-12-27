@@ -1,5 +1,5 @@
 type SessionMutation {
-  update(session: SessionUpdateInput!): Session!
-  cancel: Session!
-  castVote: ID!
+  update(session: SessionUpdateInput!): Session! @auth(requires: "sessions")
+  cancel: Session! @auth(requires: "admin")
+  castVote: ID! @auth(requires: "sessions")
 }
