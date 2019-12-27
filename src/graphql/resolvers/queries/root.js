@@ -1,6 +1,6 @@
 import debug from 'debug';
 
-const dlog = debug('that-api-reporting:query');
+const dlog = debug('that:api:sessions:query');
 
 const resolvers = {
   sessions: () => {

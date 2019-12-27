@@ -1,7 +1,4 @@
 input SessionCreateInput {
-  id: ID!
-  speakers: [ID!]
-
   title: String!
   shortDescription: String
   longDescription: String
@@ -21,16 +18,12 @@ input SessionCreateInput {
   isUnderEighteen: Boolean
 
   isCanelled: Boolean
-
-  createdDate: Date!
-  lastUpdated: Date!
 }
 
 input SessionUpdateInput {
-  id: ID!
-  speakers: [ID!]
+  speakers: [ID]
 
-  title: String!
+  title: String
   shortDescription: String
   longDescription: String
 
@@ -49,7 +42,4 @@ input SessionUpdateInput {
   isUnderEighteen: Boolean
 
   isCanelled: Boolean
-
-  createdDate: Date!
-  lastUpdated: Date!
 }

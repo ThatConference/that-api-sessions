@@ -26,8 +26,8 @@ type Session @key(fields: "id") {
   schedule: Schedule
 
   rating: [Rating]
-  createdDate: Date!
-  lastUpdated: Date!
+  createdAt: Date!
+  lastUpdatedAt: Date!
 }
 
 extend type Profile @key(fields: "id") {
