@@ -1,9 +1,9 @@
 /* eslint-disable import/prefer-default-export */
 import debug from 'debug';
 
-// import sessionStore from '../../../dataSources/cloudFirestore/session';
+import sessionStore from '../../../dataSources/cloudFirestore/session';
 
-const dlog = debug('that-api-sessions:mutation');
+const dlog = debug('that:api:sessions:mutation');
 
 export const fieldResolvers = {
   SessionMutation: {
@@ -13,8 +13,15 @@ export const fieldResolvers = {
       { dataSources: { firestore, logger } },
     ) => {
       dlog('SessionMutation:update called');
-      throw new Error('not implemented yet');
-      // sessionStore(firestore, logger).get(id),
+
+      // todo: call out to postmark here and notify users of an update...
+
+      const results = await sessionStore(firestore, logger).update({
+        sessionId,
+        session,
+      });
+
+      return results;
     },
     cancel: async (
       { sessionId },

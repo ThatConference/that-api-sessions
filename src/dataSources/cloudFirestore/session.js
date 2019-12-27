@@ -1,50 +1,75 @@
-const event = (dbInstance, logger) => {
+import debug from 'debug';
+
+const dlog = debug('that:api:sessions:datasources:firebase');
+
+function scrubSession(session, isNew) {
+  const scrubbedSession = session;
+
+  const modifiedAt = new Date();
+  if (isNew) scrubbedSession.createdAt = modifiedAt.toISOString();
+
+  scrubbedSession.lastUpdatedAt = modifiedAt.toISOString();
+
+  return scrubbedSession;
+}
+
+function sessions(dbInstance, logger) {
+  dlog('sessions data source created');
+
   const collectionName = 'sessions';
   const sessionsCol = dbInstance.collection(collectionName);
 
-  const create = async newSession => {
-    // const scrubbedEvent = newEvent;
-    // if (newEvent.website) scrubbedEvent.website = newEvent.website.href;
-    // const newDocument = await eventsCol.add(scrubbedEvent);
-    // logger.debug(`created new event: ${newDocument.id}`);
-    // return {
-    //   id: newDocument.id,
-    //   ...newEvent,
-    // };
-  };
+  async function create({ eventId, user, session }) {
+    dlog('creating session %o', { eventId, user, session });
 
-  const get = async id => {
-    // const docRef = dbInstance.doc(`${collectionName}/${id}`);
-    // const doc = await await docRef.get();
-    // return {
-    //   id: doc.id,
-    //   ...doc.data(),
-    // };
-  };
+    const scrubbedSession = scrubSession(session, true);
+    scrubbedSession.speaker = [user.sub];
+    scrubbedSession.eventId = eventId;
 
-  const getAll = async () => {
+    dlog('saving session %o', scrubbedSession);
+
+    const newDocument = await sessionsCol.add(scrubbedSession);
+    dlog(`created new session: ${newDocument.id}`);
+    return {
+      id: newDocument.id,
+      ...scrubbedSession,
+    };
+  }
+
+  async function find(sessionId) {
+    const docRef = dbInstance.doc(`${collectionName}/${sessionId}`);
+    const doc = await await docRef.get();
+    return {
+      id: doc.id,
+      ...doc.data(),
+    };
+  }
+
+  async function findAllByEventId(eventID) {
     // const { docs } = await eventsCol.get();
     // const results = docs.map(d => ({
     //   id: d.id,
     //   ...d.data(),
     // }));
     // return results;
-  };
+  }
 
-  const update = (id, eventInput) => {
-    // const scrubbedEvent = eventInput;
-    // if (eventInput.website) scrubbedEvent.website = eventInput.website.href;
-    // const docRef = dbInstance.doc(`${collectionName}/${id}`);
-    // return docRef.update(eventInput).then(res => {
-    //   logger.debug(`updated event: ${id}`);
-    //   return {
-    //     id,
-    //     ...eventInput,
-    //   };
-    // });
-  };
+  async function update({ sessionId, session }) {
+    const scrubbedSession = scrubSession(session);
 
-  return { create, getAll, get, update };
-};
+    const docRef = dbInstance.doc(`${collectionName}/${sessionId}`);
+    await docRef.update(scrubbedSession);
+    dlog(`updated session: ${sessionId}`);
 
-export default event;
+    const updatedDoc = await docRef.get();
+
+    return {
+      id: updatedDoc.id,
+      ...updatedDoc.data(),
+    };
+  }
+
+  return { create, update, find };
+}
+
+export default sessions;

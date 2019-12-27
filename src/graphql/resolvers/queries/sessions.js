@@ -3,7 +3,7 @@ import debug from 'debug';
 
 // import sessionStore from '../../../dataSources/cloudFirestore/session';
 
-const dlog = debug('that-api-sessions:query');
+const dlog = debug('that:api:sessions:query');
 
 export const fieldResolvers = {
   SessionsQuery: {
