@@ -13,10 +13,7 @@ input SessionCreateInput {
   primaryCategory: SessionCategory
   secondaryCategory: SessionCategory
 
-  agreedToCodeOfConduct: Boolean
   canRecord: Boolean
-  isUnderEighteen: Boolean
-
   isCanelled: Boolean
 }
 
@@ -37,9 +34,6 @@ input SessionUpdateInput {
   primaryCategory: SessionCategory
   secondaryCategory: SessionCategory
 
-  agreedToCodeOfConduct: Boolean
   canRecord: Boolean
-  isUnderEighteen: Boolean
-
   isCanelled: Boolean
 }

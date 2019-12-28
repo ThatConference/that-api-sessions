@@ -18,9 +18,7 @@ type Session @key(fields: "id") {
   primaryCategory: SessionCategory
   secondaryCategory: SessionCategory
 
-  agreedToCodeOfConduct: Boolean
   canRecord: Boolean
-  isUnderEighteen: Boolean
 
   isCanelled: Boolean
   schedule: Schedule
