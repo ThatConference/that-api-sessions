@@ -58,7 +58,7 @@ function sessions(dbInstance, logger) {
     const docRef = dbInstance.doc(`${collectionName}/${sessionId}`);
 
     const currentDoc = (await docRef.get()).data();
-    if (!currentDoc.speaker.includes(user.sub))
+    if (!currentDoc.speakers.includes(user.sub))
       throw new Error('Requested Session Update Not Found for User');
 
     const scrubbedSession = scrubSession(session);
