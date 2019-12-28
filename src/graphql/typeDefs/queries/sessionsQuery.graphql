@@ -3,10 +3,10 @@ type SessionsQuery {
   accepted(year: Int): [Session]
 
   "will return all sessions, must be admin"
-  all(year: Int): [Session]
+  all(year: Int): [Session] @auth(requires: "admin")
 
   "will return the sessions associated to the logged in user"
-  me: [Session]
+  me: [Session] @auth(requires: "sessions")
 
   "will return an accepted session by it's id"
   session(id: ID!): Session

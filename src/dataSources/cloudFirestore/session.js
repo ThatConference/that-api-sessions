@@ -54,6 +54,19 @@ function sessions(dbInstance, logger) {
     // return results;
   }
 
+  async function findMy({ user }) {
+    const { docs } = await sessionsCol
+      .where('speakers', 'array-contains', user.sub)
+      .get();
+
+    const results = docs.map(d => ({
+      id: d.id,
+      ...d.data(),
+    }));
+
+    return results;
+  }
+
   async function update({ user, sessionId, session }) {
     const docRef = dbInstance.doc(`${collectionName}/${sessionId}`);
 
@@ -73,7 +86,7 @@ function sessions(dbInstance, logger) {
     };
   }
 
-  return { create, update, find };
+  return { create, update, findMy };
 }
 
 export default sessions;
