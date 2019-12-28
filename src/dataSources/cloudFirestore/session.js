@@ -69,7 +69,7 @@ function sessions(dbInstance, logger) {
     return {
       id: sessionId,
       ...currentDoc,
-      ...scrubSession,
+      ...scrubbedSession,
     };
   }
 
