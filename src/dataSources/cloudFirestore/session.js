@@ -55,18 +55,21 @@ function sessions(dbInstance, logger) {
   }
 
   async function update({ user, sessionId, session }) {
-    // TODO: ADD USER SESSION CHECK
+    const docRef = dbInstance.doc(`${collectionName}/${sessionId}`);
+
+    const currentDoc = (await docRef.get()).data();
+    if (!currentDoc.speakers.includes(user.sub))
+      throw new Error('Requested Session Update Not Found for User');
+
     const scrubbedSession = scrubSession(session);
 
-    const docRef = dbInstance.doc(`${collectionName}/${sessionId}`);
     await docRef.update(scrubbedSession);
     dlog(`updated session: ${sessionId}`);
 
-    const updatedDoc = await docRef.get();
-
     return {
-      id: updatedDoc.id,
-      ...updatedDoc.data(),
+      id: sessionId,
+      ...currentDoc,
+      ...scrubSession,
     };
   }
 
