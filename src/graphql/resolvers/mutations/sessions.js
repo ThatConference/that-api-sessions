@@ -9,7 +9,7 @@ export const fieldResolvers = {
     create: async (
       parent,
       { eventId, session },
-      { dataSources: { firestore, logger }, user },
+      { dataSources: { firestore, logger, postmark }, user },
     ) => {
       dlog('SessionsMutation:create called');
 

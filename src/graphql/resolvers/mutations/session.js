@@ -10,16 +10,22 @@ export const fieldResolvers = {
     update: async (
       { sessionId },
       { session },
-      { dataSources: { firestore, logger } },
+      { dataSources: { firestore, logger, postmark }, user },
     ) => {
       dlog('SessionMutation:update called');
 
-      // todo: call out to postmark here and notify users of an update...
-
       const results = await sessionStore(firestore, logger).update({
+        user,
         sessionId,
         session,
       });
+
+      // postmark.sendEmail({
+      //   From: 'hello@thatconference.com',
+      //   To: 'hello@thatconference.com',
+      //   Subject: 'Your session has been updated.',
+      //   TextBody: 'Hello from Postmark!',
+      // });
 
       return results;
     },

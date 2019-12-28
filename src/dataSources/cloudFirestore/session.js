@@ -54,7 +54,8 @@ function sessions(dbInstance, logger) {
     // return results;
   }
 
-  async function update({ sessionId, session }) {
+  async function update({ user, sessionId, session }) {
+    // TODO: ADD USER SESSION CHECK
     const scrubbedSession = scrubSession(session);
 
     const docRef = dbInstance.doc(`${collectionName}/${sessionId}`);
