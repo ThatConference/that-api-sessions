@@ -23,7 +23,7 @@ function sessions(dbInstance, logger) {
     dlog('creating session %o', { eventId, user, session });
 
     const scrubbedSession = scrubSession(session, true);
-    scrubbedSession.speaker = [user.sub];
+    scrubbedSession.speakers = [user.sub];
     scrubbedSession.eventId = eventId;
 
     dlog('saving session %o', scrubbedSession);
