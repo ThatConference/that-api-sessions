@@ -10,7 +10,7 @@ type Session @key(fields: "id") {
   type: SessionType
   category: Category
   durationInMinutes: Int
-  targetAudience: [String]
+  targetAudience: [TargetAudience]
   whyAreYou: String
   otherComments: String
 

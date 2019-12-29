@@ -1,5 +1,5 @@
 type Artifact {
   name: String!
-  url: URL!
+  url: String!
   description: String
 }

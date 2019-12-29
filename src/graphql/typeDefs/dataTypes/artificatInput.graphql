@@ -1,5 +1,5 @@
 input ArtifactInput {
   name: String!
-  url: URL!
+  url: String!
   description: String
 }
