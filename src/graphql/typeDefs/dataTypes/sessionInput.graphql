@@ -5,16 +5,22 @@ input SessionCreateInput {
 
   type: SessionType
   durationInMinutes: Int
-  targetAudience: [String]
+  targetAudience: [TargetAudience]
+  whyAreYou: String
+  otherComments: String
 
   prerequisites: [String]
   agenda: String
+  mentorship: Mentorship
 
+  category: Category
   primaryCategory: SessionCategory
-  secondaryCategory: SessionCategory
+  secondaryCategory: [SessionCategory]
+
+  supportingArtifacts: [ArtifactInput]
 
   canRecord: Boolean
-  isCanelled: Boolean
+  status: Status
 }
 
 input SessionUpdateInput {
@@ -26,14 +32,20 @@ input SessionUpdateInput {
 
   type: SessionType
   durationInMinutes: Int
-  targetAudience: [String]
+  targetAudience: [TargetAudience]
+  whyAreYou: String
+  otherComments: String
 
   prerequisites: [String]
   agenda: String
+  mentorship: Mentorship
 
+  category: Category
   primaryCategory: SessionCategory
-  secondaryCategory: SessionCategory
+  secondaryCategory: [SessionCategory]
+
+  supportingArtifacts: [ArtifactInput]
 
   canRecord: Boolean
-  isCanelled: Boolean
+  status: Status
 }

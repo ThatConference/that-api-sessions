@@ -8,19 +8,23 @@ type Session @key(fields: "id") {
   longDescription: String
 
   type: SessionType
+  category: Category
   durationInMinutes: Int
-  targetAudience: [String]
+  targetAudience: [TargetAudience]
+  whyAreYou: String
+  otherComments: String
 
   prerequisites: [String]
   agenda: String
   supportingArtifacts: [Artifact]
+  mentorship: Mentorship
 
   primaryCategory: SessionCategory
-  secondaryCategory: SessionCategory
+  secondaryCategory: [SessionCategory]
 
   canRecord: Boolean
 
-  isCanelled: Boolean
+  status: Status
   schedule: Schedule
 
   rating: [Rating]

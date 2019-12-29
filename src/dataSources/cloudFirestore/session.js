@@ -5,10 +5,10 @@ const dlog = debug('that:api:sessions:datasources:firebase');
 function scrubSession(session, isNew) {
   const scrubbedSession = session;
 
-  const modifiedAt = new Date();
-  if (isNew) scrubbedSession.createdAt = modifiedAt.toISOString();
+  const modifiedAt = new Date().toISOString();
+  if (isNew) scrubbedSession.createdAt = modifiedAt;
 
-  scrubbedSession.lastUpdatedAt = modifiedAt.toISOString();
+  scrubbedSession.lastUpdatedAt = modifiedAt;
 
   return scrubbedSession;
 }
@@ -68,6 +68,7 @@ function sessions(dbInstance, logger) {
   }
 
   async function update({ user, sessionId, session }) {
+    dlog(`updating session ${sessionId} with %o`, session);
     const docRef = dbInstance.doc(`${collectionName}/${sessionId}`);
 
     const currentDoc = (await docRef.get()).data();

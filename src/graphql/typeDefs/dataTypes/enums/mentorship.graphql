@@ -1,0 +1,5 @@
+enum Mentorship {
+  NO
+  SOME
+  YES
+}
