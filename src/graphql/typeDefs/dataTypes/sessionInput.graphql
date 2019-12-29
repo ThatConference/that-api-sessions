@@ -9,8 +9,9 @@ input SessionCreateInput {
   whyAreYou: String
   otherComments: String
 
-  prerequisites: [String]
+  prerequisites: String
   agenda: String
+  takeaways: [String]
   mentorship: Mentorship
 
   category: Category
@@ -36,8 +37,9 @@ input SessionUpdateInput {
   whyAreYou: String
   otherComments: String
 
-  prerequisites: [String]
+  prerequisites: String
   agenda: String
+  takeaways: [String]
   mentorship: Mentorship
 
   category: Category
