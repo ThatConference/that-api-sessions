@@ -14,8 +14,9 @@ type Session @key(fields: "id") {
   whyAreYou: String
   otherComments: String
 
-  prerequisites: [String]
+  prerequisites: String
   agenda: String
+  takeaways: [String]
   supportingArtifacts: [Artifact]
   mentorship: Mentorship
 
