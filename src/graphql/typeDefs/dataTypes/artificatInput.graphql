@@ -1,4 +1,4 @@
-type Artifact {
+input ArtifactInput {
   name: String!
   url: URL!
   description: String

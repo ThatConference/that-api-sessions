@@ -11,10 +11,12 @@ input SessionCreateInput {
   agenda: String
 
   primaryCategory: SessionCategory
-  secondaryCategory: SessionCategory
+  secondaryCategory: [SessionCategory]
+
+  supportingArtifacts: [ArtifactInput]
 
   canRecord: Boolean
-  isCanelled: Boolean
+  status: Status
 }
 
 input SessionUpdateInput {
@@ -32,8 +34,10 @@ input SessionUpdateInput {
   agenda: String
 
   primaryCategory: SessionCategory
-  secondaryCategory: SessionCategory
+  secondaryCategory: [SessionCategory]
+
+  supportingArtifacts: [ArtifactInput]
 
   canRecord: Boolean
-  isCanelled: Boolean
+  status: Status
 }

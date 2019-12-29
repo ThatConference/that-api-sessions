@@ -1,0 +1,9 @@
+enum Status {
+  DRAFT
+  SUBMITTED
+  ACCEPTED
+  DENIED
+  WITHDREW
+  WAIT_LIST
+  CANCELLED
+}

@@ -8,6 +8,7 @@ type Session @key(fields: "id") {
   longDescription: String
 
   type: SessionType
+  category: Category
   durationInMinutes: Int
   targetAudience: [String]
 
@@ -16,11 +17,11 @@ type Session @key(fields: "id") {
   supportingArtifacts: [Artifact]
 
   primaryCategory: SessionCategory
-  secondaryCategory: SessionCategory
+  secondaryCategory: [SessionCategory]
 
   canRecord: Boolean
 
-  isCanelled: Boolean
+  status: Status
   schedule: Schedule
 
   rating: [Rating]
