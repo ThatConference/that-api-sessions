@@ -6,9 +6,12 @@ input SessionCreateInput {
   type: SessionType
   durationInMinutes: Int
   targetAudience: [String]
+  whyAreYou: String
+  otherComments: String
 
   prerequisites: [String]
   agenda: String
+  mentorship: Mentorship
 
   primaryCategory: SessionCategory
   secondaryCategory: [SessionCategory]
@@ -29,9 +32,12 @@ input SessionUpdateInput {
   type: SessionType
   durationInMinutes: Int
   targetAudience: [String]
+  whyAreYou: String
+  otherComments: String
 
   prerequisites: [String]
   agenda: String
+  mentorship: Mentorship
 
   primaryCategory: SessionCategory
   secondaryCategory: [SessionCategory]

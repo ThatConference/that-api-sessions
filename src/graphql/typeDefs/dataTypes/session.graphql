@@ -11,10 +11,13 @@ type Session @key(fields: "id") {
   category: Category
   durationInMinutes: Int
   targetAudience: [String]
+  whyAreYou: String
+  otherComments: String
 
   prerequisites: [String]
   agenda: String
   supportingArtifacts: [Artifact]
+  mentorship: Mentorship
 
   primaryCategory: SessionCategory
   secondaryCategory: [SessionCategory]
