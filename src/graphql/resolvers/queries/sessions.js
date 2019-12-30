@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable import/prefer-default-export */
 import debug from 'debug';
 
@@ -12,20 +13,20 @@ export const fieldResolvers = {
       { year },
       { dataSources: { firestore, logger } },
     ) => {
-      dlog('SessionQuery:sessions called');
+      dlog('accepted called');
       throw new Error('not implemented yet');
     },
-    all: async (parent, { year }, { dataSources: { firestore, logger } }) => {
-      dlog('SessionQuery:sessions called');
+    all: (parent, { year }, { dataSources: { firestore, logger } }) => {
+      dlog('all called');
       throw new Error('not implemented yet');
     },
-    me: async (parent, args, { dataSources: { firestore, logger }, user }) => {
-      dlog('SessionQuery:sessions called');
+    me: (parent, args, { dataSources: { firestore, logger }, user }) => {
+      dlog('me called');
 
-      return sessionStore(firestore, logger).findMy({ user });
+      return {};
     },
-    session: async (parent, args, { dataSources: { firestore, logger } }) => {
-      dlog('SessionQuery:sessions called');
+    session: (parent, args, { dataSources: { firestore, logger } }) => {
+      dlog('session called');
       throw new Error('not implemented yet');
     },
   },

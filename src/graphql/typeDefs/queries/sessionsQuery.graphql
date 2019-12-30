@@ -6,7 +6,7 @@ type SessionsQuery {
   all(year: Int): [Session] @auth(requires: "admin")
 
   "will return the sessions associated to the logged in user"
-  me: [Session] @auth(requires: "sessions")
+  me: MeQuery @auth(requires: "sessions")
 
   "will return an accepted session by it's id"
   session(id: ID!): Session

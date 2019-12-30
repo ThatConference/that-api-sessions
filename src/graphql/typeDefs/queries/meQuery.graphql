@@ -1,0 +1,4 @@
+type MeQuery {
+  all: [Session] @auth(requires: "sessions")
+  session(id: ID!): Session @auth(requires: "sessions")
+}

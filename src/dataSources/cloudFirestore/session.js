@@ -36,35 +36,40 @@ function sessions(dbInstance, logger) {
     };
   }
 
-  async function find(sessionId) {
-    const docRef = dbInstance.doc(`${collectionName}/${sessionId}`);
-    const doc = await await docRef.get();
-    return {
-      id: doc.id,
-      ...doc.data(),
-    };
-  }
-
-  async function findAllByEventId(eventID) {
-    // const { docs } = await eventsCol.get();
-    // const results = docs.map(d => ({
-    //   id: d.id,
-    //   ...d.data(),
-    // }));
-    // return results;
-  }
-
   async function findMy({ user }) {
-    const { docs } = await sessionsCol
+    const docSnapshot = await sessionsCol
       .where('speakers', 'array-contains', user.sub)
       .get();
 
-    const results = docs.map(d => ({
-      id: d.id,
-      ...d.data(),
-    }));
+    let results = null;
+
+    if (docSnapshot.size > 0) {
+      results = docSnapshot.docs.map(d => ({
+        id: d.id,
+        ...d.data(),
+      }));
+    }
 
     return results;
+  }
+
+  async function findMySession({ user, sessionId }) {
+    const docRef = await dbInstance.doc(`${collectionName}/${sessionId}`).get();
+
+    let result = null;
+
+    if (docRef.exists) {
+      const doc = docRef.data();
+
+      if (doc.speakers.includes(user.sub)) {
+        result = {
+          id: docRef.id,
+          ...doc,
+        };
+      }
+    }
+
+    return result;
   }
 
   async function update({ user, sessionId, session }) {
@@ -87,7 +92,7 @@ function sessions(dbInstance, logger) {
     };
   }
 
-  return { create, update, findMy };
+  return { create, update, findMy, findMySession };
 }
 
 export default sessions;
