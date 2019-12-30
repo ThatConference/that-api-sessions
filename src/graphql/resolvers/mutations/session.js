@@ -1,5 +1,6 @@
 /* eslint-disable import/prefer-default-export */
 import debug from 'debug';
+import moment from 'moment';
 
 import sessionStore from '../../../dataSources/cloudFirestore/session';
 
@@ -20,11 +21,33 @@ export const fieldResolvers = {
         session,
       });
 
-      // postmark.sendEmail({
+      // TODO: provide object with member's information
+      // await postmark.sendEmailWithTemplate({
+      //   // TemplateId: 15581957,
+      //   TemplateAlias: 'THATconferenceSessionUpdated',
       //   From: 'hello@thatconference.com',
-      //   To: 'hello@thatconference.com',
-      //   Subject: 'Your session has been updated.',
-      //   TextBody: 'Hello from Postmark!',
+      //   To: 'Users-email-address',
+      //   TemplateModel: {
+      //     member: {
+      //       firstName: 'first-name',
+      //       lastName: 'last-name',
+      //     },
+      //     session: {
+      //       id: results.id,
+      //       title: results.title,
+      //       lastUpdatedAt: moment(results.lastUpdatedAt).format(
+      //         'M/D/YYYY h:mm:ss A',
+      //       ),
+      //     },
+      //     // Optional (hard coded in email now)
+      //     event: {
+      //       name: 'Events name',
+      //       year: 'Event year',
+      //       cfpOpens: 'CallForCounselorOpenDate',
+      //       cfpCloses: 'CallForCounselorCloseDate',
+      //       announceDate: 'scheduleAnnouncedDate',
+      //     },
+      //   },
       // });
 
       return results;
