@@ -1,6 +1,7 @@
 "Session"
 type Session @key(fields: "id") {
   id: ID!
+  eventId: ID!
   speakers: [Profile]
 
   title: String!
