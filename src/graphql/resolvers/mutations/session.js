@@ -1,8 +1,8 @@
 /* eslint-disable import/prefer-default-export */
 import debug from 'debug';
-import moment from 'moment';
 
 import sessionStore from '../../../dataSources/cloudFirestore/session';
+import memberStore from '../../../dataSources/cloudFirestore/member';
 
 const dlog = debug('that:api:sessions:mutation');
 
@@ -11,46 +11,34 @@ export const fieldResolvers = {
     update: async (
       { sessionId },
       { session },
-      { dataSources: { firestore, logger, postmark }, user },
+      {
+        dataSources: {
+          firestore,
+          logger,
+          events: { userEvents },
+        },
+        user,
+      },
     ) => {
+      dlog('TCL: events %o', userEvents);
       dlog('SessionMutation:update called');
 
-      const results = await sessionStore(firestore, logger).update({
-        user,
-        sessionId,
-        session,
+      const [sessionResults, userResults] = await Promise.all([
+        sessionStore(firestore, logger).update({
+          user,
+          sessionId,
+          session,
+        }),
+
+        memberStore(firestore, logger).find(user.sub),
+      ]);
+
+      userEvents.emit('sessionUpdated', {
+        user: userResults,
+        session: sessionResults,
       });
 
-      // TODO: provide object with member's information
-      // await postmark.sendEmailWithTemplate({
-      //   // TemplateId: 15581957,
-      //   TemplateAlias: 'THATconferenceSessionUpdated',
-      //   From: 'hello@thatconference.com',
-      //   To: 'Users-email-address',
-      //   TemplateModel: {
-      //     member: {
-      //       firstName: 'first-name',
-      //       lastName: 'last-name',
-      //     },
-      //     session: {
-      //       id: results.id,
-      //       title: results.title,
-      //       lastUpdatedAt: moment(results.lastUpdatedAt).format(
-      //         'M/D/YYYY h:mm:ss A',
-      //       ),
-      //     },
-      //     // Optional (hard coded in email now)
-      //     event: {
-      //       name: 'Events name',
-      //       year: 'Event year',
-      //       cfpOpens: 'CallForCounselorOpenDate',
-      //       cfpCloses: 'CallForCounselorCloseDate',
-      //       announceDate: 'scheduleAnnouncedDate',
-      //     },
-      //   },
-      // });
-
-      return results;
+      return sessionResults;
     },
     cancel: async (
       { sessionId },

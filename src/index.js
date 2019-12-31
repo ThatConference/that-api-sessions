@@ -13,6 +13,7 @@ import apolloGraphServer from './graphql';
 
 import { version } from '../package.json';
 import envConfig from './envConfig';
+import userEventEmitter from './events/user';
 
 const firestore = new Firestore();
 const dlog = debug('that:api:sessions:index');
@@ -20,6 +21,7 @@ const api = connect();
 const defaultVersion = `that-api-sessions@${version}`;
 
 const postmark = new Postmark(envConfig.postmarkApiToken);
+const userEvents = userEventEmitter(postmark);
 
 const logger = pino({
   level: process.env.LOG_LEVEL || 'info',
@@ -50,6 +52,9 @@ const createConfig = () => ({
     logger,
     firestore,
     postmark,
+    events: {
+      userEvents,
+    },
   },
 });
 
