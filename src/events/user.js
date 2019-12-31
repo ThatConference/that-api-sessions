@@ -12,7 +12,7 @@ function userEvents(postmark) {
     dlog('new session created');
 
     postmark.sendEmailWithTemplate({
-      TemplateId: 15581327,
+      // TemplateId: 15581327,
       TemplateAlias: 'THATconferenceSessionCreated',
       From: 'Hello@THATConference.com',
       To: user.email,
@@ -40,7 +40,7 @@ function userEvents(postmark) {
 
   function sessionUpdated({ user, session }) {
     postmark.sendEmailWithTemplate({
-      TemplateId: 15581957,
+      // TemplateId: 15581957,
       TemplateAlias: 'THATconferenceSessionUpdated',
       From: 'Hello@THATConference.com',
       To: user.email,
