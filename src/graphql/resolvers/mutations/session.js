@@ -33,10 +33,12 @@ export const fieldResolvers = {
         memberStore(firestore, logger).find(user.sub),
       ]);
 
-      userEvents.emit('sessionUpdated', {
-        user: userResults,
-        session: sessionResults,
-      });
+      if (sessionResults.status === 'ACCEPTED') {
+        userEvents.emit('sessionUpdated', {
+          user: userResults,
+          session: sessionResults,
+        });
+      }
 
       return sessionResults;
     },
