@@ -58,6 +58,8 @@ const createConfig = () => ({
   },
 });
 
+const graphServer = apolloGraphServer(createConfig());
+
 const useSentry = async (req, res, next) => {
   Sentry.addBreadcrumb({
     category: 'that-api-sessions',
@@ -116,10 +118,6 @@ const createUserContext = (req, res, next) => {
 const apiHandler = async (req, res) => {
   dlog('api handler called');
 
-  const graphServer = apolloGraphServer(
-    createConfig(),
-    req.userContext.enableMocking,
-  );
   const graphApi = graphServer.createHandler();
 
   graphApi(req, res);
