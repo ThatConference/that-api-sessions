@@ -52,13 +52,6 @@ export const fieldResolvers = {
         });
       }
 
-      if (updatedSession.status === 'ACCEPTED') {
-        userEvents.emit('sessionUpdated', {
-          user: userResults,
-          session: updatedSession,
-        });
-      }
-
       return updatedSession;
     },
     cancel: async (
