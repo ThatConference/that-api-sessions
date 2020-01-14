@@ -6,4 +6,5 @@ enum Status {
   WITHDREW
   WAIT_LIST
   CANCELLED
+  SCHEDULED
 }

@@ -23,24 +23,43 @@ export const fieldResolvers = {
       dlog('TCL: events %o', userEvents);
       dlog('SessionMutation:update called');
 
-      const [sessionResults, userResults] = await Promise.all([
+      // we need the original before we update it.
+      const orginalSession = await sessionStore(
+        firestore,
+        logger,
+      ).findMySession({
+        user,
+        sessionId,
+      });
+
+      const [updatedSession, userResults] = await Promise.all([
         sessionStore(firestore, logger).update({
           user,
           sessionId,
           session,
         }),
 
-        memberStore(firestore, logger).find(user.sub),
+        memberStore(firestore).find(user.sub),
       ]);
 
-      if (sessionResults.status === 'ACCEPTED') {
-        userEvents.emit('sessionUpdated', {
+      if (
+        orginalSession.status === 'DRAFT' &&
+        updatedSession.status === 'SUBMITTED'
+      ) {
+        userEvents.emit('newSessionCreated', {
           user: userResults,
-          session: sessionResults,
+          session: updatedSession,
         });
       }
 
-      return sessionResults;
+      if (updatedSession.status === 'ACCEPTED') {
+        userEvents.emit('sessionUpdated', {
+          user: userResults,
+          session: updatedSession,
+        });
+      }
+
+      return updatedSession;
     },
     cancel: async (
       { sessionId },

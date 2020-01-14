@@ -2,7 +2,7 @@ import debug from 'debug';
 
 const dlog = debug('that:api:sessions:datasources:members');
 
-const member = (dbInstance, logger) => {
+const member = dbInstance => {
   const collectionName = 'members';
 
   async function find(memberId) {

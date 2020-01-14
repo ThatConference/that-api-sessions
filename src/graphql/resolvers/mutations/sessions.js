@@ -27,13 +27,15 @@ export const fieldResolvers = {
           user,
           session,
         }),
-        memberStore(firestore, logger).find(user.sub),
+        memberStore(firestore).find(user.sub),
       ]);
 
-      userEvents.emit('newSessionCreated', {
-        user: userResults,
-        session: sessionResults,
-      });
+      if (sessionResults.status === 'SUBMITTED') {
+        userEvents.emit('newSessionCreated', {
+          user: userResults,
+          session: sessionResults,
+        });
+      }
 
       return sessionResults;
     },
