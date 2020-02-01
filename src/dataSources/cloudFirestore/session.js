@@ -72,6 +72,21 @@ function sessions(dbInstance, logger) {
     return result;
   }
 
+  async function batchFindSessions(sessionIds) {
+    dlog('batchFindSessions %o', sessionIds);
+
+    const docRefs = sessionIds.map(id =>
+      dbInstance.doc(`${collectionName}/${id}`),
+    );
+
+    return Promise.all(docRefs.map(d => d.get())).then(res =>
+      res.map(r => ({
+        id: r.id,
+        ...r.data(),
+      })),
+    );
+  }
+
   async function update({ user, sessionId, session }) {
     dlog(`updating session ${sessionId} with %o`, session);
     const docRef = dbInstance.doc(`${collectionName}/${sessionId}`);
@@ -92,7 +107,7 @@ function sessions(dbInstance, logger) {
     };
   }
 
-  return { create, update, findMy, findMySession };
+  return { create, update, findMy, findMySession, batchFindSessions };
 }
 
 export default sessions;

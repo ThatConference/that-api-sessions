@@ -8,11 +8,13 @@ import {
 import debug from 'debug';
 import { buildFederatedSchema } from '@apollo/federation';
 import { security } from '@thatconference/api';
+import DataLoader from 'dataloader';
 
 // Graph Types and Resolvers
 import typeDefsRaw from './typeDefs';
 import resolvers from './resolvers';
 import directives from './directives';
+import sessionStore from '../dataSources/cloudFirestore/session';
 
 const dlog = debug('that:api:sessions:graphServer');
 const jwtClient = security.jwt();
@@ -63,12 +65,21 @@ const createServer = ({ dataSources }, enableMocking = false) => {
       ? { endpoint: '/' }
       : false,
 
-    dataSources: () => ({
-      ...dataSources,
-    }),
+    dataSources: () => {
+      dlog('creating dataSources');
+      const { firestore } = dataSources;
+      const sessionLoader = new DataLoader(ids =>
+        sessionStore(firestore).batchFindSessions(ids),
+      );
+
+      return {
+        ...dataSources,
+        sessionLoader,
+      };
+    },
 
     context: async ({ req, res }) => {
-      dlog('buulding graphql user context');
+      dlog('creating context');
       let context = {};
 
       dlog('auth header %o', req.headers);

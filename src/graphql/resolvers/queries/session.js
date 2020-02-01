@@ -1,50 +1,26 @@
-/* eslint-disable no-underscore-dangle */
-/* eslint-disable import/prefer-default-export */
 import debug from 'debug';
 
-const dlog = debug('that:api:sessions:query');
+const dlog = debug('that:api:sessions:query:Session');
 
 export const fieldResolvers = {
   Session: {
-    __resolveReference({ id }) {
-      dlog('Profile:federated resolveRef');
+    async __resolveReference({ id }, { dataSources: { sessionLoader } }) {
+      dlog('resolverReference');
 
-      const data = {
-        '1': {
-          title: 'session #1',
-          shortDescription: 'this is my short desc',
-          speakers: [
-            {
-              __typename: 'Profile',
-              id: '1234',
-            },
-            {
-              __typename: 'Profile',
-              id: '4321',
-            },
-          ],
-        },
-        '2': {
-          title: 'session #2',
-          shortDescription: 'this is my short desc',
-          speakers: [
-            {
-              __typename: 'Profile',
-              id: '1234',
-            },
-            {
-              __typename: 'Profile',
-              id: '4321',
-            },
-          ],
-        },
-      };
+      const session = await sessionLoader.load(id);
 
-      if (id === '1' || id === '2') {
-        return data[id];
-      }
+      if (session.status === 'ACCEPTED' || session.status === 'SCHEDULED')
+        return session;
 
-      return {};
+      return null;
+    },
+    speakers: parent => {
+      dlog('speakers');
+
+      return parent.speakers.map(s => ({
+        __typename: 'PublicProfile',
+        id: s,
+      }));
     },
   },
 };
