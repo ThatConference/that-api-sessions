@@ -1,0 +1,11 @@
+"Anonymized Session - voting view"
+type AnonymizedSession @key(fields: "id") {
+  id: ID!
+  eventId: ID!
+  title: String!
+  longDescription: String!
+  takeaways: [String]!
+  type: SessionType
+  category: Category
+  vote: Boolean
+}

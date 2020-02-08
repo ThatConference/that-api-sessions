@@ -1,0 +1,6 @@
+type VotingQuery {
+  isVotingOpen: Boolean
+  totalSubmitted: Int @auth(requires: "sessions")
+  "will return a list of unvoted sessions for your login"
+  unVoted: [AnonymizedSession] @auth(requires: "sessions")
+}

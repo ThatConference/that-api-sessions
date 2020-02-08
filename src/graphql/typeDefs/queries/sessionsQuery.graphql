@@ -1,13 +1,4 @@
 type SessionsQuery {
-  "will return all accepted sessions. if year is passed it will filter on year or default to this year."
-  accepted(year: Int): [Session]
-
-  "will return all sessions, must be admin"
-  all(year: Int): [Session] @auth(requires: "admin")
-
   "will return the sessions associated to the logged in user"
   me: MeQuery @auth(requires: "sessions")
-
-  "will return an accepted session by it's id"
-  session(id: ID!): Session
 }

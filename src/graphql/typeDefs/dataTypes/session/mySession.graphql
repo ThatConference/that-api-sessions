@@ -1,8 +1,8 @@
-"Session"
-type Session @key(fields: "id") {
+"My Session"
+type MySession @key(fields: "id") {
   id: ID!
   eventId: ID!
-  speakers: [PublicProfile]
+  speakers: [Profile]
 
   title: String!
   shortDescription: String
@@ -25,6 +25,7 @@ type Session @key(fields: "id") {
   secondaryCategory: [SessionCategory]
 
   canRecord: Boolean
+  isRecored: Boolean
 
   status: Status
   schedule: Schedule
