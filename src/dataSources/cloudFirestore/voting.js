@@ -37,6 +37,17 @@ function voting(dbInstance) {
       .then(remaining => remaining.map(r => ({ id: r.id, ...r.data() })));
   }
 
+  async function findVoted(eventId, user) {
+    dlog('findVoted');
+
+    const { docs } = await votingCollection
+      .where('memberId', '==', user.sub)
+      .where('eventId', '==', eventId)
+      .get();
+
+    return docs.map(r => ({ id: r.id, ...r.data() }));
+  }
+
   async function castVote(eventId, user, vote) {
     dlog('castVote');
 
@@ -77,7 +88,7 @@ function voting(dbInstance) {
     };
   }
 
-  return { findUnVoted, castVote };
+  return { findUnVoted, findVoted, castVote };
 }
 
 export default voting;
