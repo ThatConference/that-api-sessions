@@ -1,4 +1,7 @@
 type MeQuery {
-  all: [Session] @auth(requires: "sessions")
-  session(id: ID!): Session @auth(requires: "sessions")
+  all: [MySession] @auth(requires: "sessions")
+
+  session(id: ID!): MySession @auth(requires: "sessions")
+
+  voting(eventId: ID!): VotingQuery @auth(requires: "sessions")
 }

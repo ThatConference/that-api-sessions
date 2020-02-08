@@ -1,0 +1,32 @@
+"ACCEPTED Session"
+type AcceptedSession @key(fields: "id") {
+  id: ID!
+  eventId: ID!
+  speakers: [PublicProfile]
+
+  title: String!
+  shortDescription: String
+  longDescription: String
+
+  type: SessionType
+  category: Category
+  durationInMinutes: Int
+  targetAudience: [TargetAudience]
+  whyAreYou: String
+
+  prerequisites: String
+  agenda: String
+  takeaways: [String]
+  supportingArtifacts: [Artifact]
+
+  primaryCategory: SessionCategory
+  secondaryCategory: [SessionCategory]
+
+  isRecored: Boolean
+
+  status: Status
+  schedule: Schedule
+
+  rating: [Rating]
+  lastUpdatedAt: Date!
+}

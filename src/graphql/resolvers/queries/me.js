@@ -1,8 +1,7 @@
-/* eslint-disable no-unused-vars */
-/* eslint-disable import/prefer-default-export */
 import debug from 'debug';
 
 import sessionStore from '../../../dataSources/cloudFirestore/session';
+import eventStore from '../../../dataSources/cloudFirestore/event';
 
 const dlog = debug('that:api:sessions:me');
 
@@ -23,6 +22,11 @@ export const fieldResolvers = {
         user,
         sessionId: id,
       });
+    },
+    voting: async (_, { eventId }, { dataSources: { firestore } }) => {
+      const { isVotingOpen } = await eventStore(firestore).getEvent(eventId);
+
+      return { eventId, isVotingOpen };
     },
   },
 };

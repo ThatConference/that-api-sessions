@@ -107,7 +107,24 @@ function sessions(dbInstance, logger) {
     };
   }
 
-  return { create, update, findMy, findMySession, batchFindSessions };
+  function getTotalSubmittedForEvent(eventId) {
+    dlog('getTotalSubmittedForEvent');
+
+    return sessionsCol
+      .where('eventId', '==', eventId)
+      .where('status', '==', 'SUBMITTED')
+      .get()
+      .then(snap => snap.size);
+  }
+
+  return {
+    create,
+    update,
+    findMy,
+    findMySession,
+    batchFindSessions,
+    getTotalSubmittedForEvent,
+  };
 }
 
 export default sessions;
