@@ -1,0 +1,9 @@
+type Vote {
+  id: ID!
+  sessionId: ID!
+  memberId: ID!
+  vote: Boolean!
+  notes: String
+  createdAt: Date!
+  lastUpdatedAt: Date!
+}

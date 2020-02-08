@@ -1,7 +1,9 @@
 /* eslint-disable import/prefer-default-export */
 import debug from 'debug';
+
 import sessionStore from '../../../dataSources/cloudFirestore/session';
 import memberStore from '../../../dataSources/cloudFirestore/member';
+import eventStore from '../../../dataSources/cloudFirestore/event';
 
 const dlog = debug('that:api:sessions:mutation');
 
@@ -43,9 +45,19 @@ export const fieldResolvers = {
       dlog('SessionsMutation:delete called');
       throw new Error('not implemented yet');
     },
+
     session: (parent, { id }) => {
       dlog('SessionsMutation:session called');
       return { sessionId: id };
+    },
+
+    voting: async (_, { eventId }, { dataSources: { firestore } }) => {
+      dlog('voting');
+      const { isVotingOpen } = await eventStore(firestore).getEvent(eventId);
+
+      if (!isVotingOpen) throw new Error('voting is currently closed');
+
+      return { eventId };
     },
   },
 };

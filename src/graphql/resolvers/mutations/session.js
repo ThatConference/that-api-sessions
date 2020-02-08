@@ -63,14 +63,5 @@ export const fieldResolvers = {
       throw new Error('not implemented yet');
       // sessionStore(firestore, logger).get(id),
     },
-    castVote: async (
-      { sessionId },
-      { session },
-      { dataSources: { firestore, logger } },
-    ) => {
-      dlog('SessionMutation:castVote called');
-      throw new Error('not implemented yet');
-      // sessionStore(firestore, logger).get(id),
-    },
   },
 };

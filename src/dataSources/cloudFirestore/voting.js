@@ -3,7 +3,7 @@ import _ from 'lodash';
 
 const dlog = debug('that:api:sessions:datasources:firebase:voting');
 
-function voting(dbInstance, logger) {
+function voting(dbInstance) {
   dlog('sessions data source created');
 
   const collectionName = 'sessions';
@@ -37,7 +37,47 @@ function voting(dbInstance, logger) {
       .then(remaining => remaining.map(r => ({ id: r.id, ...r.data() })));
   }
 
-  return { findUnVoted };
+  async function castVote(eventId, user, vote) {
+    dlog('castVote');
+
+    const voteSnap = await votingCollection
+      .where('sessionId', '==', vote.sessionId)
+      .where('memberId', '==', user.sub)
+      .where('eventId', '==', eventId)
+      .get();
+
+    const scrubbedVote = {
+      eventId,
+      memberId: user.sub,
+      ...vote,
+    };
+
+    let results;
+
+    if (voteSnap.size === 0) {
+      // NO votes found, creating new...
+      dlog('no vote found');
+      results = await votingCollection.add(scrubbedVote);
+    } else if (voteSnap.size === 1) {
+      // found a vote, updating
+      dlog('1 vote found');
+      const docRef = voteSnap.docs[0].ref;
+      await docRef.update(scrubbedVote);
+      results = docRef;
+    } else {
+      dlog('vote > 1');
+      throw new Error('invalid votes found');
+    }
+
+    const updateDoc = await results.get();
+
+    return {
+      id: results.id,
+      ...updateDoc.data(),
+    };
+  }
+
+  return { findUnVoted, castVote };
 }
 
 export default voting;

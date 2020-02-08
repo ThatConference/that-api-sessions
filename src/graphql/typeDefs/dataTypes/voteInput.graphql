@@ -1,0 +1,5 @@
+input VoteInput {
+  sessionId: ID!
+  vote: Boolean!
+  notes: String
+}
