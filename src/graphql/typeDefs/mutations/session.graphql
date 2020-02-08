@@ -1,6 +1,4 @@
 type SessionMutation {
   update(session: SessionUpdateInput!): MySession @auth(requires: "sessions")
   cancel: ID @auth(requires: "admin")
-
-  castVote: ID @auth(requires: "sessions")
 }
