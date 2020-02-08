@@ -18,5 +18,13 @@ export const fieldResolvers = {
 
       return null;
     },
+    speakers: parent => {
+      dlog('speakers');
+
+      return parent.speakers.map(s => ({
+        __typename: 'PublicProfile',
+        id: s,
+      }));
+    },
   },
 };
