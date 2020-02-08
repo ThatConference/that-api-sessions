@@ -12,6 +12,7 @@ export const fieldResolvers = {
       dlog('totalSubmitted');
       return sessionStore(firestore).getTotalSubmittedForEvent(eventId);
     },
+
     unVoted: (
       { eventId, isVotingOpen },
       _,
@@ -24,6 +25,27 @@ export const fieldResolvers = {
       }
 
       return votingStore(firestore).findUnVoted(eventId, user);
+    },
+
+    voted: async (
+      { eventId, isVotingOpen },
+      _,
+      { dataSources: { firestore, sessionLoader }, user },
+    ) => {
+      dlog('sessions');
+
+      if (!isVotingOpen) {
+        throw new Error('Voting is not currently open');
+      }
+
+      const results = await votingStore(firestore).findVoted(eventId, user);
+
+      const x = results.map(r => ({
+        id: r.sessionId,
+        __typename: 'AnonymizedSession',
+      }));
+
+      return x.map(s => sessionLoader.load(s.id));
     },
   },
 };
