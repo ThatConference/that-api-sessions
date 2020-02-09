@@ -1,4 +1,5 @@
 import debug from 'debug';
+import lodash from 'lodash';
 
 import votingStore from '../../../dataSources/cloudFirestore/voting';
 import sessionStore from '../../../dataSources/cloudFirestore/session';
@@ -41,14 +42,33 @@ export const fieldResolvers = {
         throw new Error('Voting is not currently open');
       }
 
-      const results = await votingStore(firestore).findVoted(eventId, user);
+      const userVotes = await votingStore(firestore)
+        .findVoted(eventId, user)
+        .then(r =>
+          r.reduce((acc, current) => {
+            acc[current.sessionId] = {
+              ...current,
+            };
 
-      const x = results.map(r => ({
-        id: r.sessionId,
-        __typename: 'AnonymizedSession',
-      }));
+            return acc;
+          }, {}),
+        );
 
-      return x.map(s => sessionLoader.load(s.id));
+      const votedSessionsDetails = await Promise.all(
+        Object.keys(userVotes).map(s => sessionLoader.load(s)),
+      ).then(sd =>
+        sd.reduce((acc, current) => {
+          acc[current.id] = {
+            ...current,
+          };
+
+          return acc;
+        }, {}),
+      );
+
+      const mergedDetails = lodash.merge(userVotes, votedSessionsDetails);
+
+      return Object.keys(mergedDetails).map(k => mergedDetails[k]);
     },
   },
 };

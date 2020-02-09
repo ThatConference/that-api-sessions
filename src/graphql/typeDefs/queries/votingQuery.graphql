@@ -6,5 +6,5 @@ type VotingQuery {
   unVoted: [AnonymizedSession] @auth(requires: "sessions")
 
   "will return a list of voted sessions for your login"
-  voted: [AnonymizedSession] @auth(requires: "sessions")
+  voted: [VotingSummary] @auth(requires: "sessions")
 }
