@@ -1,0 +1,7 @@
+type VotingSummary {
+  sessionId: ID!
+  title: String!
+  longDescription: String!
+  takeaways: [String]
+  vote: Boolean!
+}
