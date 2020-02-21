@@ -41,7 +41,7 @@ export const fieldResolvers = {
 
       return sessionResults;
     },
-    delete: async (parent, { id }, { dataSources: { firestore, logger } }) => {
+    delete: (parent, { id }, { dataSources: { firestore, logger } }) => {
       dlog('SessionsMutation:delete called');
       throw new Error('not implemented yet');
     },

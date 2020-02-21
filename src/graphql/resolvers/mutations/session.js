@@ -54,11 +54,7 @@ export const fieldResolvers = {
 
       return updatedSession;
     },
-    cancel: async (
-      { sessionId },
-      args,
-      { dataSources: { firestore, logger } },
-    ) => {
+    cancel: ({ sessionId }, args, { dataSources: { firestore, logger } }) => {
       dlog('SessionMutation:cancel called');
       throw new Error('not implemented yet');
       // sessionStore(firestore, logger).get(id),
