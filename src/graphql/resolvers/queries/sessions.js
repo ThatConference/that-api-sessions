@@ -2,6 +2,8 @@
 /* eslint-disable import/prefer-default-export */
 import debug from 'debug';
 
+import sessionStore from '../../../dataSources/cloudFirestore/session';
+
 const dlog = debug('that:api:sessions:query:SessionsQuery');
 
 export const fieldResolvers = {
@@ -9,6 +11,10 @@ export const fieldResolvers = {
     me: (parent, args, { dataSources: { firestore, logger }, user }) => {
       dlog('me called');
       return {};
+    },
+    session: (_, { slug }, { dataSources: { firestore, logger } }) => {
+      dlog('session by slug called "%o"', slug);
+      return sessionStore(firestore, logger).findSessionBySlug(slug);
     },
   },
 };

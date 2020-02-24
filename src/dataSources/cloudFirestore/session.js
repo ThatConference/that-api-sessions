@@ -72,6 +72,25 @@ function sessions(dbInstance, logger) {
     return result;
   }
 
+  async function findSessionBySlug(slug) {
+    const docSnap = await sessionsCol
+      .where('sessionSlug', '==', slug.toLowerCase())
+      .where('status', '==', 'ACCEPTED')
+      .get();
+
+    let results = null;
+
+    if (docSnap.size === 1) {
+      dlog('found session by slug %o', slug);
+      const session = docSnap.docs[0].data();
+      session.id = docSnap.docs[0].id;
+
+      results = session;
+    }
+
+    return results;
+  }
+
   async function batchFindSessions(sessionIds) {
     dlog('batchFindSessions %o', sessionIds);
 
@@ -124,6 +143,7 @@ function sessions(dbInstance, logger) {
     update,
     findMy,
     findMySession,
+    findSessionBySlug,
     batchFindSessions,
     getTotalSubmittedForEvent,
   };
