@@ -69,9 +69,19 @@ const createServer = ({ dataSources }, enableMocking = false) => {
     dataSources: () => {
       dlog('creating dataSources');
       const { firestore } = dataSources;
-      const sessionLoader = new DataLoader(ids =>
-        sessionStore(firestore).batchFindSessions(ids),
-      );
+
+      const sessionLoader = new DataLoader(async ids => {
+        const sessions = await sessionStore(firestore).batchFindSessions(ids);
+        return ids.map(id => {
+          const foundAt = sessions.findIndex(s => s.id === id);
+
+          if (foundAt < 0) return null;
+
+          const result = sessions[foundAt];
+          _.pullAt(sessions, foundAt);
+          return result;
+        });
+      });
 
       return {
         ...dataSources,
