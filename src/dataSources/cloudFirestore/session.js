@@ -81,8 +81,9 @@ function sessions(dbInstance, logger) {
     let results = null;
 
     if (docSnap.size === 1) {
+      dlog('found session by slug %o', slug);
       const session = docSnap.docs[0].data();
-      dlog(session);
+      session.id = docSnap.docs[0].id;
 
       results = session;
     }

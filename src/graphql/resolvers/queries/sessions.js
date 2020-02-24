@@ -12,9 +12,9 @@ export const fieldResolvers = {
       dlog('me called');
       return {};
     },
-    session: (_, { slug }, { datasources: { firestore, logger } }) => {
-      dlog('session called');
-      return sessionStore(firestore, logger).findMySession(slug);
+    session: (_, { slug }, { dataSources: { firestore, logger } }) => {
+      dlog('session by slug called "%o"', slug);
+      return sessionStore(firestore, logger).findSessionBySlug(slug);
     },
   },
 };
