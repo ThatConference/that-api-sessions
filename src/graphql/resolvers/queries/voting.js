@@ -57,18 +57,22 @@ export const fieldResolvers = {
       const votedSessionsDetails = await Promise.all(
         Object.keys(userVotes).map(s => sessionLoader.load(s)),
       ).then(sd =>
-        sd.reduce((acc, current) => {
-          acc[current.id] = {
-            ...current,
-          };
+        sd
+          .filter(s => s !== null)
+          .reduce((acc, current) => {
+            acc[current.id] = {
+              ...current,
+            };
 
-          return acc;
-        }, {}),
+            return acc;
+          }, {}),
       );
 
       const mergedDetails = lodash.merge(userVotes, votedSessionsDetails);
 
-      return Object.keys(mergedDetails).map(k => mergedDetails[k]);
+      return Object.keys(mergedDetails)
+        .map(k => mergedDetails[k])
+        .filter(f => f.title);
     },
   },
 };

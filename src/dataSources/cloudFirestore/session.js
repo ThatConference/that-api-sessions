@@ -98,10 +98,12 @@ function sessions(dbInstance, logger) {
     );
 
     return Promise.all(docRefs.map(d => d.get())).then(res =>
-      res.map(r => ({
-        id: r.id,
-        ...r.data(),
-      })),
+      res
+        .filter(r => r.exists)
+        .map(r => ({
+          id: r.id,
+          ...r.data(),
+        })),
     );
   }
 
