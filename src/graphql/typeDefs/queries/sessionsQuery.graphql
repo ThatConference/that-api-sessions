@@ -1,4 +1,6 @@
 type SessionsQuery {
   "will return the sessions associated to the logged in user"
   me: MeQuery @auth(requires: "sessions")
+  "will return an ACCEPTED session for matching slug"
+  session(slug: String!): AcceptedSession
 }
