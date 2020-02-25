@@ -13,7 +13,7 @@ export const fieldResolvers = {
       return {};
     },
     session: (_, { slug }, { dataSources: { firestore, logger } }) => {
-      dlog('session by slug called "%o"', slug);
+      dlog('session by slug called "%s"', slug);
       return sessionStore(firestore, logger).findSessionBySlug(slug);
     },
   },

@@ -75,13 +75,13 @@ function sessions(dbInstance, logger) {
   async function findSessionBySlug(slug) {
     const docSnap = await sessionsCol
       .where('sessionSlug', '==', slug.toLowerCase())
-      .where('status', '==', 'ACCEPTED')
+      .where('status', 'in', ['ACCEPTED', 'CANCELLED', 'SCHEDULED'])
       .get();
 
     let results = null;
 
     if (docSnap.size === 1) {
-      dlog('found session by slug %o', slug);
+      dlog('found session by slug %s', slug);
       const session = docSnap.docs[0].data();
       session.id = docSnap.docs[0].id;
 
