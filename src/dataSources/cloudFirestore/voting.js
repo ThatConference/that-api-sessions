@@ -57,9 +57,12 @@ function voting(dbInstance) {
       .where('eventId', '==', eventId)
       .get();
 
-    const scrubbedVote = {
+    const modifiedAtDate = new Date().toISOString();
+
+    let scrubbedVote = {
       eventId,
       memberId: user.sub,
+      lastUpdatedAt: modifiedAtDate,
       ...vote,
     };
 
@@ -68,6 +71,12 @@ function voting(dbInstance) {
     if (voteSnap.size === 0) {
       // NO votes found, creating new...
       dlog('no vote found');
+
+      scrubbedVote = {
+        createdAt: modifiedAtDate,
+        ...scrubbedVote,
+      };
+
       results = await votingCollection.add(scrubbedVote);
     } else if (voteSnap.size === 1) {
       // found a vote, updating
