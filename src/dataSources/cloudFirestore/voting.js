@@ -24,6 +24,7 @@ function voting(dbInstance) {
       sessionCollection
         .where('eventId', '==', eventId)
         .where('status', '==', 'SUBMITTED')
+        .where('category', '==', 'PROFESSIONAL')
         .get(),
     ])
       .then(([{ docs: votes }, { docs: sessions }]) => {
