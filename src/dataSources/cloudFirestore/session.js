@@ -109,12 +109,13 @@ function sessions(dbInstance, logger) {
     };
   }
 
-  function getTotalSubmittedForEvent(eventId) {
-    dlog('getTotalSubmittedForEvent');
+  function getTotalProfessionalSubmittedForEvent(eventId) {
+    dlog('getTotalProfessionalSubmittedForEvent');
 
     return sessionsCol
       .where('eventId', '==', eventId)
       .where('status', '==', 'SUBMITTED')
+      .where('category', '==', 'PROFESSIONAL')
       .get()
       .then(snap => snap.size);
   }
@@ -125,7 +126,7 @@ function sessions(dbInstance, logger) {
     findMy,
     findMySession,
     batchFindSessions,
-    getTotalSubmittedForEvent,
+    getTotalProfessionalSubmittedForEvent,
   };
 }
 

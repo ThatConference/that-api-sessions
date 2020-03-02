@@ -12,7 +12,9 @@ export const fieldResolvers = {
     isVotingOpen: ({ isVotingOpen }) => isVotingOpen,
     totalSubmitted: ({ eventId }, _, { dataSources: { firestore } }) => {
       dlog('totalSubmitted');
-      return sessionStore(firestore).getTotalSubmittedForEvent(eventId);
+      return sessionStore(firestore).getTotalProfessionalSubmittedForEvent(
+        eventId,
+      );
     },
 
     unVoted: async (
