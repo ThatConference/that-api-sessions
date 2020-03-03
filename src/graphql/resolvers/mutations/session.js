@@ -14,7 +14,6 @@ export const fieldResolvers = {
       {
         dataSources: {
           firestore,
-          logger,
           events: { userEvents },
         },
         user,
@@ -24,16 +23,13 @@ export const fieldResolvers = {
       dlog('SessionMutation:update called');
 
       // we need the original before we update it.
-      const orginalSession = await sessionStore(
-        firestore,
-        logger,
-      ).findMySession({
+      const orginalSession = await sessionStore(firestore).findMySession({
         user,
         sessionId,
       });
 
       const [updatedSession, userResults] = await Promise.all([
-        sessionStore(firestore, logger).update({
+        sessionStore(firestore).update({
           user,
           sessionId,
           session,
@@ -54,7 +50,7 @@ export const fieldResolvers = {
 
       return updatedSession;
     },
-    cancel: ({ sessionId }, args, { dataSources: { firestore, logger } }) => {
+    cancel: ({ sessionId }, args, { dataSources: { firestore } }) => {
       dlog('SessionMutation:cancel called');
       throw new Error('not implemented yet');
       // sessionStore(firestore, logger).get(id),

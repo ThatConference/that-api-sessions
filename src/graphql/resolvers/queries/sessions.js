@@ -6,7 +6,7 @@ const dlog = debug('that:api:sessions:query:SessionsQuery');
 
 export const fieldResolvers = {
   SessionsQuery: {
-    me: (parent, args, { dataSources: { firestore, logger }, user }) => {
+    me: (parent, args, { dataSources: { firestore }, user }) => {
       dlog('me called');
       return {};
     },
