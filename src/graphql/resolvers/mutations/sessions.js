@@ -15,7 +15,6 @@ export const fieldResolvers = {
       {
         dataSources: {
           firestore,
-          logger,
           events: { userEvents },
         },
         user,
@@ -24,7 +23,7 @@ export const fieldResolvers = {
       dlog('SessionsMutation:create called');
 
       const [sessionResults, userResults] = await Promise.all([
-        sessionStore(firestore, logger).create({
+        sessionStore(firestore).create({
           eventId,
           user,
           session,
@@ -41,7 +40,7 @@ export const fieldResolvers = {
 
       return sessionResults;
     },
-    delete: (parent, { id }, { dataSources: { firestore, logger } }) => {
+    delete: (parent, { id }, { dataSources: { firestore } }) => {
       dlog('SessionsMutation:delete called');
       throw new Error('not implemented yet');
     },

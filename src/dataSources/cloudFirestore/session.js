@@ -13,7 +13,7 @@ function scrubSession(session, isNew) {
   return scrubbedSession;
 }
 
-function sessions(dbInstance, logger) {
+function sessions(dbInstance) {
   dlog('sessions data source created');
 
   const collectionName = 'sessions';

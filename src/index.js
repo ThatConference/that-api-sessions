@@ -3,12 +3,10 @@ import 'dotenv/config';
 import connect from 'connect';
 import debug from 'debug';
 import { Firestore } from '@google-cloud/firestore';
-import pino from 'pino';
 import { Client as Postmark } from 'postmark';
 import responseTime from 'response-time';
 import uuid from 'uuid/v4';
 import * as Sentry from '@sentry/node';
-import { middleware } from '@thatconference/api';
 
 import apolloGraphServer from './graphql';
 import { version } from '../package.json';
@@ -19,22 +17,9 @@ const firestore = new Firestore();
 const dlog = debug('that:api:sessions:index');
 const api = connect();
 const defaultVersion = `that-api-sessions@${version}`;
-const { requestLogger } = middleware;
 
 const postmark = new Postmark(envConfig.postmarkApiToken);
 const userEvents = userEventEmitter(postmark);
-
-const logger = pino({
-  level: process.env.LOG_LEVEL || 'info',
-  prettyPrint: JSON.parse(process.env.LOG_PRETTY_PRINT || false)
-    ? { colorize: true }
-    : false,
-  mixin() {
-    return {
-      service: 'that-api-sessions',
-    };
-  },
-});
 
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
@@ -50,7 +35,6 @@ Sentry.configureScope(scope => {
 const createConfig = () => ({
   dataSources: {
     sentry: Sentry,
-    logger,
     firestore,
     postmark,
     events: {
@@ -63,7 +47,7 @@ const graphServer = apolloGraphServer(createConfig());
 
 const useSentry = async (req, res, next) => {
   Sentry.addBreadcrumb({
-    category: 'that-api-sessions',
+    category: 'root',
     message: 'init',
     level: Sentry.Severity.Info,
   });
@@ -100,17 +84,14 @@ const createUserContext = (req, res, next) => {
     ? req.headers['that-correlation-id']
     : uuid();
 
-  const contextLogger = logger.child({ correlationId });
+  Sentry.configureScope(scope => {
+    scope.setTag('correlationId', correlationId);
+  });
 
   req.userContext = {
-    locale: req.headers.locale,
     authToken: req.headers.authorization,
-    correlationId: req.headers['correlation-id']
-      ? req.headers['correlation-id']
-      : uuid(),
+    correlationId,
     enableMocking: enableMocking(),
-    sentry: Sentry,
-    logger: contextLogger,
   };
 
   next();
@@ -130,10 +111,6 @@ const apiHandler = async (req, res) => {
 
 function failure(err, req, res, next) {
   dlog('error %o', err);
-
-  logger.error(err);
-  logger.trace('Middleware Catch All');
-
   Sentry.captureException(err);
 
   res
@@ -148,7 +125,6 @@ function failure(err, req, res, next) {
  */
 export const graphEndpoint = api
   .use(responseTime())
-  .use(requestLogger('that:api:sessions').handler)
   .use(useSentry)
   .use(createUserContext)
   .use(apiHandler)

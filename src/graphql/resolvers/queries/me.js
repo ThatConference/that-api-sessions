@@ -7,14 +7,14 @@ const dlog = debug('that:api:sessions:me');
 
 export const fieldResolvers = {
   MeQuery: {
-    all: (_, __, { dataSources: { firestore, logger }, user }) => {
+    all: (_, __, { dataSources: { firestore }, user }) => {
       dlog('my all called');
-      return sessionStore(firestore, logger).findMy({ user });
+      return sessionStore(firestore).findMy({ user });
     },
-    session: (_, { id }, { dataSources: { firestore, logger }, user }) => {
+    session: (_, { id }, { dataSources: { firestore }, user }) => {
       dlog('my session called');
 
-      return sessionStore(firestore, logger).findMySession({
+      return sessionStore(firestore).findMySession({
         user,
         sessionId: id,
       });
