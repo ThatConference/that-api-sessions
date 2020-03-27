@@ -1,17 +1,28 @@
 /* eslint-disable import/prefer-default-export */
 import 'dotenv/config';
-import connect from 'connect';
+import connect from 'express';
 import debug from 'debug';
 import { Firestore } from '@google-cloud/firestore';
 import { Client as Postmark } from 'postmark';
 import responseTime from 'response-time';
-import uuid from 'uuid/v4';
+import { v4 as uuidv4 } from 'uuid';
 import * as Sentry from '@sentry/node';
 
 import apolloGraphServer from './graphql';
-import { version } from '../package.json';
 import envConfig from './envConfig';
 import userEventEmitter from './events/user';
+// import { version } from '../package.json';
+
+let version;
+(async () => {
+  let p;
+  try {
+    p = await import('./package.json');
+  } catch {
+    p = await import('../package.json');
+  }
+  version = p.version;
+})();
 
 const firestore = new Firestore();
 const dlog = debug('that:api:sessions:index');
@@ -82,7 +93,7 @@ const createUserContext = (req, res, next) => {
 
   const correlationId = req.headers['that-correlation-id']
     ? req.headers['that-correlation-id']
-    : uuid();
+    : uuidv4();
 
   Sentry.configureScope(scope => {
     scope.setTag('correlationId', correlationId);
@@ -97,18 +108,6 @@ const createUserContext = (req, res, next) => {
   next();
 };
 
-const graphApi = graphServer.createHandler({
-  cors: {
-    origin: '*',
-    credentials: true,
-  },
-});
-
-const apiHandler = async (req, res) => {
-  dlog('api handler called');
-  return graphApi(req, res);
-};
-
 function failure(err, req, res, next) {
   dlog('error %o', err);
   Sentry.captureException(err);
@@ -118,14 +117,16 @@ function failure(err, req, res, next) {
     .status(500)
     .json(err);
 }
-/**
- * http middleware function that follows adhering to express's middleware.
- * Last item in the middleware chain.
- * This is your api handler for your serverless function
- */
-export const graphEndpoint = api
+
+api
   .use(responseTime())
   .use(useSentry)
   .use(createUserContext)
-  .use(apiHandler)
   .use(failure);
+
+graphServer.applyMiddleware({ app: api, path: '/' });
+
+// const port = process.env.PORT || 8003;
+// api.listen({ port }, () => dlog(`sessions running on port %d`, port));
+
+export const handler = api;

@@ -4,7 +4,7 @@ import {
   gql,
   addMockFunctionsToSchema,
   mergeSchemas,
-} from 'apollo-server-cloud-functions';
+} from 'apollo-server-express';
 import debug from 'debug';
 import { buildFederatedSchema } from '@apollo/federation';
 import { security, graph } from '@thatconference/api';
