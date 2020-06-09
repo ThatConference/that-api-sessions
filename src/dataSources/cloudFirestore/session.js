@@ -39,7 +39,7 @@ function sessions(dbInstance) {
           eventId,
           slug,
         });
-        Sentry.captureException(new Error('duplicate slugs in event'));
+        Sentry.captureMessage('duplicate slugs in event');
       });
       return undefined;
     }
