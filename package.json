@@ -20,8 +20,8 @@
   },
   "dependencies": {
     "@apollo/federation": "^0.16.4",
-    "@google-cloud/functions-framework": "^1.5.1",
     "@google-cloud/firestore": "^3.8.4",
+    "@google-cloud/functions-framework": "^1.5.1",
     "@sentry/node": "^5.17.0",
     "@thatconference/api": "^1.6.0",
     "apollo-server": "^2.14.2",
@@ -39,6 +39,7 @@
     "moment": "^2.26.0",
     "postmark": "^2.5.4",
     "response-time": "^2.3.2",
+    "slugify": "^1.4.0",
     "uuid": "^8.1.0"
   },
   "devDependencies": {

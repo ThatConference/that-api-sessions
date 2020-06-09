@@ -7,6 +7,7 @@ import mutations, { fieldResolvers as mFieldResolvers } from './mutations';
 const createServer = {
   ...graphScalars,
   ...graph.scalars.date,
+  ...graph.scalars.slug,
 
   ...qFieldResolvers,
   ...mFieldResolvers,

@@ -7,4 +7,5 @@ type AnonymizedSession @key(fields: "id") {
   takeaways: [String]!
   type: SessionType
   category: Category
+  slug: Slug!
 }

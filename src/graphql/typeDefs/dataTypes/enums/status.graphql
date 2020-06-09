@@ -7,4 +7,5 @@ enum Status {
   WAIT_LIST
   CANCELLED
   SCHEDULED
+  ARCHIVED
 }
