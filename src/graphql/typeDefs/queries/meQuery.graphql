@@ -5,3 +5,11 @@ type MeQuery {
 
   voting(eventId: ID!): VotingQuery @auth(requires: "sessions")
 }
+
+union TheSessions = Regular | OpenSpace | Keynote | Panel | Workshop
+
+type MyQuery {
+  all: [TheSessions]
+
+  session(id: ID!): TheSessions
+}

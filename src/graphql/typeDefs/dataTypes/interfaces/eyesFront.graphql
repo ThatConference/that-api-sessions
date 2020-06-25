@@ -1,0 +1,30 @@
+interface EyesFront {
+  id: ID!
+  eventId: String!
+  slug: Slug!
+  title: String!
+  shortDescription: String!
+  primaryCategory: SessionCategory
+  speakers: [Profile]
+
+  type: SessionType
+  status: Status
+  durationInMinutes: Int
+  schedule: Schedule
+
+  createdAt: Date!
+  lastUpdatedAt: Date!
+
+  # Start Session interface fields
+  longDescription: String
+  whyAreYou: String
+  otherComments: String
+  takeaways: [String]
+  supportingArtificats: [Artifact]
+  mentorship: Mentorship
+  secondaryCategory: [SessionCategory]
+  canRecord: Boolean
+  isRecorded: Boolean
+  rating: [Rating]
+  targetAudience: [TargetAudience]
+}

@@ -1,0 +1,17 @@
+interface Base {
+  id: ID!
+  eventId: String!
+  slug: Slug!
+  title: String!
+  shortDescription: String!
+  primaryCategory: SessionCategory
+  speakers: [Profile]
+
+  type: SessionType
+  status: Status
+  durationInMinutes: Int
+  schedule: Schedule
+
+  createdAt: Date!
+  lastUpdatedAt: Date!
+}

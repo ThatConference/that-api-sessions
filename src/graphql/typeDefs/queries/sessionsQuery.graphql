@@ -1,4 +1,7 @@
 type SessionsQuery {
   "will return the sessions associated to the logged in user"
   me: MeQuery @auth(requires: "sessions")
+
+  "return sessions for logged in user"
+  my: MyQuery @auth(requires: "sessions")
 }
