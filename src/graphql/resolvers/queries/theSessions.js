@@ -48,49 +48,4 @@ export const fieldResolvers = {
       }));
     },
   },
-  Regular: {
-    speakers: parent => {
-      dlog('speakers');
-
-      return parent.speakers.map(s => ({
-        id: s,
-      }));
-    },
-  },
-  OpenSpace: {
-    speakers: parent => {
-      dlog('speakers');
-
-      return parent.speakers.map(s => ({
-        id: s,
-      }));
-    },
-  },
-  Keynote: {
-    speakers: parent => {
-      dlog('speakers');
-
-      return parent.speakers.map(s => ({
-        id: s,
-      }));
-    },
-  },
-  Panel: {
-    speakers: parent => {
-      dlog('speakers');
-
-      return parent.speakers.map(s => ({
-        id: s,
-      }));
-    },
-  },
-  Workshop: {
-    speakers: parent => {
-      dlog('speakers');
-
-      return parent.speakers.map(s => ({
-        id: s,
-      }));
-    },
-  },
 };
