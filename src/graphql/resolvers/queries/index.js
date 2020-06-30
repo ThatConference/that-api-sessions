@@ -7,6 +7,7 @@ import { fieldResolvers as mySessionFields } from './mySession';
 import { fieldResolvers as votingFields } from './voting';
 import { fieldResolvers as acceptedSessionFields } from './acceptedSession';
 import { fieldResolvers as anonymizedSessionFields } from './anonymizedSession';
+import { fieldResolvers as theSessionsFields } from './theSessions';
 
 export default {
   ...root,
@@ -19,4 +20,5 @@ export const fieldResolvers = {
   ...mySessionFields,
   ...votingFields,
   ...anonymizedSessionFields,
+  ...theSessionsFields,
 };

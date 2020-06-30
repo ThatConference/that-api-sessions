@@ -15,7 +15,7 @@ type Keynote implements EyesFront & Base @key(fields: "id") {
   createdAt: Date!
   lastUpdatedAt: Date!
 
-  # Start Session interface fields
+  # Start EyesFront interface fields
   longDescription: String
   whyAreYou: String
   otherComments: String
@@ -27,4 +27,8 @@ type Keynote implements EyesFront & Base @key(fields: "id") {
   isRecorded: Boolean
   rating: [Rating]
   targetAudience: [TargetAudience]
+  category: Category
+
+  # Keynote
+  agenda: String
 }

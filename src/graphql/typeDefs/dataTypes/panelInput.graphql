@@ -1,0 +1,48 @@
+input PanelCreateInput {
+  title: String!
+  shortDescription: String
+  longDescription: String
+
+  durationInMinutes: Int
+  targetAudience: [TargetAudience]
+  whyAreYou: String
+  otherComments: String
+
+  takeaways: [String]
+  mentorship: Mentorship
+
+  category: Category
+  primaryCategory: SessionCategory
+  secondaryCategory: [SessionCategory]
+
+  supportingArtifacts: [ArtifactInput]
+
+  canRecord: Boolean
+  status: Status
+}
+
+input PanelUpdateInput {
+  speakers: [ID]
+
+  title: String
+  shortDescription: String
+  longDescription: String
+
+  type: SessionType
+  durationInMinutes: Int
+  targetAudience: [TargetAudience]
+  whyAreYou: String
+  otherComments: String
+
+  takeaways: [String]
+  mentorship: Mentorship
+
+  category: Category
+  primaryCategory: SessionCategory
+  secondaryCategory: [SessionCategory]
+
+  supportingArtifacts: [ArtifactInput]
+
+  canRecord: Boolean
+  status: Status
+}

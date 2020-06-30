@@ -1,6 +1,5 @@
 type SessionsMutation {
-  create(eventId: ID!, session: SessionCreateInput!): MySession!
-    @auth(requires: "sessions")
+  create(eventId: ID!): SessionCreate @auth(requires: "sessions")
   delete(id: ID!): ID @auth(requires: "admin")
   session(id: ID!): SessionMutation @auth(requires: "sessions")
   voting(eventId: ID!): VotingMutation @auth(requires: "sessions")

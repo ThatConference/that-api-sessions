@@ -27,4 +27,5 @@ type Regular implements EyesFront & Base @key(fields: "id") {
   isRecorded: Boolean
   rating: [Rating]
   targetAudience: [TargetAudience]
+  category: Category
 }
