@@ -1,34 +1,5 @@
-"session fields for eye-forward style sessions. Base should be implemented with EyesFront in types using this interface"
-interface EyesFront implements Base  {
-  "session unique identifier"
-  id: ID!
-  "event id session is associated with"
-  eventId: String!
-  "session slug unique by eventid"
-  slug: Slug!
-  "session title"
-  title: String!
-  "a shorter more concise desrcription"
-  shortDescription: String!
-  "primary category for the session"
-  primaryCategory: SessionCategory
-  "associated speakers. will see session as their own"
-  speakers: [PublicProfile]
-
-  "the type of session, informs union resolver of session object to return"
-  type: SessionType
-  "session stats"
-  status: Status
-  "full duriation of session in munutes"
-  durationInMinutes: Int
-
-  schedule: Schedule
-
-  "date time session created"
-  createdAt: Date!
-  "date time session last updated"
-  lastUpdatedAt: Date!
-
+"session fields for eye-forward style sessions. Base must be implemented with EyesFront in types using this interface"
+interface EyesFront {
   # Start EyesFront interface fields
   "a longer more verbose session description"
   longDescription: String
