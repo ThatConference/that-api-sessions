@@ -10,9 +10,5 @@ export const fieldResolvers = {
       dlog('me called');
       return {};
     },
-    my: () => {
-      dlog('my called');
-      return {};
-    },
   },
 };
