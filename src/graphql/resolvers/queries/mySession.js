@@ -1,6 +1,6 @@
 import debug from 'debug';
 
-const dlog = debug('that:api:sessions:query:AcceptedSession');
+const dlog = debug('that:api:sessions:query:MySession');
 
 export const fieldResolvers = {
   MySession: {
@@ -13,6 +13,13 @@ export const fieldResolvers = {
       if (session.status === 'WITHDREW') return session;
 
       return null;
+    },
+    speakers: parent => {
+      dlog('speakers');
+
+      return parent.speakers.map(s => ({
+        id: s,
+      }));
     },
   },
 };

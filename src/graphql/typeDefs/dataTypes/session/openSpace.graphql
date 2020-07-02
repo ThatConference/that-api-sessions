@@ -1,0 +1,17 @@
+type OpenSpace implements Base @key(fields: "id") {
+  id: ID!
+  eventId: String!
+  slug: Slug!
+  title: String!
+  shortDescription: String!
+  primaryCategory: SessionCategory
+  speakers: [PublicProfile]
+
+  type: SessionType
+  status: Status
+  durationInMinutes: Int
+  schedule: Schedule
+
+  createdAt: Date!
+  lastUpdatedAt: Date!
+}

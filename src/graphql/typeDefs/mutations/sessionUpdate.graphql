@@ -1,0 +1,23 @@
+type SessionUpdate {
+  "Depricated update session method, prior to session type updates for back compatability"
+  update(session: SessionUpdateInput!): MySession
+    @auth(requires: "sessions")
+    @deprecated(reason: "use specific session type update instead")
+
+  "Update for an OpenSpace type session"
+  openSpace(openspace: OpenSpaceUpdateInput!): OpenSpace!
+    @auth(requires: "sessions")
+
+  "Update for a Keynote type session"
+  keynote(keynote: KeynoteUpdateInput!): Keynote! @auth(requires: "sessions")
+
+  "Update for a Regular type session"
+  regular(regular: RegularUpdateInput!): Regular! @auth(requires: "sessions")
+
+  "Update for a Workshop type session"
+  workshop(workshop: WorkshopUpdateInput!): Workshop!
+    @auth(requires: "sessions")
+
+  "Update for a Panel type session"
+  panel(panel: PanelUpdateInput!): Panel! @auth(requires: "sessions")
+}

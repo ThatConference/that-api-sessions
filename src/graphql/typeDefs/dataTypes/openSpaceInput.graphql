@@ -1,0 +1,22 @@
+input OpenSpaceCreateInput {
+  title: String!
+  shortDescription: String!
+
+  durationInMinutes: Int
+
+  primaryCategory: SessionCategory
+
+  status: Status
+}
+
+input OpenSpaceUpdateInput {
+  title: String
+  shortDescription: String
+
+  type: SessionType
+  durationInMinutes: Int
+
+  primaryCategory: SessionCategory
+
+  status: Status
+}

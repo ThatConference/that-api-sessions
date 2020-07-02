@@ -7,6 +7,12 @@ import { fieldResolvers as mySessionFields } from './mySession';
 import { fieldResolvers as votingFields } from './voting';
 import { fieldResolvers as acceptedSessionFields } from './acceptedSession';
 import { fieldResolvers as anonymizedSessionFields } from './anonymizedSession';
+import { fieldResolvers as theSessionsFields } from './theSessions';
+import { fieldResolvers as regularFields } from './regular';
+import { fieldResolvers as openSpaceFields } from './openSpace';
+import { fieldResolvers as keynoteFields } from './keynote';
+import { fieldResolvers as panelFields } from './panel';
+import { fieldResolvers as workshopFields } from './workshop';
 
 export default {
   ...root,
@@ -19,4 +25,10 @@ export const fieldResolvers = {
   ...mySessionFields,
   ...votingFields,
   ...anonymizedSessionFields,
+  ...theSessionsFields,
+  ...regularFields,
+  ...openSpaceFields,
+  ...keynoteFields,
+  ...panelFields,
+  ...workshopFields,
 };

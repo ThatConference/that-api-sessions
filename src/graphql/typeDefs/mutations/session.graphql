@@ -1,4 +1,4 @@
 type SessionMutation {
-  update(session: SessionUpdateInput!): MySession @auth(requires: "sessions")
+  update: SessionUpdate @auth(requires: "sessions")
   cancel: ID @auth(requires: "admin")
 }

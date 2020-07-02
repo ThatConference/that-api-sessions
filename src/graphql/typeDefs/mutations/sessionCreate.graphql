@@ -1,0 +1,23 @@
+type SessionCreate {
+  "Deprecated create session method, prior to session-type creates for back compatability"
+  create(session: SessionCreateInput!): MySession!
+    @auth(requires: "sessions")
+    @deprecated(reason: "use specific session type create instead")
+
+  "Creates an OpenSpace type session"
+  openSpace(openspace: OpenSpaceCreateInput!): OpenSpace!
+    @auth(requires: "sessions")
+
+  "Creates a Keynote type session"
+  keynote(keynote: KeynoteCreateInput!): Keynote! @auth(requires: "sessions")
+
+  "Creates a Regular type session"
+  regular(regular: RegularCreateInput!): Regular! @auth(requires: "sessions")
+
+  "Creates a Workshop type session"
+  workshop(workshop: WorkshopCreateInput!): Workshop!
+    @auth(requires: "sessions")
+
+  "Creates a panel type session"
+  panel(panel: PanelCreateInput!): Panel! @auth(requires: "sessions")
+}
