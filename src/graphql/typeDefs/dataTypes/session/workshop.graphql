@@ -30,6 +30,8 @@ type Workshop implements EyesFront & Base @key(fields: "id") {
   category: Category
 
   # Workshop specific
+  "items and tasks to be done PRIOR to attending session"
   prerequisites: String
+  "detailed agenda of workshop"
   agenda: String
 }

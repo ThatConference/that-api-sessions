@@ -1,31 +1,56 @@
 interface EyesFront {
+  "session unique identifier"
   id: ID!
+  "event id session is associated with"
   eventId: String!
+  "session slug unique by eventid"
   slug: Slug!
+  "session title"
   title: String!
+  "a shorter more concise desrcription"
   shortDescription: String!
+  "primary category for the session"
   primaryCategory: SessionCategory
+  "associated speakers. will see session as their own"
   speakers: [Profile]
 
+  "the type of session, informs union resolver of session object to return"
   type: SessionType
+  "session stats"
   status: Status
+  "full duriation of session in munutes"
   durationInMinutes: Int
+
   schedule: Schedule
 
+  "date time session created"
   createdAt: Date!
+  "date time session last updated"
   lastUpdatedAt: Date!
 
   # Start EyesFront interface fields
+  "a longer more verbose session description"
   longDescription: String
+  "why are you the best person to perform this session"
   whyAreYou: String
+
   otherComments: String
+  "expected takeaways for attending this session"
   takeaways: [String]
+
   supportingArtificats: [Artifact]
+  "does the speaker(s) require mentorship on this session?"
   mentorship: Mentorship
+  "secondary categories for the session"
   secondaryCategory: [SessionCategory]
+  "does the speaker(s) allow session to be recorded"
   canRecord: Boolean
+  "session being recorded if set true"
   isRecorded: Boolean
+
   rating: [Rating]
+  "type of audience session is targeted toward"
   targetAudience: [TargetAudience]
+
   category: Category
 }

@@ -24,6 +24,10 @@ export const fieldResolvers = {
 
       return { eventId, isVotingOpen };
     },
+    submitted: async (_, __, { dataSources: { firestore }, user }) => {
+      dlog('submitted called');
+      return sessionStore(firestore).findMy({ user });
+    },
   },
   MyQuery: {
     all: (_, __, { dataSources: { firestore }, user }) => {
