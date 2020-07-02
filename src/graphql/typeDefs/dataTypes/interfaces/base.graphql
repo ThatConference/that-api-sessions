@@ -13,7 +13,7 @@ interface Base {
   "primary category for the session"
   primaryCategory: SessionCategory
   "associated speakers. will see session as their own"
-  speakers: [Profile]
+  speakers: [PublicProfile]
 
   "the type of session, informs union resolver of session object to return"
   type: SessionType

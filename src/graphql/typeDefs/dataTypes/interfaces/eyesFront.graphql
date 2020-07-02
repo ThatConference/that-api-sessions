@@ -1,4 +1,5 @@
-interface EyesFront {
+"session fields for eye-forward style sessions. Base should be implemented with EyesFront in types using this interface"
+interface EyesFront implements Base  {
   "session unique identifier"
   id: ID!
   "event id session is associated with"
@@ -12,7 +13,7 @@ interface EyesFront {
   "primary category for the session"
   primaryCategory: SessionCategory
   "associated speakers. will see session as their own"
-  speakers: [Profile]
+  speakers: [PublicProfile]
 
   "the type of session, informs union resolver of session object to return"
   type: SessionType

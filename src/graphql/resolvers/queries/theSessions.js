@@ -6,7 +6,7 @@ const dlog = debug('that:api:sessions:thesessions');
 export const fieldResolvers = {
   TheSessions: {
     __resolveType(obj, context, info) {
-      dlog('TheSessions __resolveType', obj);
+      dlog('__resolveType called');
       let result = null;
       switch (obj.type) {
         case 'REGULAR':
@@ -32,7 +32,7 @@ export const fieldResolvers = {
   },
   Base: {
     speakers: parent => {
-      dlog('speakers');
+      dlog('Base speakers');
 
       return parent.speakers.map(s => ({
         id: s,
@@ -41,7 +41,7 @@ export const fieldResolvers = {
   },
   EyesFront: {
     speakers: parent => {
-      dlog('speakers');
+      dlog('EyesFront speakers');
 
       return parent.speakers.map(s => ({
         id: s,

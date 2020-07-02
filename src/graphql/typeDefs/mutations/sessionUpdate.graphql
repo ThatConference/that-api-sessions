@@ -1,6 +1,8 @@
 type SessionUpdate {
   "Depricated update session method, prior to session type updates for back compatability"
-  update(session: SessionUpdateInput!): MySession @auth(requires: "sessions")
+  update(session: SessionUpdateInput!): MySession
+    @auth(requires: "sessions")
+    @deprecated(reason: "use specific session type update instead")
 
   "Update for an OpenSpace type session"
   openSpace(openspace: OpenSpaceUpdateInput!): OpenSpace!

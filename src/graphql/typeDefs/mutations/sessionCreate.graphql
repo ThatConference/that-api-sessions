@@ -1,6 +1,8 @@
 type SessionCreate {
-  "Depricated create session method, prior to session type creates for back compatability"
-  create(session: SessionCreateInput!): MySession! @auth(requires: "sessions")
+  "Deprecated create session method, prior to session-type creates for back compatability"
+  create(session: SessionCreateInput!): MySession!
+    @auth(requires: "sessions")
+    @deprecated(reason: "use specific session type create instead")
 
   "Creates an OpenSpace type session"
   openSpace(openspace: OpenSpaceCreateInput!): OpenSpace!

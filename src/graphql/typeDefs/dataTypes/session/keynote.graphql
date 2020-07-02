@@ -5,7 +5,7 @@ type Keynote implements EyesFront & Base @key(fields: "id") {
   title: String!
   shortDescription: String!
   primaryCategory: SessionCategory
-  speakers: [Profile]
+  speakers: [PublicProfile]
 
   type: SessionType
   status: Status
