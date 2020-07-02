@@ -29,7 +29,6 @@ type MySession @key(fields: "id") {
   isRecored: Boolean
 
   status: Status
-  schedule: Schedule
 
   rating: [Rating]
   createdAt: Date!

@@ -8,4 +8,8 @@ type AnonymizedSession @key(fields: "id") {
   type: SessionType
   category: Category
   slug: Slug!
+  startTime: Date
+  location: String
+
+  tags: [String]
 }
