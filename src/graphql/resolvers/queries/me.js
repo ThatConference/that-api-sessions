@@ -29,18 +29,4 @@ export const fieldResolvers = {
       return sessionStore(firestore).findMy({ user });
     },
   },
-  MyQuery: {
-    all: (_, __, { dataSources: { firestore }, user }) => {
-      dlog('my all called');
-      return sessionStore(firestore).findMy({ user });
-    },
-    session: (_, { id }, { dataSources: { firestore }, user }) => {
-      dlog('my session called');
-
-      return sessionStore(firestore).findMySession({
-        user,
-        sessionId: id,
-      });
-    },
-  },
 };
