@@ -26,7 +26,10 @@ type AcceptedSession @key(fields: "id") {
   isRecored: Boolean
 
   status: Status
-  schedule: Schedule
+  startTime: Date
+  location: String
+
+  tags: [String]
 
   rating: [Rating]
   lastUpdatedAt: Date!

@@ -4,6 +4,10 @@ input KeynoteCreateInput {
   longDescription: String
 
   durationInMinutes: Int
+  startTime: Date
+  location: String
+  tags: [String]
+
   targetAudience: [TargetAudience]
   whyAreYou: String
   otherComments: String
@@ -31,6 +35,10 @@ input KeynoteUpdateInput {
 
   type: SessionType
   durationInMinutes: Int
+  startTime: Date
+  location: String
+  tags: [String]
+
   targetAudience: [TargetAudience]
   whyAreYou: String
   otherComments: String

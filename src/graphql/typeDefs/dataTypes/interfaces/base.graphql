@@ -21,8 +21,13 @@ interface Base {
   status: Status
   "full duriation of session in munutes"
   durationInMinutes: Int
+  "starting time of this session"
+  startTime: Date
+  "location of session, physical or virtual"
+  location: String
 
-  schedule: Schedule
+  "tags to describe session"
+  tags: [String]
 
   "date time session created"
   createdAt: Date!

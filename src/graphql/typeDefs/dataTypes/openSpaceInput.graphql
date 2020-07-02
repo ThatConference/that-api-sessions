@@ -3,6 +3,9 @@ input OpenSpaceCreateInput {
   shortDescription: String!
 
   durationInMinutes: Int
+  startTime: Date
+  location: String
+  tags: [String]
 
   primaryCategory: SessionCategory
 
@@ -15,6 +18,9 @@ input OpenSpaceUpdateInput {
 
   type: SessionType
   durationInMinutes: Int
+  startTime: Date
+  location: String
+  tags: [String]
 
   primaryCategory: SessionCategory
 
