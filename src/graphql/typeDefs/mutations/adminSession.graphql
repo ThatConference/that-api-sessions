@@ -1,0 +1,4 @@
+type AdminSessionMutation {
+  update: AdminSessionUpdate @auth(requires: "admin")
+  cancel: ID @auth(requires: "admin")
+}

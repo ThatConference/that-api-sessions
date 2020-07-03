@@ -11,10 +11,6 @@ export const fieldResolvers = {
       dlog('create called');
       return { eventId };
     },
-    delete: (parent, { id }, { dataSources: { firestore } }) => {
-      dlog('delete called');
-      throw new Error('not implemented yet');
-    },
 
     session: (parent, { id }) => {
       dlog('session called');
@@ -28,6 +24,11 @@ export const fieldResolvers = {
       if (!isVotingOpen) throw new Error('voting is currently closed');
 
       return { eventId };
+    },
+
+    admin: () => {
+      dlog('admin called');
+      return {};
     },
   },
 };

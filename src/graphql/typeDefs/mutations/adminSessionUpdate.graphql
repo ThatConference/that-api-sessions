@@ -1,0 +1,18 @@
+type AdminSessionUpdate {
+  "Update for an OpenSpace type session"
+  openSpace(openspace: OpenSpaceAdminUpdateInput!): OpenSpace
+    @auth(requires: "admin")
+
+  "Update for a Keynote type session"
+  keynote(keynote: KeynoteAdminUpdateInput!): Keynote @auth(requires: "admin")
+
+  "Update for a Regular type session"
+  regular(regular: RegularAdminUpdateInput!): Regular @auth(requires: "admin")
+
+  "Update for a Workshop type session"
+  workshop(workshop: WorkshopAdminUpdateInput!): Workshop
+    @auth(requires: "admin")
+
+  "Update for a Panel type session"
+  panel(panel: PanelAdminUpdateInput!): Panel @auth(requires: "admin")
+}

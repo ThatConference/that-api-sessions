@@ -1,0 +1,5 @@
+type AdminSessionsMutation {
+  create(eventId: ID!): AdminSessionCreate @auth(requires: "admin")
+  delete(id: ID!): ID @auth(requires: "admin")
+  session(id: ID!): AdminSessionMutation @auth(requires: "admin")
+}

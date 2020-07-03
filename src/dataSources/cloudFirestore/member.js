@@ -6,6 +6,7 @@ const member = dbInstance => {
   const collectionName = 'members';
 
   async function find(memberId) {
+    dlog('call find on %s', memberId);
     const docRef = await dbInstance.doc(`${collectionName}/${memberId}`).get();
 
     const result = null;

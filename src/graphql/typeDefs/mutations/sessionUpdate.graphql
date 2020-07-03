@@ -1,3 +1,4 @@
+"Update session for user making request. User must be in speakers list"
 type SessionUpdate {
   "Depricated update session method, prior to session type updates for back compatability"
   update(session: SessionUpdateInput!): MySession

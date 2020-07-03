@@ -1,0 +1,59 @@
+input KeynoteAdminCreateInput {
+  title: String!
+  shortDescription: String
+  longDescription: String
+
+  durationInMinutes: Int
+  startTime: Date
+  location: String
+  tags: [String]
+
+  targetAudience: [TargetAudience]
+  whyAreYou: String
+  otherComments: String
+
+  agenda: String
+  takeaways: [String]
+  mentorship: Mentorship
+
+  category: Category
+  primaryCategory: SessionCategory
+  secondaryCategory: [SessionCategory]
+
+  supportingArtifacts: [ArtifactInput]
+
+  canRecord: Boolean
+  status: Status
+  speakers: [ID!]!
+}
+
+input KeynoteAdminUpdateInput {
+  speakers: [ID!]
+
+  title: String
+  shortDescription: String
+  longDescription: String
+
+  type: SessionType
+  durationInMinutes: Int
+  startTime: Date
+  location: String
+  tags: [String]
+
+  targetAudience: [TargetAudience]
+  whyAreYou: String
+  otherComments: String
+
+  agenda: String
+  takeaways: [String]
+  mentorship: Mentorship
+
+  category: Category
+  primaryCategory: SessionCategory
+  secondaryCategory: [SessionCategory]
+
+  supportingArtifacts: [ArtifactInput]
+
+  canRecord: Boolean
+  status: Status
+}
