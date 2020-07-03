@@ -21,13 +21,13 @@ async function updateSession(sessionId, user, session, firestore) {
 }
 
 function sendUserEvent(
-  orginalSession,
+  originalSession,
   updatedSession,
   userResults,
   userEvents,
 ) {
   if (
-    orginalSession.status === 'DRAFT' &&
+    originalSession.status === 'DRAFT' &&
     updatedSession.status === 'SUBMITTED'
   ) {
     userEvents.emit('newSessionCreated', {
@@ -54,7 +54,7 @@ export const fieldResolvers = {
       dlog('update called', sessionId);
 
       // we need the original before we update it.
-      const orginalSession = await sessionStore(firestore).findMySession({
+      const originalSession = await sessionStore(firestore).findMySession({
         user,
         sessionId,
       });
@@ -70,7 +70,7 @@ export const fieldResolvers = {
       ]);
 
       if (
-        orginalSession.status === 'DRAFT' &&
+        originalSession.status === 'DRAFT' &&
         updatedSession.status === 'SUBMITTED'
       ) {
         userEvents.emit('newSessionCreated', {
@@ -95,7 +95,7 @@ export const fieldResolvers = {
       dlog('openSpace called');
 
       // we need the original before we update it.
-      const orginalSession = await sessionStore(firestore).findMySession({
+      const originalSession = await sessionStore(firestore).findMySession({
         user,
         sessionId,
       });
@@ -107,7 +107,7 @@ export const fieldResolvers = {
         firestore,
       );
 
-      sendUserEvent(orginalSession, updatedSession, userResults, userEvents);
+      sendUserEvent(originalSession, updatedSession, userResults, userEvents);
 
       return updatedSession;
     },
@@ -125,7 +125,7 @@ export const fieldResolvers = {
       dlog('keynote called');
 
       // we need the original before we update it.
-      const orginalSession = await sessionStore(firestore).findMySession({
+      const originalSession = await sessionStore(firestore).findMySession({
         user,
         sessionId,
       });
@@ -137,7 +137,7 @@ export const fieldResolvers = {
         firestore,
       );
 
-      sendUserEvent(orginalSession, updatedSession, userResults, userEvents);
+      sendUserEvent(originalSession, updatedSession, userResults, userEvents);
 
       return updatedSession;
     },
@@ -155,7 +155,7 @@ export const fieldResolvers = {
       dlog('regular called');
 
       // we need the original before we update it.
-      const orginalSession = await sessionStore(firestore).findMySession({
+      const originalSession = await sessionStore(firestore).findMySession({
         user,
         sessionId,
       });
@@ -167,7 +167,7 @@ export const fieldResolvers = {
         firestore,
       );
 
-      sendUserEvent(orginalSession, updatedSession, userResults, userEvents);
+      sendUserEvent(originalSession, updatedSession, userResults, userEvents);
 
       return updatedSession;
     },
@@ -185,7 +185,7 @@ export const fieldResolvers = {
       dlog('panel called');
 
       // we need the original before we update it.
-      const orginalSession = await sessionStore(firestore).findMySession({
+      const originalSession = await sessionStore(firestore).findMySession({
         user,
         sessionId,
       });
@@ -197,7 +197,7 @@ export const fieldResolvers = {
         firestore,
       );
 
-      sendUserEvent(orginalSession, updatedSession, userResults, userEvents);
+      sendUserEvent(originalSession, updatedSession, userResults, userEvents);
 
       return updatedSession;
     },
@@ -215,7 +215,7 @@ export const fieldResolvers = {
       dlog('workshop called');
 
       // we need the original before we update it.
-      const orginalSession = await sessionStore(firestore).findMySession({
+      const originalSession = await sessionStore(firestore).findMySession({
         user,
         sessionId,
       });
@@ -227,7 +227,7 @@ export const fieldResolvers = {
         firestore,
       );
 
-      sendUserEvent(orginalSession, updatedSession, userResults, userEvents);
+      sendUserEvent(originalSession, updatedSession, userResults, userEvents);
 
       return updatedSession;
     },

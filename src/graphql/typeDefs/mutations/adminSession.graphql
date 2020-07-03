@@ -1,4 +1,8 @@
+"admin mutation on a session"
 type AdminSessionMutation {
+  "update a session"
   update: AdminSessionUpdate @auth(requires: "admin")
+
+  "cancel a session"
   cancel: ID @auth(requires: "admin")
 }

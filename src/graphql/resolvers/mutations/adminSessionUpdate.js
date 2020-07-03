@@ -24,9 +24,13 @@ function sendUserEvent(
   userResults,
   userEvents,
 ) {
+  dlog(
+    'sendUserEvent original status: %s, updated status: %s',
+    originalSession.status,
+    updatedSession.status,
+  );
   let eventTitle = '';
-  dlog('sendUserEvent%O', originalSession);
-  dlog('sendUserEvent %O', updateSession);
+
   if (
     originalSession.status === 'DRAFT' &&
     updatedSession.status === 'SUBMITTED'
