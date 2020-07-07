@@ -25,10 +25,29 @@ export const fieldResolvers = {
 
       return { eventId, isVotingOpen };
     },
-    favorites: async (_, { eventId }, { dataSources: { firestore }, user }) => {
+    favorites: async (
+      _,
+      { eventId },
+      { dataSources: { firestore, sessionLoader }, user },
+    ) => {
       dlog('my favorite sessions called');
 
-      return favoriteStore(firestore).findFavoritesForMember(eventId, user);
+      const favorites = await favoriteStore(firestore).findFavoritesForMember(
+        eventId,
+        user,
+      );
+
+      const favoriteSessions = await Promise.all(
+        favorites.map(fav => {
+          dlog('fav %O', fav);
+
+          return sessionLoader.load(fav.id);
+        }),
+      ).then(aa => aa);
+
+      dlog('favoriteSesions: %O', favoriteSessions);
+
+      return [];
     },
     submitted: async (_, __, { dataSources: { firestore }, user }) => {
       dlog('submitted called');

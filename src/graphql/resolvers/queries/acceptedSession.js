@@ -26,5 +26,7 @@ export const fieldResolvers = {
         id: s,
       }));
     },
+    favoritedBy: () => {},
+    favoriteCount: () => {},
   },
 };

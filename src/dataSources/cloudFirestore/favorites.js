@@ -16,9 +16,14 @@ function favorites(dbInstance) {
 
     const { docs } = await favoriteCollection
       .where('memberId', '==', user.sub)
-      .where('eventId', '==', eventId);
-    return {};
+      .where('eventId', '==', eventId)
+      .get();
+    dlog('favorites docs count %d', docs.length);
+
+    return docs.map(r => ({ id: r.id, ...r.data() }));
   }
+
+  return { findFavoritesForMember };
 }
 
 export default favorites;

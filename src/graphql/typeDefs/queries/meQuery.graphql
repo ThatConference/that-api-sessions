@@ -9,5 +9,5 @@ type MeQuery {
 
   submitted: [TheSessions] @auth(requires: "sessions")
 
-  favorites(eventId: ID!): [AcceptedSession!] @auth(requires: "sessions")
+  favorites(eventId: ID!): [AcceptedSession] @auth(requires: "sessions")
 }
