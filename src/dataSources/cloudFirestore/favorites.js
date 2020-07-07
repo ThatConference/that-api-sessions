@@ -11,11 +11,13 @@ function favorites(dbInstance) {
   const favoriteCollectionName = 'favorites';
   const favoriteCollection = dbInstance.collection(favoriteCollectionName);
 
-  async function findFavoritesForMember(eventId, memberId) {
-    dlog('findFavoritesForMember() %s, %s', eventId, memberId);
+  async function findFavoritesForMember(eventId, user) {
+    dlog('findFavoritesForMember() %s, %s', eventId, user.sub);
 
-    const { docs } = await favoriteCollection.where('memberId', '==', memberId);
-    return [];
+    const { docs } = await favoriteCollection
+      .where('memberId', '==', user.sub)
+      .where('eventId', '==', eventId);
+    return {};
   }
 }
 
