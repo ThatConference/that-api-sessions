@@ -28,5 +28,11 @@ export const fieldResolvers = {
     },
     favoritedBy: () => {},
     favoriteCount: () => {},
+    tags: parent => {
+      dlog('tags');
+
+      if (!parent.tags) return [];
+      return parent.tags;
+    },
   },
 };
