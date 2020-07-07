@@ -13,14 +13,11 @@ export const fieldResolvers = {
 
       return null;
     },
+    tags: parent => {
+      dlog('tags');
 
-    speakers: parent => {
-      dlog('speakers');
-
-      return parent.speakers.map(s => ({
-        __typename: 'PublicProfile',
-        id: s,
-      }));
+      if (!parent.tags) return [];
+      return parent.tags;
     },
   },
 };

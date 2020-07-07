@@ -30,22 +30,4 @@ export const fieldResolvers = {
       return result;
     },
   },
-  Base: {
-    speakers: parent => {
-      dlog('Base speakers');
-
-      return parent.speakers.map(s => ({
-        id: s,
-      }));
-    },
-  },
-  EyesFront: {
-    speakers: parent => {
-      dlog('EyesFront speakers');
-
-      return parent.speakers.map(s => ({
-        id: s,
-      }));
-    },
-  },
 };

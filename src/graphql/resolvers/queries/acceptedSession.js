@@ -26,5 +26,11 @@ export const fieldResolvers = {
         id: s,
       }));
     },
+    tags: parent => {
+      dlog('tags');
+
+      if (!parent.tags) return [];
+      return parent.tags;
+    },
   },
 };
