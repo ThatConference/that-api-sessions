@@ -30,6 +30,8 @@ type AcceptedSession @key(fields: "id") {
   location: String
 
   tags: [String]
+  favoritedBy: [PublicProfile]
+  favoriteCount: Int
 
   rating: [Rating]
   lastUpdatedAt: Date!

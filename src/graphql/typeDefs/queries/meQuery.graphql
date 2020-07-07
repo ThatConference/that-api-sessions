@@ -8,4 +8,6 @@ type MeQuery {
   voting(eventId: ID!): VotingQuery @auth(requires: "sessions")
 
   submitted: [TheSessions] @auth(requires: "sessions")
+
+  favorites(eventId: ID!): [AcceptedSession!] @auth(requires: "sessions")
 }

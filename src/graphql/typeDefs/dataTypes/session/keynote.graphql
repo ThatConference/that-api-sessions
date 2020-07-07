@@ -15,6 +15,11 @@ type Keynote implements EyesFront & Base @key(fields: "id") {
 
   tags: [String]
 
+  "members with public profiles who favorited session"
+  favoritedBy: [PublicProfile]
+  "total number of members who favorited, includes non-public in count too"
+  favoriteCount: Int
+
   createdAt: Date!
   lastUpdatedAt: Date!
 

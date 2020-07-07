@@ -1,0 +1,3 @@
+input FavoriteInput {
+  sessionId: ID!
+}
