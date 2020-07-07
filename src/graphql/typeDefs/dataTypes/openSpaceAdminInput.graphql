@@ -1,0 +1,30 @@
+input OpenSpaceAdminCreateInput {
+  title: String!
+  shortDescription: String!
+
+  durationInMinutes: Int
+  startTime: Date
+  location: String
+  tags: [String]
+
+  primaryCategory: SessionCategory
+
+  status: Status
+  speakers: [ID!]!
+}
+
+input OpenSpaceAdminUpdateInput {
+  title: String
+  shortDescription: String
+
+  type: SessionType
+  durationInMinutes: Int
+  startTime: Date
+  location: String
+  tags: [String]
+
+  primaryCategory: SessionCategory
+
+  status: Status
+  speakers: [ID!]
+}

@@ -1,15 +1,13 @@
-/* eslint-disable import/prefer-default-export */
 import debug from 'debug';
 
 import sessionStore from '../../../dataSources/cloudFirestore/session';
 import memberStore from '../../../dataSources/cloudFirestore/member';
 
-const dlog = debug('that:api:sessions:mutation:SessionUpdate');
+const dlog = debug('that:api:sessions:mutation:AdminSessionUpdate');
 
 async function updateSession(sessionId, user, session, firestore) {
   const [updatedSession, userResults] = await Promise.all([
-    sessionStore(firestore).update({
-      user,
+    sessionStore(firestore).adminUpdate({
       sessionId,
       session,
     }),
@@ -26,61 +24,30 @@ function sendUserEvent(
   userResults,
   userEvents,
 ) {
+  dlog(
+    'sendUserEvent original status: %s, updated status: %s',
+    originalSession.status,
+    updatedSession.status,
+  );
+  let eventTitle = '';
+
   if (
     originalSession.status === 'DRAFT' &&
     updatedSession.status === 'SUBMITTED'
   ) {
-    userEvents.emit('newSessionCreated', {
-      user: userResults,
-      session: updatedSession,
-    });
+    eventTitle = 'newSessionCreated';
+  } else {
+    eventTitle = 'sessionUpdated';
   }
+
+  userEvents.emit(eventTitle, {
+    user: userResults,
+    session: updatedSession,
+  });
 }
 
 export const fieldResolvers = {
-  SessionUpdate: {
-    update: async (
-      { sessionId },
-      { session },
-      {
-        dataSources: {
-          firestore,
-          events: { userEvents },
-        },
-        user,
-      },
-    ) => {
-      dlog('TCL: events %o', userEvents);
-      dlog('update called', sessionId);
-
-      // we need the original before we update it.
-      const originalSession = await sessionStore(firestore).findMySession({
-        user,
-        sessionId,
-      });
-
-      const [updatedSession, userResults] = await Promise.all([
-        sessionStore(firestore).update({
-          user,
-          sessionId,
-          session,
-        }),
-
-        memberStore(firestore).find(user.sub),
-      ]);
-
-      if (
-        originalSession.status === 'DRAFT' &&
-        updatedSession.status === 'SUBMITTED'
-      ) {
-        userEvents.emit('newSessionCreated', {
-          user: userResults,
-          session: updatedSession,
-        });
-      }
-
-      return updatedSession;
-    },
+  AdminSessionUpdate: {
     openSpace: async (
       { sessionId },
       { openspace },
@@ -95,10 +62,9 @@ export const fieldResolvers = {
       dlog('openSpace called');
 
       // we need the original before we update it.
-      const originalSession = await sessionStore(firestore).findMySession({
-        user,
+      const originalSession = await sessionStore(firestore).findSession(
         sessionId,
-      });
+      );
 
       const { updatedSession, userResults } = await updateSession(
         sessionId,
@@ -125,10 +91,9 @@ export const fieldResolvers = {
       dlog('keynote called');
 
       // we need the original before we update it.
-      const originalSession = await sessionStore(firestore).findMySession({
-        user,
+      const originalSession = await sessionStore(firestore).findSession(
         sessionId,
-      });
+      );
 
       const { updatedSession, userResults } = await updateSession(
         sessionId,
@@ -155,10 +120,9 @@ export const fieldResolvers = {
       dlog('regular called');
 
       // we need the original before we update it.
-      const originalSession = await sessionStore(firestore).findMySession({
-        user,
+      const originalSession = await sessionStore(firestore).findSession(
         sessionId,
-      });
+      );
 
       const { updatedSession, userResults } = await updateSession(
         sessionId,
@@ -185,10 +149,9 @@ export const fieldResolvers = {
       dlog('panel called');
 
       // we need the original before we update it.
-      const originalSession = await sessionStore(firestore).findMySession({
-        user,
+      const originalSession = await sessionStore(firestore).findSession(
         sessionId,
-      });
+      );
 
       const { updatedSession, userResults } = await updateSession(
         sessionId,
@@ -215,10 +178,9 @@ export const fieldResolvers = {
       dlog('workshop called');
 
       // we need the original before we update it.
-      const originalSession = await sessionStore(firestore).findMySession({
-        user,
+      const originalSession = await sessionStore(firestore).findSession(
         sessionId,
-      });
+      );
 
       const { updatedSession, userResults } = await updateSession(
         sessionId,

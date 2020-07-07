@@ -1,4 +1,4 @@
+"session mutations scoped to user making request"
 type SessionMutation {
   update: SessionUpdate @auth(requires: "sessions")
-  cancel: ID @auth(requires: "admin")
 }

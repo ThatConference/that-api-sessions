@@ -1,0 +1,10 @@
+type AdminSessionsMutation {
+  "Create a new session"
+  create(eventId: ID!): AdminSessionCreate @auth(requires: "admin")
+
+  "Delete a session"
+  delete(id: ID!): ID @auth(requires: "admin")
+
+  "specific session mutations"
+  session(id: ID!): AdminSessionMutation @auth(requires: "admin")
+}

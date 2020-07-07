@@ -110,6 +110,20 @@ function sessions(dbInstance) {
     return result;
   }
 
+  async function findSession(sessionId) {
+    const docRef = await dbInstance.doc(`${collectionName}/${sessionId}`).get();
+    dlog('find session %s, is found: %o', sessionId, docRef.exists);
+
+    if (docRef.exists) {
+      return {
+        id: docRef.id,
+        ...docRef.data(),
+      };
+    }
+
+    return null;
+  }
+
   async function batchFindSessions(sessionIds) {
     dlog('batchFindSessions %o', sessionIds);
 
@@ -158,13 +172,57 @@ function sessions(dbInstance) {
       .then(snap => snap.size);
   }
 
+  async function adminCreate({ eventId, session }) {
+    dlog('creating as ADMIN session %o', { eventId, session });
+
+    const scrubbedSession = scrubSession(session, true);
+    scrubbedSession.eventId = eventId;
+    const slug = await genUniqueSlug(eventId, scrubbedSession.title);
+    if (slug) {
+      scrubbedSession.slug = slug;
+    }
+    dlog('saving session %o', scrubbedSession);
+
+    const newDocument = await sessionsCol.add(scrubbedSession);
+    dlog(`created new session: ${newDocument.id}`);
+
+    if (!slug) {
+      dlog(`saving id, ${newDocument.id} as slug`);
+      const docRef = dbInstance.doc(`${collectionName}/${newDocument.id}`);
+      await docRef.update({ slug: newDocument.id });
+      scrubbedSession.slug = newDocument.id;
+    }
+    return {
+      id: newDocument.id,
+      ...scrubbedSession,
+    };
+  }
+
+  async function adminUpdate({ sessionId, session }) {
+    dlog(`updating session ${sessionId} as ADMIN with %o`, session);
+    const docRef = dbInstance.doc(`${collectionName}/${sessionId}`);
+    const scrubbedSession = scrubSession(session);
+    await docRef.update(scrubbedSession);
+
+    const updatedDoc = await docRef.get();
+    dlog(`updated session: ${sessionId}`);
+
+    return {
+      id: sessionId,
+      ...updatedDoc.data(),
+    };
+  }
+
   return {
     create,
     update,
     findMy,
     findMySession,
+    findSession,
     batchFindSessions,
     getTotalProfessionalSubmittedForEvent,
+    adminUpdate,
+    adminCreate,
   };
 }
 

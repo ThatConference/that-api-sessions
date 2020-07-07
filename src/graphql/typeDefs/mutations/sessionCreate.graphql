@@ -1,3 +1,4 @@
+"Create session for user making request. User listed as speaker"
 type SessionCreate {
   "Deprecated create session method, prior to session-type creates for back compatability"
   create(session: SessionCreateInput!): MySession!
