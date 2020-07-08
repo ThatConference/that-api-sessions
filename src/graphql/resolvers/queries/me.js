@@ -2,6 +2,7 @@ import debug from 'debug';
 
 import sessionStore from '../../../dataSources/cloudFirestore/session';
 import eventStore from '../../../dataSources/cloudFirestore/event';
+import favoriteStore from '../../../dataSources/cloudFirestore/favorite';
 
 const dlog = debug('that:api:sessions:me');
 
@@ -24,6 +25,33 @@ export const fieldResolvers = {
 
       return { eventId, isVotingOpen };
     },
+    favorites: async (
+      _,
+      { eventId },
+      { dataSources: { firestore, sessionLoader }, user },
+    ) => {
+      dlog('my favorite sessions called');
+
+      const favorites = await favoriteStore(firestore).findFavoritesForMember(
+        eventId,
+        user,
+      );
+      dlog('total favorites returned: %d', favorites.length);
+
+      const favoriteSessions = await Promise.all(
+        favorites.map(fav => sessionLoader.load(fav.sessionId)),
+      ).then(fs =>
+        fs
+          .filter(s => s != null)
+          .filter(s =>
+            ['ACCEPTED', 'SCHEDULED', 'CANCELLED'].includes(s.status),
+          ),
+      );
+      dlog('favoriteSessions count: %d', favoriteSessions.length);
+
+      return favoriteSessions;
+    },
+
     submitted: async (_, __, { dataSources: { firestore }, user }) => {
       dlog('submitted called');
       return sessionStore(firestore).findMy({ user });

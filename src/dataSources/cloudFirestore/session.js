@@ -7,7 +7,7 @@ const dlog = debug('that:api:sessions:datasources:firebase');
 function scrubSession(session, isNew) {
   const scrubbedSession = session;
 
-  const modifiedAt = new Date().toISOString();
+  const modifiedAt = new Date();
   if (isNew) scrubbedSession.createdAt = modifiedAt;
 
   scrubbedSession.lastUpdatedAt = modifiedAt;

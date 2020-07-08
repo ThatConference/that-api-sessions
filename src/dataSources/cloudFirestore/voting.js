@@ -4,7 +4,7 @@ import _ from 'lodash';
 const dlog = debug('that:api:sessions:datasources:firebase:voting');
 
 function voting(dbInstance) {
-  dlog('sessions data source created');
+  dlog('voting data source created');
 
   const collectionName = 'sessions';
   const sessionCollection = dbInstance.collection(collectionName);

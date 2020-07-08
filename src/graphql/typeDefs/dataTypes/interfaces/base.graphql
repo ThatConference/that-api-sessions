@@ -29,6 +29,11 @@ interface Base {
   "tags to describe session"
   tags: [String]
 
+  "members with public profiles who favorited session"
+  favoritedBy: [PublicProfile]
+  "total number of members who favorited, includes non-public in count too"
+  favoriteCount: Int
+
   "date time session created"
   createdAt: Date!
   "date time session last updated"

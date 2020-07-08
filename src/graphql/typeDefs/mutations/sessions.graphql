@@ -5,8 +5,11 @@ type SessionsMutation {
   "Session mutations scoped for user making request"
   session(id: ID!): SessionMutation @auth(requires: "sessions")
 
-  "Session voting mutations scoped for use making request"
+  "Session voting mutations scoped for user making request"
   voting(eventId: ID!): VotingMutation @auth(requires: "sessions")
+
+  "Session favoriting mutations scoped for user making request"
+  favoriting(eventId: ID!): FavoritingMutation @auth(requires: "sessions")
 
   "Admin mutations"
   admin: AdminSessionsMutation @auth(requires: "admin")

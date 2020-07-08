@@ -1,0 +1,4 @@
+type FavoritingMutation {
+  "Toggles a favorite setting on a session for a member"
+  toggle(sessionId: ID!): AcceptedSession @auth(requires: "sessions")
+}
