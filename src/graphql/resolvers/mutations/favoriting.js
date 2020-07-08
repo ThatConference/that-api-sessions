@@ -29,6 +29,7 @@ export const fieldResolvers = {
 
         const favSession = await sessionStore(firestore).findSession(sessionId);
         if (
+          favSession &&
           ['ACCEPTED', 'SCHEDULED', 'CANCELLED'].includes(favSession.status)
         ) {
           const newFav = await favoriteStore(firestore).addSessionFavorite(
