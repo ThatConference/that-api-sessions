@@ -10,13 +10,13 @@ export const fieldResolvers = {
   FavoritingMutation: {
     toggle: async (
       { eventId },
-      { favorite },
+      { sessionId },
       { dataSources: { firestore }, user },
     ) => {
-      dlog('toggle favorite %o', favorite);
+      dlog('toggle favorite %s', sessionId);
       // see if favorite exists
       const fav = await favoriteStore(firestore).findSessionForMember(
-        favorite.sessionId,
+        sessionId,
         user,
       );
 
@@ -28,7 +28,7 @@ export const fieldResolvers = {
         dlog('favorite not exist, adding new');
         const newFav = await favoriteStore(firestore).addSessionFavorite(
           eventId,
-          favorite.sessionId,
+          sessionId,
           user,
         );
         dlog('new favorite %O', newFav);
@@ -36,10 +36,10 @@ export const fieldResolvers = {
           throw new Error(
             'New favorite not created: eventId %s, sessionId %s, memberId %s',
             eventId,
-            favorite.sessionId,
+            sessionId,
             user.sub,
           );
-        return sessionStore(firestore).findSession(favorite.sessionId);
+        return sessionStore(firestore).findSession(sessionId);
       }
 
       return null;
