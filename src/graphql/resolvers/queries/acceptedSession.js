@@ -1,4 +1,6 @@
 import debug from 'debug';
+import favoriteStore from '../../../dataSources/cloudFirestore/favorite';
+import favoritedByFunc from '../shared/favoritedBy';
 
 const dlog = debug('that:api:sessions:query:AcceptedSession');
 
@@ -26,13 +28,19 @@ export const fieldResolvers = {
         id: s,
       }));
     },
-    favoritedBy: () => {},
-    favoriteCount: () => {},
     tags: parent => {
       dlog('tags');
 
       if (!parent.tags) return [];
       return parent.tags;
+    },
+    favoritedBy: async ({ id }, __, { dataSources: { firestore } }) =>
+      favoritedByFunc(id, firestore),
+
+    favoriteCount: async ({ id }, __, { dataSources: { firestore } }) => {
+      dlog('favoriteCount');
+
+      return favoriteStore(firestore).getSessionFavoriteCount(id);
     },
   },
 };
