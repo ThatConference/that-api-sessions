@@ -34,10 +34,10 @@ export const fieldResolvers = {
       if (!parent.tags) return [];
       return parent.tags;
     },
-    favoritedBy: async ({ id }, __, { dataSources: { firestore } }) =>
+    favoritedBy: ({ id }, __, { dataSources: { firestore } }) =>
       favoritedByFunc(id, firestore),
 
-    favoriteCount: async ({ id }, __, { dataSources: { firestore } }) => {
+    favoriteCount: ({ id }, __, { dataSources: { firestore } }) => {
       dlog('favoriteCount');
 
       return favoriteStore(firestore).getSessionFavoriteCount(id);

@@ -76,10 +76,9 @@ function favorites(dbInstance) {
     };
   }
 
-  async function removeFavorite(id) {
+  function removeFavorite(id) {
     dlog('delete favorite %s', id);
-    const res = await favoriteCollection.doc(id).delete();
-    return res;
+    return favoriteCollection.doc(id).delete();
   }
 
   return {
