@@ -14,6 +14,7 @@ type Panel implements EyesFront & Base @key(fields: "id") {
   location: String
 
   tags: [String]
+  supportingArtificats: [Artifact]
   "members with public profiles who favorited session"
   favoritedBy: [PublicProfile]
   "total number of members who favorited, includes non-public in count too"
@@ -27,7 +28,6 @@ type Panel implements EyesFront & Base @key(fields: "id") {
   whyAreYou: String
   otherComments: String
   takeaways: [String]
-  supportingArtificats: [Artifact]
   mentorship: Mentorship
   secondaryCategory: [SessionCategory]
   canRecord: Boolean
