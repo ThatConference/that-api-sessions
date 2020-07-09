@@ -10,7 +10,6 @@ interface EyesFront {
   "expected takeaways for attending this session"
   takeaways: [String]
 
-  supportingArtificats: [Artifact]
   "does the speaker(s) require mentorship on this session?"
   mentorship: Mentorship
   "secondary categories for the session"
