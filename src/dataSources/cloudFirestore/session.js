@@ -180,6 +180,10 @@ function sessions(dbInstance) {
       user.sub,
     );
 
+    dbInstance
+      .doc(`${collectionName}/${sessionId}`)
+      .set({ join: 1 }, { merge: true });
+
     const docRef = dbInstance.doc(
       `${collectionName}/${sessionId}/${attendedSubColName}/${user.sub}`,
     );
