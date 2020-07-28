@@ -20,6 +20,7 @@ function sessions(dbInstance) {
 
   const collectionName = 'sessions';
   const sessionsCol = dbInstance.collection(collectionName);
+  const attendedSubColName = 'inAttendance';
 
   async function genUniqueSlug(eventId, title) {
     dlog('generate unique slug for title %s in event %s', title, eventId);
@@ -172,6 +173,23 @@ function sessions(dbInstance) {
       .then(snap => snap.size);
   }
 
+  async function addInAttendance(sessionId, user) {
+    dlog(
+      'addInAttendance called on session %s for user %s',
+      sessionId,
+      user.sub,
+    );
+
+    const docRef = dbInstance.doc(
+      `${collectionName}/${sessionId}/${attendedSubColName}/${user.sub}`,
+    );
+
+    return docRef
+      .set({ attended: true })
+      .then(() => true)
+      .catch(() => false);
+  }
+
   async function adminCreate({ eventId, session }) {
     dlog('creating as ADMIN session %o', { eventId, session });
 
@@ -220,6 +238,7 @@ function sessions(dbInstance) {
     findMySession,
     findSession,
     batchFindSessions,
+    addInAttendance,
     getTotalProfessionalSubmittedForEvent,
     adminUpdate,
     adminCreate,
