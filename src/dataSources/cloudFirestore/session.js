@@ -3,6 +3,7 @@ import slugify from 'slugify';
 import * as Sentry from '@sentry/node';
 
 const dlog = debug('that:api:sessions:datasources:firebase');
+const approvedSessionStatuses = ['ACCEPTED', 'SCHEDULED', 'CANCELLED'];
 
 function scrubSession(session, isNew) {
   const scrubbedSession = session;
@@ -125,6 +126,17 @@ function sessions(dbInstance) {
     return null;
   }
 
+  async function findAcceptedSession(sessionId) {
+    dlog('find accepted session %s', sessionId);
+    const session = await findSession(sessionId);
+    dlog('session returned', session);
+    if (session && approvedSessionStatuses.includes(session.status)) {
+      return session;
+    }
+
+    return null;
+  }
+
   async function batchFindSessions(sessionIds) {
     dlog('batchFindSessions %o', sessionIds);
 
@@ -241,6 +253,7 @@ function sessions(dbInstance) {
     findMy,
     findMySession,
     findSession,
+    findAcceptedSession,
     batchFindSessions,
     addInAttendance,
     getTotalProfessionalSubmittedForEvent,

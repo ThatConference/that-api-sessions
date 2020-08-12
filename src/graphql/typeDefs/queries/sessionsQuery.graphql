@@ -1,4 +1,5 @@
 type SessionsQuery {
   "return the sessions associated to the logged in user"
   me: MeQuery @auth(requires: "sessions")
+  session(sessionId: ID!): AcceptedSession
 }
