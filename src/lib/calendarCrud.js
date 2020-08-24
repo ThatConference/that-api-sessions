@@ -47,10 +47,11 @@ function calendarCrud(credentials, calendarId) {
         dateTime: '',
       },
       id: makeEventId(session.id),
-      description: '',
-      summary: '',
-      location: '',
+      description: session.shortDescription,
+      summary: session.title,
+      location: 'Internet',
       visibility: 'public',
+      transparency: 'transparent',
       status: 'confirmed',
     };
 
