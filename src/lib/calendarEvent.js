@@ -53,7 +53,7 @@ function calendarEvent(credentials, calendarId) {
       id: makeEventId(session.id),
       description,
       summary: session.title,
-      location: 'Internet',
+      location: 'THAT.us',
       visibility: 'public',
       transparency: 'transparent',
       status: 'confirmed',
