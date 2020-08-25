@@ -4,7 +4,7 @@ import { google } from 'googleapis';
 import base32 from 'base32-encode';
 
 const dlog = debug('that:api:sessions:calendar');
-const salt = 'THATConference-salt';
+const salt = 'THAT-salt';
 //
 
 function calendarEvent(credentials, calendarId) {
@@ -41,9 +41,7 @@ function calendarEvent(credentials, calendarId) {
     const endTime = new Date(
       session.startTime.getTime() + 60000 * session.durationInMinutes,
     );
-    const description = `${session.shortDescription}
-    
-    Join at: https://that.us/session/${session.id}`;
+    const description = `${session.shortDescription}\n\nJoin at: https://that.us/sessions/${session.id}`;
 
     const payload = {
       start: {
