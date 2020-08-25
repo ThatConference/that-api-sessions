@@ -1,6 +1,7 @@
 import debug from 'debug';
 import slugify from 'slugify';
 import * as Sentry from '@sentry/node';
+import sessionDateForge from '../../lib/sessionDateForge';
 
 const dlog = debug('that:api:sessions:datasources:firebase');
 const approvedSessionStatuses = ['ACCEPTED', 'SCHEDULED', 'CANCELLED'];
@@ -70,10 +71,12 @@ function sessions(dbInstance) {
       await docRef.update({ slug: newDocument.id });
       scrubbedSession.slug = newDocument.id;
     }
-    return {
+    const result = {
       id: newDocument.id,
       ...scrubbedSession,
     };
+
+    return sessionDateForge(result);
   }
 
   async function findMy({ user }) {
@@ -84,10 +87,13 @@ function sessions(dbInstance) {
     let results = null;
 
     if (docSnapshot.size > 0) {
-      results = docSnapshot.docs.map(d => ({
-        id: d.id,
-        ...d.data(),
-      }));
+      results = docSnapshot.docs.map(d => {
+        const result = {
+          id: d.id,
+          ...d.data(),
+        };
+        return sessionDateForge(result);
+      });
     }
 
     return results;
@@ -109,21 +115,22 @@ function sessions(dbInstance) {
       }
     }
 
-    return result;
+    return sessionDateForge(result);
   }
 
   async function findSession(sessionId) {
     const docRef = await dbInstance.doc(`${collectionName}/${sessionId}`).get();
     dlog('find session %s, is found: %o', sessionId, docRef.exists);
+    let result = null;
 
     if (docRef.exists) {
-      return {
+      result = {
         id: docRef.id,
         ...docRef.data(),
       };
     }
 
-    return null;
+    return sessionDateForge(result);
   }
 
   async function findAcceptedSession(sessionId) {
@@ -147,10 +154,13 @@ function sessions(dbInstance) {
     return Promise.all(docRefs.map(d => d.get())).then(res =>
       res
         .filter(r => r.exists)
-        .map(r => ({
-          id: r.id,
-          ...r.data(),
-        })),
+        .map(r => {
+          const result = {
+            id: r.id,
+            ...r.data(),
+          };
+          return sessionDateForge(result);
+        }),
     );
   }
 
@@ -167,11 +177,13 @@ function sessions(dbInstance) {
     await docRef.update(scrubbedSession);
     dlog(`updated session: ${sessionId}`);
 
-    return {
+    const result = {
       id: sessionId,
       ...currentDoc,
       ...scrubbedSession,
     };
+
+    return sessionDateForge(result);
   }
 
   function getTotalProfessionalSubmittedForEvent(eventId) {
@@ -226,10 +238,12 @@ function sessions(dbInstance) {
       await docRef.update({ slug: newDocument.id });
       scrubbedSession.slug = newDocument.id;
     }
-    return {
+    const result = {
       id: newDocument.id,
       ...scrubbedSession,
     };
+
+    return sessionDateForge(result);
   }
 
   async function adminUpdate({ sessionId, session }) {
@@ -239,12 +253,13 @@ function sessions(dbInstance) {
     await docRef.update(scrubbedSession);
 
     const updatedDoc = await docRef.get();
-    dlog(`updated session: ${sessionId}`);
 
-    return {
+    const result = {
       id: sessionId,
       ...updatedDoc.data(),
     };
+
+    return sessionDateForge(result);
   }
 
   return {

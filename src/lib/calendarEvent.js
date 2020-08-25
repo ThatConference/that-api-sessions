@@ -2,18 +2,17 @@
 import debug from 'debug';
 import { google } from 'googleapis';
 import base32 from 'base32-encode';
-import * as Sentry from '@sentry/node';
 
 const dlog = debug('that:api:sessions:calendar');
 const salt = 'THATConference-salt';
 //
 
-function calendarCrud(credentials, calendarId) {
-  dlog('calendar CRUD created');
+function calendarEvent(credentials, calendarId) {
+  dlog('calendar Event created');
   // expected credentials value is a
   // base64 encoded version of the json google api credential file.
   const credentialsObject = JSON.parse(
-    Buffer.from(credentials).toString('ascii'),
+    Buffer.from(credentials, 'base64').toString('ascii'),
   );
   if (!credentialsObject.client_email) {
     throw new Error('Invalid credentials provided');
@@ -39,15 +38,22 @@ function calendarCrud(credentials, calendarId) {
   }
 
   function makeEventPayload(session) {
+    const endTime = new Date(
+      session.startTime.getTime() + 60000 * session.durationInMinutes,
+    );
+    const description = `${session.shortDescription}
+    
+    Join at: https://that.us/session/${session.id}`;
+
     const payload = {
       start: {
         dateTime: session.startTime,
       },
       end: {
-        dateTime: '',
+        dateTime: endTime,
       },
       id: makeEventId(session.id),
-      description: session.shortDescription,
+      description,
       summary: session.title,
       location: 'Internet',
       visibility: 'public',
@@ -64,13 +70,10 @@ function calendarCrud(credentials, calendarId) {
 
     const eventPayload = makeEventPayload(session);
 
-    calendar.events
-      .insert({
-        calendarId,
-        resource: eventPayload,
-      })
-      .then(result => result)
-      .catch(error => error);
+    return calendar.events.insert({
+      calendarId,
+      resource: eventPayload,
+    });
 
     // code 409, already exists
   }
@@ -83,14 +86,11 @@ function calendarCrud(credentials, calendarId) {
     delete eventPayload.id;
 
     // Make call
-    calendar.events
-      .update({
-        calendarId,
-        eventId,
-        requestBody: eventPayload,
-      })
-      .then(result => result)
-      .catch(error => error);
+    return calendar.events.update({
+      calendarId,
+      eventId,
+      requestBody: eventPayload,
+    });
 
     // 404 doesn't exist to update
   }
@@ -99,19 +99,16 @@ function calendarCrud(credentials, calendarId) {
     dlog('cancel');
 
     const eventPayload = makeEventPayload(session);
-    eventPayload.status = 'cancelled';
     const eventId = eventPayload.id;
     delete eventPayload.id;
+    eventPayload.status = 'cancelled';
 
     // Make call
-    calendar.events
-      .update({
-        calendarId,
-        eventId,
-        requestBody: eventPayload,
-      })
-      .then(result => result)
-      .catch(error => error);
+    return calendar.events.update({
+      calendarId,
+      eventId,
+      requestBody: eventPayload,
+    });
   }
 
   return {
@@ -121,4 +118,4 @@ function calendarCrud(credentials, calendarId) {
   };
 }
 
-export default calendarCrud;
+export default calendarEvent;

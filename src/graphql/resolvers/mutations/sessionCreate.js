@@ -20,8 +20,11 @@ async function createNewSession(eventId, user, session, firestore) {
 }
 
 function sendUserEvent(sessionResults, userResults, userEvents) {
-  if (sessionResults.status === 'SUBMITTED') {
-    userEvents.emit('newSessionCreated', {
+  if (
+    sessionResults.status === 'SUBMITTED' ||
+    sessionResults.status === 'ACCEPTED'
+  ) {
+    userEvents.emit('sessionCreated', {
       user: userResults,
       session: sessionResults,
     });
@@ -52,12 +55,7 @@ export const fieldResolvers = {
         memberStore(firestore).find(user.sub),
       ]);
 
-      if (sessionResults.status === 'SUBMITTED') {
-        userEvents.emit('newSessionCreated', {
-          user: userResults,
-          session: sessionResults,
-        });
-      }
+      sendUserEvent(sessionResults, userResults, userEvents);
 
       return sessionResults;
     },

@@ -19,7 +19,7 @@ async function createNewSession(eventId, user, session, firestore) {
 }
 
 function sendUserEvent(sessionResults, userResults, userEvents) {
-  userEvents.emit('newSessionCreated', {
+  userEvents.emit('sessionCreated', {
     user: userResults,
     session: sessionResults,
   });
