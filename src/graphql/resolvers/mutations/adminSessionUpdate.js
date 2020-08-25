@@ -35,7 +35,7 @@ function sendUserEvent(
     originalSession.status === 'DRAFT' &&
     updatedSession.status === 'SUBMITTED'
   ) {
-    eventTitle = 'newSessionCreated';
+    eventTitle = 'sessionCreated';
   } else {
     eventTitle = 'sessionUpdated';
   }

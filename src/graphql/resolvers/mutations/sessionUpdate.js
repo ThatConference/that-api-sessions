@@ -30,7 +30,17 @@ function sendUserEvent(
     originalSession.status === 'DRAFT' &&
     updatedSession.status === 'SUBMITTED'
   ) {
-    userEvents.emit('newSessionCreated', {
+    userEvents.emit('sessionCreated', {
+      user: userResults,
+      session: updatedSession,
+    });
+  } else if (updatedSession.status === 'ACCEPTED') {
+    userEvents.emit('sessionUpdated', {
+      user: userResults,
+      session: updatedSession,
+    });
+  } else if (updatedSession.status === 'CANCELLED') {
+    userEvents.emit('sessionCancelled', {
       user: userResults,
       session: updatedSession,
     });
@@ -69,15 +79,7 @@ export const fieldResolvers = {
         memberStore(firestore).find(user.sub),
       ]);
 
-      if (
-        originalSession.status === 'DRAFT' &&
-        updatedSession.status === 'SUBMITTED'
-      ) {
-        userEvents.emit('newSessionCreated', {
-          user: userResults,
-          session: updatedSession,
-        });
-      }
+      sendUserEvent(originalSession, updatedSession, userResults, userEvents);
 
       return updatedSession;
     },
