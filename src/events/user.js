@@ -10,6 +10,28 @@ const calEvent = calendarEvent(
   envConfig.sharedCalendarId,
 );
 
+const baseUris = {
+  thatus: {
+    session: 'https://that.us/sessions/',
+    join: 'https://that.us/join/',
+  },
+  thatconference: {
+    session: 'https://www.thatconference.com/member/my-sessions',
+  },
+};
+
+const pmTemplates = {
+  thatconference: {
+    created: 'THATconferenceSessionCreated',
+    updated: 'THATconferenceSessionUpdated',
+  },
+  thatus: {
+    created: 'that.us-session-created',
+    updated: 'that.us-session-updated',
+    canceled: 'that.us-session-cancelled',
+  },
+};
+
 function userEvents(postmark) {
   const userEventEmitter = new EventEmitter();
   dlog('user event emitter created');
@@ -17,10 +39,24 @@ function userEvents(postmark) {
   function sessionCreated({ user, session }) {
     dlog('new session created');
 
+    let TemplateAlias;
+    let link;
+
+    if (user.site === 'www.thatconference.com') {
+      TemplateAlias = pmTemplates.thatconference.created;
+      link = `${baseUris.thatconference.session}`;
+    } else if (user.site === 'that.us') {
+      TemplateAlias = pmTemplates.thatus.created;
+      link = `${baseUris.thatus.session}/${session.id}`;
+    } else {
+      dlog('unknown or missing user.site value %s', user.site);
+      // TODO:Add Sentry info warning here
+      return undefined;
+    }
+
     return postmark
       .sendEmailWithTemplate({
-        // TemplateId: 15581327,
-        TemplateAlias: 'THATconferenceSessionCreated',
+        TemplateAlias,
         From: 'Hello@THATConference.com',
         To: user.email,
         TemplateModel: {
@@ -31,7 +67,14 @@ function userEvents(postmark) {
           session: {
             id: session.id,
             title: session.title,
-            createdAt: moment(session.createdAt).format('M/D/YYYY h:mm:ss A'),
+            createdAt: moment
+              .utc(session.createdAt)
+              .format('M/D/YYYY h:mm:ss A'),
+            startTime: moment
+              .utc(session.startTime)
+              .format('M/D/YYYY h:mm:ss A'),
+            duration: session.durationInMinutes,
+            link,
           },
           // Optional (hard coded in email now)
           // event: {
@@ -49,10 +92,26 @@ function userEvents(postmark) {
 
   function sessionUpdated({ user, session }) {
     dlog('session updated event fired');
+
+    let TemplateAlias;
+    let link;
+
+    if (user.site === 'www.thatconference.com') {
+      TemplateAlias = pmTemplates.thatconference.updated;
+      link = `${baseUris.thatconference.session}`;
+    } else if (user.site === 'that.us') {
+      TemplateAlias = pmTemplates.thatus.updated;
+      link = `${baseUris.thatus.session}/${session.id}`;
+    } else {
+      dlog('unknown or missing user.site value %s', user.site);
+      // TODO:Add Sentry info warning here
+      return undefined;
+    }
+
     return postmark
       .sendEmailWithTemplate({
         // TemplateId: 15581957,
-        TemplateAlias: 'THATconferenceSessionUpdated',
+        TemplateAlias,
         From: 'Hello@THATConference.com',
         To: user.email,
         TemplateModel: {
@@ -63,18 +122,11 @@ function userEvents(postmark) {
           session: {
             id: session.id,
             title: session.title,
-            lastUpdatedAt: moment(session.lastUpdatedAt).format(
-              'M/D/YYYY h:mm:ss A',
-            ),
+            lastUpdatedAt: moment
+              .utc(session.lastUpdatedAt)
+              .format('M/D/YYYY h:mm:ss A'),
+            link,
           },
-          // Optional (hard coded in email now)
-          // event: {
-          //   name: 'Events name',
-          //   year: 'Event year',
-          //   cfpOpens: 'CallForCounselorOpenDate',
-          //   cfpCloses: 'CallForCounselorCloseDate',
-          //   announceDate: 'scheduleAnnouncedDate',
-          // },
         },
       })
       .then(dlog('email sent'))
@@ -123,9 +175,9 @@ function userEvents(postmark) {
     throw new Error(err);
   });
 
-  // userEventEmitter.on('sessionCreated', sessionCreated);
+  userEventEmitter.on('sessionCreated', sessionCreated);
   userEventEmitter.on('sessionCreated', insertSharedCalendar);
-  // userEventEmitter.on('sessionUpdated', sessionUpdated);
+  userEventEmitter.on('sessionUpdated', sessionUpdated);
   userEventEmitter.on('sessionUpdated', updateSharedCalendar);
   userEventEmitter.on('sessionCancelled', cancelSharedCalendar);
 
