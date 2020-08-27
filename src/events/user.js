@@ -1,6 +1,7 @@
 import { EventEmitter } from 'events';
 import debug from 'debug';
 import moment from 'moment';
+import iCal from 'ical-generator';
 import envConfig from '../envConfig';
 import calendarEvent from '../lib/calendarEvent';
 
@@ -31,6 +32,32 @@ const pmTemplates = {
     canceled: 'that.us-session-cancelled',
   },
 };
+
+function createIcal({ session, user }) {
+  dlog('create ical for postmark email');
+  const iEvent = {
+    uid: `that-${session.id}@${user.site}`,
+    start: moment(session.startTime),
+    end: moment(session.startTime).add(session.durationInMinutes, 'minutes'),
+    summary: session.title,
+    description: session.shortDescription,
+    locaion: 'THAT.us',
+  };
+  let link;
+  if (user.site === 'www.thatconference.com') {
+    link = `${baseUris.thatconference.session}`;
+  } else {
+    link = `${baseUris.thatus.session}/${session.id}`;
+  }
+  iEvent.url = link;
+
+  const ical = iCal();
+  ical.prodId('//THAT Conference//THAT.us//EN');
+  ical.createEvent(iEvent);
+  const icalString = ical.toString();
+
+  return Buffer.from(icalString, 'ascii').toString('base64');
+}
 
 function userEvents(postmark) {
   const userEventEmitter = new EventEmitter();
@@ -85,6 +112,13 @@ function userEvents(postmark) {
           //   announceDate: 'scheduleAnnouncedDate',
           // },
         },
+        Attachments: [
+          {
+            Name: `${session.slug}@${user.site}.ics`,
+            Content: createIcal({ session, user }),
+            ContentType: 'text/calendar; charset=utf-8; method=REQUEST',
+          },
+        ],
       })
       .then(dlog('email sent'))
       .catch(e => process.nextTick(() => userEventEmitter.emit('error', e)));
@@ -128,6 +162,13 @@ function userEvents(postmark) {
             link,
           },
         },
+        Attachments: [
+          {
+            Name: `${session.slug}@${user.site}.ics`,
+            Content: createIcal({ session, user }),
+            ContentType: 'text/calendar; charset=utf-8; method=REQUEST',
+          },
+        ],
       })
       .then(dlog('email sent'))
       .catch(e => process.nextTick(() => userEventEmitter.emit('error', e)));
