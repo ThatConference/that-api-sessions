@@ -142,8 +142,6 @@ function userEvents(postmark) {
 
   function sendSessionUpdatedEmail({ user, session }) {
     dlog('session updated event fired');
-    dlog('(((((((((((((((((((( user %O', user);
-    dlog(')))))))))))))))))))) session %O', session);
 
     let TemplateAlias;
     let link;
