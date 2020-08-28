@@ -2,8 +2,11 @@ import { EventEmitter } from 'events';
 import debug from 'debug';
 import moment from 'moment';
 import iCal from 'ical-generator';
+import * as Sentry from '@sentry/node';
+import { separateOperations } from 'graphql';
 import envConfig from '../envConfig';
 import calendarEvent from '../lib/calendarEvent';
+import slackNotifications from '../lib/slackNotifications';
 
 const dlog = debug('that:api:sessions:events:user');
 const calEvent = calendarEvent(
@@ -63,7 +66,7 @@ function userEvents(postmark) {
   const userEventEmitter = new EventEmitter();
   dlog('user event emitter created');
 
-  function sessionCreated({ user, session }) {
+  function sendSessionCreatedEmail({ user, session }) {
     dlog('new session created');
 
     let TemplateAlias;
@@ -77,7 +80,19 @@ function userEvents(postmark) {
       link = `${baseUris.thatus.session}/${session.id}`;
     } else {
       dlog('unknown or missing user.site value %s', user.site);
-      // TODO:Add Sentry info warning here
+      Sentry.withScope(scope => {
+        scope.setLevel('info');
+        scope.setContext('event information', {
+          title: session.title,
+          sessionId: session.id,
+          'that-site': user.site,
+          memberId: user.id,
+        });
+        scope.setTag('correlationId', user.correlationId);
+        Sentry.captureMessage(
+          'No or invalid that-site present when sending session eamil',
+        );
+      });
       return undefined;
     }
 
@@ -101,6 +116,7 @@ function userEvents(postmark) {
               .utc(session.startTime)
               .format('M/D/YYYY h:mm:ss A'),
             duration: session.durationInMinutes,
+            shortDescription: session.shortDescription,
             link,
           },
           // Optional (hard coded in email now)
@@ -124,8 +140,10 @@ function userEvents(postmark) {
       .catch(e => process.nextTick(() => userEventEmitter.emit('error', e)));
   }
 
-  function sessionUpdated({ user, session }) {
+  function sendSessionUpdatedEmail({ user, session }) {
     dlog('session updated event fired');
+    dlog('(((((((((((((((((((( user %O', user);
+    dlog(')))))))))))))))))))) session %O', session);
 
     let TemplateAlias;
     let link;
@@ -138,7 +156,19 @@ function userEvents(postmark) {
       link = `${baseUris.thatus.session}/${session.id}`;
     } else {
       dlog('unknown or missing user.site value %s', user.site);
-      // TODO:Add Sentry info warning here
+      Sentry.withScope(scope => {
+        scope.setLevel('info');
+        scope.setContext('event information', {
+          title: session.title,
+          sessionId: session.id,
+          'that-site': user.site,
+          memberId: user.id,
+        });
+        scope.setTag('correlationId', user.correlationId);
+        Sentry.captureMessage(
+          'No or invalid that-site present when sending session eamil',
+        );
+      });
       return undefined;
     }
 
@@ -212,13 +242,20 @@ function userEvents(postmark) {
       );
   }
 
+  function sendSessionCreatedSlack({ session, user }) {
+    dlog('call createdSessionSlack()');
+
+    slackNotifications.sessionCreated({ session, user });
+  }
+
   userEventEmitter.on('error', err => {
     throw new Error(err);
   });
 
-  userEventEmitter.on('sessionCreated', sessionCreated);
+  userEventEmitter.on('sessionCreated', sendSessionCreatedEmail);
   userEventEmitter.on('sessionCreated', insertSharedCalendar);
-  userEventEmitter.on('sessionUpdated', sessionUpdated);
+  userEventEmitter.on('sessionCreated', sendSessionCreatedSlack);
+  userEventEmitter.on('sessionUpdated', sendSessionUpdatedEmail);
   userEventEmitter.on('sessionUpdated', updateSharedCalendar);
   userEventEmitter.on('sessionCancelled', cancelSharedCalendar);
 

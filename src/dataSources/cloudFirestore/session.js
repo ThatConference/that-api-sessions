@@ -36,7 +36,7 @@ function sessions(dbInstance) {
       dlog('slug %s is not unique for eventId %s', slug, eventId);
       Sentry.withScope(scope => {
         scope.setLevel('error');
-        scope.setFingerprint('duplicate_slug');
+        scope.setFingerprint(['duplicate_slug']);
         scope.setContext('duplicate_slug_session', {
           title,
           eventId,

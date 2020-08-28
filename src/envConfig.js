@@ -10,6 +10,9 @@ const requiredConfig = () => ({
     configMissing('GCP_CALENDAR_CREDENTIALS'),
   sharedCalendarId:
     process.env.SHARED_CALENDAR_ID || configMissing('SHARED_CALENDAR_ID'),
+  slackWebhookUrl:
+    process.env.SLACK_WEBHOOK_URL || configMissing('SLACK_WEBHOOK_URL'),
+  sessionNotifSlackChannel: '#that_board',
 });
 
 export default requiredConfig();
