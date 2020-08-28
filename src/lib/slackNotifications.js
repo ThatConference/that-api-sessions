@@ -21,6 +21,10 @@ export default {
   sessionCreated: ({ session, user }) => {
     dlog('sessionCreated notification called');
 
+    let userProfileImage = session.profileImage;
+    if (!userProfileImage || userProfileImage.length < 7)
+      userProfileImage = envConfig.defaultProfileImage;
+
     const slackBody = {
       channel: envConfig.sessionNotifSlackChannel,
       username: 'THAT.us Session Bot',
@@ -67,7 +71,7 @@ export default {
               },
               accessory: {
                 type: 'image',
-                image_url: user.profileImage,
+                image_url: userProfileImage,
                 alt_text: `${user.firstName} ${user.lastName}`,
               },
             },

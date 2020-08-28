@@ -13,6 +13,8 @@ const requiredConfig = () => ({
   slackWebhookUrl:
     process.env.SLACK_WEBHOOK_URL || configMissing('SLACK_WEBHOOK_URL'),
   sessionNotifSlackChannel: '#that_board',
+  defaultProfileImage:
+    'https://images.that.tech/members/person-placeholder.jpg',
 });
 
 export default requiredConfig();
