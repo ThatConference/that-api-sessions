@@ -28,7 +28,7 @@ export default {
   sessionCreated: ({ session, user }) => {
     dlog('sessionCreated notification called');
 
-    let userProfileImage = session.profileImage;
+    let userProfileImage = user.profileImage;
     if (!userProfileImage || userProfileImage.length < 7)
       userProfileImage = envConfig.defaultProfileImage;
 
