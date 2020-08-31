@@ -3,7 +3,6 @@ import debug from 'debug';
 import moment from 'moment';
 import iCal from 'ical-generator';
 import * as Sentry from '@sentry/node';
-import { separateOperations } from 'graphql';
 import envConfig from '../envConfig';
 import calendarEvent from '../lib/calendarEvent';
 import slackNotifications from '../lib/slackNotifications';
@@ -44,7 +43,7 @@ function createIcal({ session, user }) {
     end: moment(session.startTime).add(session.durationInMinutes, 'minutes'),
     summary: session.title,
     description: session.shortDescription,
-    locaion: 'THAT.us',
+    location: 'THAT.us',
   };
   let link;
   if (user.site === 'www.thatconference.com') {
