@@ -73,7 +73,7 @@ function userEvents(postmark) {
 
     if (user.site === 'www.thatconference.com') {
       TemplateAlias = pmTemplates.thatconference.created;
-      link = `${baseUris.thatconference.session}`;
+      link = baseUris.thatconference.session;
     } else if (user.site === 'that.us') {
       TemplateAlias = pmTemplates.thatus.created;
       link = `${baseUris.thatus.session}/${session.id}`;
