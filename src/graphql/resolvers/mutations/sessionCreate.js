@@ -19,13 +19,16 @@ async function createNewSession(eventId, user, session, firestore) {
   return { sessionResults, userResults };
 }
 
-function sendUserEvent(sessionResults, userResults, userEvents) {
+function sendUserEvent({ sessionResults, userResults, userEvents, user }) {
   if (
     sessionResults.status === 'SUBMITTED' ||
     sessionResults.status === 'ACCEPTED'
   ) {
     userEvents.emit('sessionCreated', {
-      user: userResults,
+      user: {
+        ...user,
+        ...userResults,
+      },
       session: sessionResults,
     });
   }
@@ -55,7 +58,7 @@ export const fieldResolvers = {
         memberStore(firestore).find(user.sub),
       ]);
 
-      sendUserEvent(sessionResults, userResults, userEvents);
+      sendUserEvent({ sessionResults, userResults, userEvents, user });
 
       return sessionResults;
     },
@@ -82,7 +85,7 @@ export const fieldResolvers = {
         firestore,
       );
 
-      sendUserEvent(sessionResults, userResults, userEvents);
+      sendUserEvent({ sessionResults, userResults, userEvents, user });
 
       return sessionResults;
     },
@@ -109,7 +112,7 @@ export const fieldResolvers = {
         firestore,
       );
 
-      sendUserEvent(sessionResults, userResults, userEvents);
+      sendUserEvent({ sessionResults, userResults, userEvents, user });
 
       return sessionResults;
     },
@@ -136,7 +139,7 @@ export const fieldResolvers = {
         firestore,
       );
 
-      sendUserEvent(sessionResults, userResults, userEvents);
+      sendUserEvent({ sessionResults, userResults, userEvents, user });
 
       return sessionResults;
     },
@@ -163,7 +166,7 @@ export const fieldResolvers = {
         firestore,
       );
 
-      sendUserEvent(sessionResults, userResults, userEvents);
+      sendUserEvent({ sessionResults, userResults, userEvents, user });
 
       return sessionResults;
     },
@@ -190,7 +193,7 @@ export const fieldResolvers = {
         firestore,
       );
 
-      sendUserEvent(sessionResults, userResults, userEvents);
+      sendUserEvent({ sessionResults, userResults, userEvents, user });
 
       return sessionResults;
     },

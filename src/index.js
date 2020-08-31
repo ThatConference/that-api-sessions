@@ -81,29 +81,52 @@ const createUserContext = (req, res, next) => {
   dlog('creating user context');
 
   const enableMocking = () => {
-    if (!req.headers['that-enable-mocks']) return false;
+    if (
+      !req.headers['that-enable-mocks'] ||
+      req.headers['that-enable-mocks'] === 'undefined'
+    )
+      return false;
 
     dlog('mocking enabled');
 
     const headerValues = req.headers['that-enable-mocks'].split(',');
     const mocks = headerValues.map(i => i.trim().toUpperCase());
 
-    return !!mocks.includes('SESSIONS');
+    return mocks.includes('SESSIONS');
   };
 
-  const correlationId = req.headers['that-correlation-id']
-    ? req.headers['that-correlation-id']
-    : uuidv4();
+  const correlationId =
+    req.headers['that-correlation-id'] &&
+    req.headers['that-correlation-id'] !== 'undefined'
+      ? req.headers['that-correlation-id']
+      : uuidv4();
 
   Sentry.configureScope(scope => {
     scope.setTag('correlationId', correlationId);
   });
 
+  let site;
+  if (req.headers['that-site']) {
+    site = req.headers['that-site'];
+  } else if (req.headers['x-forwarded-for']) {
+    // eslint-disable-next-line no-useless-escape
+    const rxHost = /^https?\:\/\/([^\/?#]+)(?:[\/?#]|$)/i;
+    const refererHost = req.headers['x-forwarded-for'];
+    const host = refererHost.match(rxHost);
+    // eslint-disable-next-line prefer-destructuring
+    if (host) site = host[1];
+  } else {
+    site = 'www.thatconference.com';
+  }
+
   req.userContext = {
     authToken: req.headers.authorization,
     correlationId,
     enableMocking: enableMocking(),
+    site,
   };
+  dlog('headers %O', req.headers);
+  dlog('userContext %O', req.userContext);
 
   next();
 };

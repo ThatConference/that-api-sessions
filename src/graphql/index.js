@@ -92,7 +92,6 @@ const createServer = ({ dataSources }, enableMocking = false) => {
     context: async ({ req, res }) => {
       dlog('creating context');
       let context = {};
-
       dlog('auth header %o', req.headers);
       if (!_.isNil(req.headers.authorization)) {
         Sentry.addBreadcrumb({
@@ -117,7 +116,11 @@ const createServer = ({ dataSources }, enableMocking = false) => {
         dlog('validated token: %o', validatedToken);
         context = {
           ...context,
-          user: validatedToken,
+          user: {
+            ...validatedToken,
+            site: req.userContext.site,
+            correlationId: req.userContext.correlationId,
+          },
         };
       }
 

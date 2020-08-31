@@ -20,28 +20,33 @@ async function updateSession(sessionId, user, session, firestore) {
   return { updatedSession, userResults };
 }
 
-function sendUserEvent(
+function sendUserEvent({
   originalSession,
   updatedSession,
   userResults,
   userEvents,
-) {
+  user,
+}) {
+  const userInfo = {
+    ...user,
+    ...userResults,
+  };
   if (
     originalSession.status === 'DRAFT' &&
     updatedSession.status === 'SUBMITTED'
   ) {
     userEvents.emit('sessionCreated', {
-      user: userResults,
+      user: userInfo,
       session: updatedSession,
     });
   } else if (updatedSession.status === 'ACCEPTED') {
     userEvents.emit('sessionUpdated', {
-      user: userResults,
+      user: userInfo,
       session: updatedSession,
     });
   } else if (updatedSession.status === 'CANCELLED') {
     userEvents.emit('sessionCancelled', {
-      user: userResults,
+      user: userInfo,
       session: updatedSession,
     });
   }
@@ -79,7 +84,13 @@ export const fieldResolvers = {
         memberStore(firestore).find(user.sub),
       ]);
 
-      sendUserEvent(originalSession, updatedSession, userResults, userEvents);
+      sendUserEvent({
+        originalSession,
+        updatedSession,
+        userResults,
+        userEvents,
+        user,
+      });
 
       return updatedSession;
     },
@@ -109,7 +120,13 @@ export const fieldResolvers = {
         firestore,
       );
 
-      sendUserEvent(originalSession, updatedSession, userResults, userEvents);
+      sendUserEvent({
+        originalSession,
+        updatedSession,
+        userResults,
+        userEvents,
+        user,
+      });
 
       return updatedSession;
     },
@@ -139,7 +156,13 @@ export const fieldResolvers = {
         firestore,
       );
 
-      sendUserEvent(originalSession, updatedSession, userResults, userEvents);
+      sendUserEvent({
+        originalSession,
+        updatedSession,
+        userResults,
+        userEvents,
+        user,
+      });
 
       return updatedSession;
     },
@@ -169,7 +192,13 @@ export const fieldResolvers = {
         firestore,
       );
 
-      sendUserEvent(originalSession, updatedSession, userResults, userEvents);
+      sendUserEvent({
+        originalSession,
+        updatedSession,
+        userResults,
+        userEvents,
+        user,
+      });
 
       return updatedSession;
     },
@@ -199,7 +228,13 @@ export const fieldResolvers = {
         firestore,
       );
 
-      sendUserEvent(originalSession, updatedSession, userResults, userEvents);
+      sendUserEvent({
+        originalSession,
+        updatedSession,
+        userResults,
+        userEvents,
+        user,
+      });
 
       return updatedSession;
     },
@@ -229,7 +264,13 @@ export const fieldResolvers = {
         firestore,
       );
 
-      sendUserEvent(originalSession, updatedSession, userResults, userEvents);
+      sendUserEvent({
+        originalSession,
+        updatedSession,
+        userResults,
+        userEvents,
+        user,
+      });
 
       return updatedSession;
     },
