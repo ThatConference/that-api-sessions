@@ -3,7 +3,7 @@ import {
   ApolloServer,
   gql,
   addMockFunctionsToSchema,
-  mergeSchemas,
+  SchemaDirectiveVisitor,
 } from 'apollo-server-express';
 import debug from 'debug';
 import { buildFederatedSchema } from '@apollo/federation';
@@ -36,30 +36,24 @@ const typeDefs = gql`
  *     createGateway(userContext)
  */
 const createServer = ({ dataSources }, enableMocking = false) => {
-  let federatedSchemas = {};
+  let schema = {};
 
   if (!enableMocking) {
-    federatedSchemas = buildFederatedSchema([{ typeDefs, resolvers }]);
+    schema = buildFederatedSchema([{ typeDefs, resolvers }]);
   } else {
-    federatedSchemas = buildFederatedSchema([{ typeDefs }]);
+    schema = buildFederatedSchema([{ typeDefs }]);
 
     addMockFunctionsToSchema({
-      federatedSchemas,
+      schema,
       // eslint-disable-next-line global-require
       mocks: require('./__mocks__').default(),
       preserveResolvers: true, // so GetServiceDefinition works
     });
   }
 
-  const schema = mergeSchemas({
-    schemas: [federatedSchemas],
-    schemaDirectives: {
-      ...directives,
-    },
-  });
+  SchemaDirectiveVisitor.visitSchemaDirectives(schema, directives);
 
   return new ApolloServer({
-    schemaDirectives: {},
     schema,
     introspection: JSON.parse(process.env.ENABLE_GRAPH_INTROSPECTION || false),
     playground: JSON.parse(process.env.ENABLE_GRAPH_PLAYGROUND)
