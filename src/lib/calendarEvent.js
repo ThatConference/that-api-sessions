@@ -41,7 +41,7 @@ function calendarEvent(credentials, calendarId) {
     const endTime = new Date(
       session.startTime.getTime() + 60000 * session.durationInMinutes,
     );
-    const description = `${session.shortDescription}\n\nJoin at: https://that.us/sessions/${session.id}`;
+    const description = `${session.shortDescription}\n\nJoin at: https://that.us/activities/${session.id}`;
 
     const payload = {
       start: {
