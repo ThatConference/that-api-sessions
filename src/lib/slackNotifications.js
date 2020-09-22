@@ -45,7 +45,7 @@ export default {
               type: 'section',
               text: {
                 type: 'mrkdwn',
-                text: `*<https://that.us/sessions/${session.id}|${session.title}>*`,
+                text: `*<https://that.us/activities/${session.id}|${session.title}>*`,
               },
             },
             {
