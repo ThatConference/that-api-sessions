@@ -19,7 +19,17 @@ function event(dbInstance) {
     };
   }
 
-  return { getEvent };
+  async function findCommunityFromId(eventId) {
+    dlog('findCommunityFromId %s', eventId);
+    const docSnapshot = await dbInstance.doc(collectionName).get();
+
+    return {
+      id: docSnapshot.id,
+      community: docSnapshot.get('community'),
+    };
+  }
+
+  return { getEvent, findCommunityFromId };
 }
 
 export default event;
