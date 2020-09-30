@@ -19,6 +19,8 @@ type Workshop implements EyesFront & Base @key(fields: "id") {
   favoritedBy: [PublicProfile]
   "total number of members who favorited, includes non-public in count too"
   favoriteCount: Int
+  "communities (as slug) associated with session. initially same as event community"
+  communities: [Slug]
 
   createdAt: Date!
   lastUpdatedAt: Date!

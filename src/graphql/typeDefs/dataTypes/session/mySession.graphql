@@ -29,6 +29,8 @@ type MySession @key(fields: "id") {
   isRecored: Boolean
 
   status: Status
+  "communities (as slug) associated with session. initially same as event community"
+  communities: [Slug]
 
   rating: [Rating]
   createdAt: Date!

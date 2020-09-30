@@ -1,6 +1,7 @@
 import debug from 'debug';
 import slugify from 'slugify';
 import * as Sentry from '@sentry/node';
+import eventStore from './event';
 import sessionDateForge from '../../lib/sessionDateForge';
 
 const dlog = debug('that:api:sessions:datasources:firebase');
@@ -35,14 +36,16 @@ function sessions(dbInstance) {
     if (docSnap.size > 0) {
       dlog('slug %s is not unique for eventId %s', slug, eventId);
       Sentry.withScope(scope => {
-        scope.setLevel('error');
+        scope.setLevel('info');
         scope.setFingerprint(['duplicate_slug']);
-        scope.setContext('duplicate_slug_session', {
+        scope.setContext('duplicate_slug_create_session', {
           title,
           eventId,
           slug,
         });
-        Sentry.captureMessage('duplicate slugs in event');
+        Sentry.captureMessage(
+          'duplicate slug creating event, will use eventId instead',
+        );
       });
       return undefined;
     }
@@ -56,6 +59,10 @@ function sessions(dbInstance) {
     const scrubbedSession = scrubSession(session, true);
     scrubbedSession.speakers = [user.sub];
     scrubbedSession.eventId = eventId;
+    const { community } = await eventStore(dbInstance).findCommunityFromId(
+      eventId,
+    );
+    scrubbedSession.communities = community ? [community] : [];
     const slug = await genUniqueSlug(eventId, scrubbedSession.title);
     if (slug) {
       scrubbedSession.slug = slug;
@@ -223,6 +230,10 @@ function sessions(dbInstance) {
 
     const scrubbedSession = scrubSession(session, true);
     scrubbedSession.eventId = eventId;
+    const { community } = await eventStore(dbInstance).findCommunityFromId(
+      eventId,
+    );
+    scrubbedSession.communities = community ? [community] : [];
     const slug = await genUniqueSlug(eventId, scrubbedSession.title);
     if (slug) {
       scrubbedSession.slug = slug;

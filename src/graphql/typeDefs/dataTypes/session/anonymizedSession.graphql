@@ -10,6 +10,8 @@ type AnonymizedSession @key(fields: "id") {
   slug: Slug!
   startTime: Date
   location: String
+  "communities (as slug) associated with session. initially same as event community"
+  communities: [Slug]
 
   tags: [String]
 }
