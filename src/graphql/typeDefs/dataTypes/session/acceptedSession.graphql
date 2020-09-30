@@ -32,6 +32,8 @@ type AcceptedSession @key(fields: "id") {
   tags: [String]
   favoritedBy: [PublicProfile]
   favoriteCount: Int
+  "communities (as slug) associated with session. initially same as event community"
+  communities: [Slug]
 
   rating: [Rating]
   lastUpdatedAt: Date!

@@ -21,7 +21,9 @@ function event(dbInstance) {
 
   async function findCommunityFromId(eventId) {
     dlog('findCommunityFromId %s', eventId);
-    const docSnapshot = await dbInstance.doc(collectionName).get();
+    const docSnapshot = await dbInstance
+      .doc(`${collectionName}/${eventId}`)
+      .get();
 
     return {
       id: docSnapshot.id,

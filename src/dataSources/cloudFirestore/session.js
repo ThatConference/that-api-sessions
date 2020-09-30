@@ -1,7 +1,7 @@
 import debug from 'debug';
 import slugify from 'slugify';
 import * as Sentry from '@sentry/node';
-import event from './event';
+import eventStore from './event';
 import sessionDateForge from '../../lib/sessionDateForge';
 
 const dlog = debug('that:api:sessions:datasources:firebase');
@@ -59,8 +59,10 @@ function sessions(dbInstance) {
     const scrubbedSession = scrubSession(session, true);
     scrubbedSession.speakers = [user.sub];
     scrubbedSession.eventId = eventId;
-    const eventSm = await event.findCommunityFromId(eventId);
-    scrubbedSession.communities = eventSm.community ? [eventSm.community] : [];
+    const { community } = await eventStore(dbInstance).findCommunityFromId(
+      eventId,
+    );
+    scrubbedSession.communities = community ? [community] : [];
     const slug = await genUniqueSlug(eventId, scrubbedSession.title);
     if (slug) {
       scrubbedSession.slug = slug;
@@ -228,8 +230,10 @@ function sessions(dbInstance) {
 
     const scrubbedSession = scrubSession(session, true);
     scrubbedSession.eventId = eventId;
-    const eventSm = await event.findCommunityFromId(eventId);
-    scrubbedSession.communities = eventSm.community ? [eventSm.community] : [];
+    const { community } = await eventStore(dbInstance).findCommunityFromId(
+      eventId,
+    );
+    scrubbedSession.communities = community ? [community] : [];
     const slug = await genUniqueSlug(eventId, scrubbedSession.title);
     if (slug) {
       scrubbedSession.slug = slug;
