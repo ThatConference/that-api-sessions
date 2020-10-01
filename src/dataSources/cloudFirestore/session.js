@@ -63,6 +63,7 @@ function sessions(dbInstance) {
       eventId,
     );
     scrubbedSession.communities = community ? [community] : [];
+    if (!scrubbedSession.startTime) scrubbedSession.startTime = null;
     const slug = await genUniqueSlug(eventId, scrubbedSession.title);
     if (slug) {
       scrubbedSession.slug = slug;
@@ -234,6 +235,7 @@ function sessions(dbInstance) {
       eventId,
     );
     scrubbedSession.communities = community ? [community] : [];
+    if (!scrubbedSession.startTime) scrubbedSession.startTime = null;
     const slug = await genUniqueSlug(eventId, scrubbedSession.title);
     if (slug) {
       scrubbedSession.slug = slug;
