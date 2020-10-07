@@ -74,7 +74,7 @@ export default {
               type: 'section',
               text: {
                 type: 'mrkdwn',
-                text: `*Submitted by:*\n<https://www.thatconference.com/member/${user.profileSlug}|${user.firstName} ${user.lastName}>`,
+                text: `*Submitted by:*\n<https://that.us/members/${user.profileSlug}|${user.firstName} ${user.lastName}>`,
               },
               accessory: {
                 type: 'image',
