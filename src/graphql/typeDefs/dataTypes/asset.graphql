@@ -1,0 +1,25 @@
+"Additional information and stuff provided by members, partners events, community and sessions"
+type Asset {
+  "unique id of the asset"
+  id: ID!
+
+  "(optional) body text of asset, main text area"
+  body: String
+
+  "Links associated, presented by the asset"
+  links: [AssetLink]
+
+  "Owner of asset, can be member, partner, event, etc."
+  owner: AssetOwner
+  "Type of owner used by union resolver to determine owner Type"
+  ownerType: AssetOwnerType
+
+  priority: String
+  startTime: Date
+  stopTime: Date
+  # -- edit data
+  createdAt: Date
+  createdBy: Date
+  lastUpdatedAt: Date
+  lastUpdatedBy: Date
+}

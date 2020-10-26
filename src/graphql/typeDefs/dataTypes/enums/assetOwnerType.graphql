@@ -1,0 +1,7 @@
+enum AssetOwnerType {
+  PARTNER
+  EVENT
+  COMMUNITY
+  MEMBER
+  SESSION
+}
