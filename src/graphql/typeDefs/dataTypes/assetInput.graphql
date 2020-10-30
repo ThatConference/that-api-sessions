@@ -1,10 +1,3 @@
-input SetOwnerInput {
-  "Id of owner entiy, manager of group."
-  ownerId: ID!
-  "Enty type of owner."
-  entityType: EntityType!
-}
-
 input AssetCreateInput {
   isEnabled: Boolean!
   body: String!

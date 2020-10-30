@@ -7,7 +7,6 @@ export const fieldResolvers = {
   Entity: {
     __resolveType(obj, context, info) {
       dlog('__resolveType called');
-      dlog('ENTITY:: %O', obj);
       let result = null;
       switch (obj.entityType) {
         case 'PARTNER':

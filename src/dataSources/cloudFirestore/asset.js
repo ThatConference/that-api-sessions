@@ -59,6 +59,14 @@ function assets(dbInstance) {
     return result;
   }
 
+  function getBatch(ids) {
+    dlog('getBatch for %d asset ids', ids.length);
+    if (!Array.isArray(ids))
+      throw new Error('getBatch must receive an array of ids');
+
+    return Promise.all(ids.map(id => get(id)));
+  }
+
   async function setAssignmentsBatch({
     firestoreBatch,
     user,
@@ -66,7 +74,6 @@ function assets(dbInstance) {
     assetId,
   }) {
     dlog('set assignments batch %o', assignments);
-    dlog('start firestore batch:: %o', firestoreBatch);
     // TODO: verify that user may assign asset to given entity
     // as owner of asset they may remove it from any entity
     const writeBatch = firestoreBatch;
@@ -90,7 +97,6 @@ function assets(dbInstance) {
       writeBatch.create(docref, newAssignment);
     });
 
-    dlog('resulting firestoreBatch %o', firestoreBatch);
     return true;
   }
 
@@ -144,7 +150,11 @@ function assets(dbInstance) {
         );
         Sentry.captureException(err);
       });
-      throw new Error('failed to create new Asset:\n%o\n%o', cleanAsset, err);
+      throw new Error(
+        'ailed create asset batch write:\n%o\n%o',
+        cleanAsset,
+        err,
+      );
     }
 
     dlog('create finished %o', cleanAsset);
@@ -182,14 +192,18 @@ function assets(dbInstance) {
         );
         Sentry.captureException(err);
       });
-      throw new Error('failed to create new Asset:\n%o\n%o', cleanAsset, err);
+      throw new Error(
+        'failed update asset batch write\n%o\n%o',
+        cleanAsset,
+        err,
+      );
     }
 
     return get(assetId);
   }
 
   async function getAssetAssignments(assetId) {
-    const { docs, size } = await assignmentCollection
+    const { docs } = await assignmentCollection
       .where('assetId', '==', assetId)
       .get();
 
@@ -204,6 +218,7 @@ function assets(dbInstance) {
 
   return {
     get,
+    getBatch,
     create,
     update,
     getAssetAssignments,
