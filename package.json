@@ -20,9 +20,9 @@
   },
   "dependencies": {
     "@apollo/federation": "^0.20.4",
-    "@google-cloud/firestore": "^4.4.0",
+    "@google-cloud/firestore": "^4.5.0",
     "@google-cloud/functions-framework": "^1.7.1",
-    "@sentry/node": "^5.27.1",
+    "@sentry/node": "^5.27.2",
     "@thatconference/api": "^1.13.0",
     "apollo-server": "^2.18.2",
     "apollo-server-express": "^2.18.2",

@@ -1,4 +1,4 @@
-enum AssetOwnerType {
+enum EntityType {
   PARTNER
   EVENT
   COMMUNITY

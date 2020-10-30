@@ -7,6 +7,10 @@ const resolvers = {
     dlog('root:sessions mutation called');
     return {};
   },
+  assets: () => {
+    dlog('root:assets mutation called');
+    return {};
+  },
 };
 
 export default resolvers;

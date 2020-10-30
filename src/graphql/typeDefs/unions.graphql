@@ -1,4 +1,5 @@
 "A union of the different types of sessions"
 union TheSessions = Regular | OpenSpace | Keynote | Panel | Workshop
-"Union of types which can own an Asset"
-union AssetOwner = Partner | Event | Community | PublicProfile | AcceptedSession
+
+"Union of Entity types owning and associated with Assets"
+union Entity = Partner | Event | Community | PublicProfile | AcceptedSession

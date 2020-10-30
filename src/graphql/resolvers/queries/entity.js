@@ -1,14 +1,15 @@
 /* eslint-disable no-unused-vars */
 import debug from 'debug';
 
-const dlog = debug('that:api:asset:assetowner');
+const dlog = debug('that:api:asset:entity');
 
 export const fieldResolvers = {
-  AssetOwner: {
+  Entity: {
     __resolveType(obj, context, info) {
       dlog('__resolveType called');
+      dlog('ENTITY:: %O', obj);
       let result = null;
-      switch (obj.OwnerType) {
+      switch (obj.entityType) {
         case 'PARTNER':
           result = 'Partner';
           break;
@@ -19,7 +20,7 @@ export const fieldResolvers = {
           result = 'Community';
           break;
         case 'MEMBER':
-          result = 'Member';
+          result = 'PublicProfile';
           break;
         case 'SESSION':
           result = 'AcceptedSession';

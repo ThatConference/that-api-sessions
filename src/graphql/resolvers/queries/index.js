@@ -16,7 +16,7 @@ import { fieldResolvers as workshopFields } from './workshop';
 
 import { fieldResolvers as assetsFields } from './assets';
 import { fieldResolvers as assetFields } from './asset';
-import { fieldResolvers as assetOwnerFields } from './assetOwner';
+import { fieldResolvers as entityFields } from './entity';
 
 export default {
   ...root,
@@ -37,5 +37,5 @@ export const fieldResolvers = {
   ...workshopFields,
   ...assetsFields,
   ...assetFields,
-  ...assetOwnerFields,
+  ...entityFields,
 };

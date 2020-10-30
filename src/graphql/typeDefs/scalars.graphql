@@ -1,4 +1,3 @@
-scalar DateTime
-scalar Date
 scalar URL
+scalar Date
 scalar Slug

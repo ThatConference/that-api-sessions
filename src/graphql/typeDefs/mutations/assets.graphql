@@ -1,0 +1,10 @@
+type AssetsMutation {
+  "Creates a new Asset"
+  create(asset: AssetCreateInput!): Asset
+
+  "Asset specific mutations"
+  asset(id: ID!): AssetMutation
+
+  # "Admin-scoped mutations"
+  # admin: AdminAssetsMutation @auth(requires: "admin")
+}
