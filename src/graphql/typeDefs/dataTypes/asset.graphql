@@ -23,11 +23,11 @@ type Asset @key(fields: "id") {
   assignments: [Entity]
 
   "Owner of asset, entity which manages asset (Partner, Community, Member, Event, etc.)"
-  owner: Entity
+  owner: Entity!
 
   # -- edit information
-  createdAt: Date
-  createdBy: PublicProfile
-  lastUpdatedAt: Date
-  lastUpdatedBy: PublicProfile
+  createdAt: Date!
+  createdBy: PublicProfile!
+  lastUpdatedAt: Date!
+  lastUpdatedBy: PublicProfile!
 }
