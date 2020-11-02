@@ -3,7 +3,7 @@ type AcceptedSession @key(fields: "id") {
   id: ID!
   eventId: ID!
   slug: Slug!
-  speakers: [PublicProfile]
+  speakers: [PublicProfile!]!
 
   title: String!
   shortDescription: String

@@ -1,3 +1,4 @@
 type Query {
   sessions: SessionsQuery
+  assets: AssetsQuery
 }

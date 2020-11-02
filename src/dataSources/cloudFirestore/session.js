@@ -44,7 +44,7 @@ function sessions(dbInstance) {
           slug,
         });
         Sentry.captureMessage(
-          'duplicate slug creating event, will use eventId instead',
+          'duplicate slug creating session, will use sessionId instead',
         );
       });
       return undefined;

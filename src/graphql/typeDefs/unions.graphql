@@ -1,1 +1,5 @@
+"A union of the different types of sessions"
 union TheSessions = Regular | OpenSpace | Keynote | Panel | Workshop
+
+"Union of Entity types owning and associated with Assets"
+union Entity = Partner | Event | Community | PublicProfile | AcceptedSession

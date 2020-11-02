@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import { pullAt, isNil } from 'lodash';
 import {
   ApolloServer,
   gql,
@@ -16,6 +16,7 @@ import typeDefsRaw from './typeDefs';
 import resolvers from './resolvers';
 import directives from './directives';
 import sessionStore from '../dataSources/cloudFirestore/session';
+import assetStore from '../dataSources/cloudFirestore/asset';
 
 const dlog = debug('that:api:sessions:graphServer');
 const jwtClient = security.jwt();
@@ -72,14 +73,36 @@ const createServer = ({ dataSources }, enableMocking = false) => {
           if (foundAt < 0) return null;
 
           const result = sessions[foundAt];
-          _.pullAt(sessions, foundAt);
+          pullAt(sessions, foundAt);
           return result;
         });
       });
 
+      const assetLoader = new DataLoader(ids =>
+        assetStore(firestore)
+          .getBatch(ids)
+          .then(assets => {
+            if (assets.includes(null)) {
+              Sentry.withScope(scope => {
+                scope.setLevel('error');
+                scope.setContext(
+                  `Assigned Assets don't exist in asset table`,
+                  { ids },
+                  { assets },
+                );
+                Sentry.captureMessage(
+                  `Assigned Assets don't exist in asset table`,
+                );
+              });
+            }
+            return ids.map(id => assets.find(a => a && a.id === id));
+          }),
+      );
+
       return {
         ...dataSources,
         sessionLoader,
+        assetLoader,
       };
     },
 
@@ -87,7 +110,7 @@ const createServer = ({ dataSources }, enableMocking = false) => {
       dlog('creating context');
       let context = {};
       dlog('auth header %o', req.headers);
-      if (!_.isNil(req.headers.authorization)) {
+      if (!isNil(req.headers.authorization)) {
         Sentry.addBreadcrumb({
           category: 'graphql context',
           message: 'user has authToken',

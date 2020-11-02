@@ -10,6 +10,8 @@ import { fieldResolvers as adminSessions } from './adminSessions';
 import { fieldResolvers as adminSessionCreate } from './adminSessionCreate';
 import { fieldResolvers as adminSessionUpdate } from './adminSessionUpdate';
 import { fieldResolvers as favoritingFields } from './favoriting';
+import { fieldResolvers as assetsFields } from './assets';
+import { fieldResolvers as assetFields } from './asset';
 
 export default {
   ...rootMutations,
@@ -26,4 +28,6 @@ export const fieldResolvers = {
   ...adminSessionCreate,
   ...adminSessionUpdate,
   ...favoritingFields,
+  ...assetsFields,
+  ...assetFields,
 };

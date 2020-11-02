@@ -14,6 +14,10 @@ import { fieldResolvers as keynoteFields } from './keynote';
 import { fieldResolvers as panelFields } from './panel';
 import { fieldResolvers as workshopFields } from './workshop';
 
+import { fieldResolvers as assetsFields } from './assets';
+import { fieldResolvers as assetFields } from './asset';
+import { fieldResolvers as entityFields } from './entity';
+
 export default {
   ...root,
 };
@@ -31,4 +35,7 @@ export const fieldResolvers = {
   ...keynoteFields,
   ...panelFields,
   ...workshopFields,
+  ...assetsFields,
+  ...assetFields,
+  ...entityFields,
 };

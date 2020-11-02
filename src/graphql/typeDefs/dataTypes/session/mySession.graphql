@@ -3,7 +3,7 @@ type MySession @key(fields: "id") {
   id: ID!
   eventId: ID!
   slug: Slug!
-  speakers: [Profile]
+  speakers: [PublicProfile!]!
 
   title: String!
   shortDescription: String

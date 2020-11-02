@@ -1,0 +1,7 @@
+enum EntityType {
+  PARTNER
+  EVENT
+  COMMUNITY
+  MEMBER
+  SESSION
+}

@@ -5,7 +5,7 @@ type OpenSpace implements Base @key(fields: "id") {
   title: String!
   shortDescription: String!
   primaryCategory: SessionCategory
-  speakers: [PublicProfile]
+  speakers: [PublicProfile!]!
 
   type: SessionType
   status: Status
