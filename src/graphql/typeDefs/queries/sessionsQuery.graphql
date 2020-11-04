@@ -1,5 +1,15 @@
 type SessionsQuery {
   "return the sessions associated to the logged in user"
   me: MeQuery @auth(requires: "sessions")
+  "return specific session"
   session(sessionId: ID!): AcceptedSession
+  "return any sessions. Defaults: status: [APPROVED], filter: UPCOMING, pageSize: 10 (max: 100). orderBy only valid with filter: ALL (and defaults desc). DOES NOT RETURN SESSIONS WITHOUT STARTTIME FIELD"
+  paged(
+    status: [Status]
+    orderBy: SessionOrderBy
+    filter: SessionFilter
+    asOfDate: Date
+    pageSize: Int
+    cursor: String
+  ): PagedAcceptedSession
 }

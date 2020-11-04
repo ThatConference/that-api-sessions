@@ -1,0 +1,8 @@
+type PagedAcceptedSession {
+  "cursor to send back for more data"
+  cursor: String!
+  "Sessions returned in this page"
+  sessions: [AcceptedSession]!
+  "number of sessions in this page"
+  count: Int
+}

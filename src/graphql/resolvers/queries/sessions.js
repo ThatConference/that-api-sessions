@@ -15,5 +15,35 @@ export const fieldResolvers = {
       dlog('session called');
       return sessionStore(firestore).findAcceptedSession(sessionId);
     },
+    paged: (
+      _,
+      {
+        status = ['APPROVED'],
+        filter = 'UPCOMING',
+        orderBy,
+        asOfDate,
+        pageSize,
+        cursor,
+      },
+      { dataSources: { firestore } },
+    ) => {
+      dlog(
+        'paged called: status %o page size %d, after %s, orderedBy %s, having statuses %o with filter %s',
+        status,
+        pageSize,
+        cursor,
+        orderBy,
+        status,
+        filter,
+      );
+      return sessionStore(firestore).findWithStatusesPaged({
+        statuses: status,
+        filter,
+        asOfDate,
+        orderBy,
+        pageSize,
+        cursor,
+      });
+    },
   },
 };
