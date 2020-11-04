@@ -1,0 +1,4 @@
+enum SessionOrderBy {
+  START_TIME_ASC
+  START_TIME_DESC
+}

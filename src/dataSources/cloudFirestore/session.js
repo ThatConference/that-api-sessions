@@ -1,11 +1,31 @@
 import debug from 'debug';
 import slugify from 'slugify';
 import * as Sentry from '@sentry/node';
+import { utility } from '@thatconference/api';
 import eventStore from './event';
-import sessionDateForge from '../../lib/sessionDateForge';
 
+const sessionDateForge = utility.firestoreDateForge.sessions;
+const { dateForge } = utility.firestoreDateForge;
 const dlog = debug('that:api:sessions:datasources:firebase');
 const approvedSessionStatuses = ['ACCEPTED', 'SCHEDULED', 'CANCELLED'];
+
+function validateStatuses(statuses) {
+  dlog('validateStatuses %o', statuses);
+  if (!Array.isArray(statuses) || statuses.length === 0) {
+    throw new Error('statuses must be in the form of an array with a value.');
+  }
+  const inStatus = statuses;
+  const isIndex = inStatus.indexOf('APPROVED');
+  if (isIndex >= 0) {
+    inStatus.splice(isIndex, 1);
+    inStatus.push(...approvedSessionStatuses);
+  }
+  if (inStatus > 10)
+    throw new Error(`A maximum of 10 statuses may be queried for. ${statuses}`);
+
+  dlog('statuses valdated %o', inStatus);
+  return inStatus;
+}
 
 function scrubSession(session, isNew) {
   const scrubbedSession = session;
@@ -172,6 +192,66 @@ function sessions(dbInstance) {
     );
   }
 
+  async function findWithStatusesPaged({
+    statuses,
+    orderBy,
+    filter,
+    asOfDate,
+    pageSize,
+    cursor,
+  }) {
+    dlog('findWithStatusesPaged %o, %s', statuses, asOfDate);
+    const inStatus = validateStatuses(statuses);
+    const truePSize = Math.min(pageSize || 20, 100); // max page: 100
+    let allOrderBy = 'desc';
+    if (orderBy === 'START_TIME_ASC') allOrderBy = 'asc';
+
+    let startTimeOrder = 'asc';
+    if (filter === 'PAST') {
+      startTimeOrder = 'desc';
+    } else if (filter === 'ALL') {
+      startTimeOrder = allOrderBy;
+    }
+
+    let query = sessionsCol
+      .where('status', 'in', inStatus)
+      .orderBy('startTime', startTimeOrder)
+      .orderBy('createdAt', 'asc')
+      .limit(truePSize);
+
+    if (asOfDate && !cursor) {
+      query = query.startAfter(new Date(asOfDate));
+    } else if (cursor) {
+      const curObject = Buffer.from(cursor, 'base64').toString('utf8');
+      const { curStartTime, curCreatedAt, curFilter } = JSON.parse(curObject);
+      dlog('decoded cursor:%s, %s, %s', curObject, curStartTime, curCreatedAt);
+      if (!curStartTime || !curCreatedAt || (curFilter && curFilter !== filter))
+        throw new Error('Invalid cursor provided as cursor value');
+
+      query = query.startAfter(new Date(curStartTime), new Date(curCreatedAt));
+    }
+
+    const { size, docs } = await query.get();
+    dlog('query returned %d documents', size);
+
+    const sessionList = docs.map(s => ({ id: s.id, ...s.data() }));
+    const lastDoc = sessionList[sessionList.length - 1];
+    let newCursor = '';
+    if (lastDoc) {
+      const cpieces = JSON.stringify({
+        curStartTime: dateForge(lastDoc.startTime),
+        curCreatedAt: dateForge(lastDoc.createdAt),
+        curFilter: filter,
+      });
+      newCursor = Buffer.from(cpieces, 'utf8').toString('base64');
+    }
+    return {
+      cursor: newCursor,
+      sessions: sessionList,
+      count: sessionList.length,
+    };
+  }
+
   async function update({ user, sessionId, session }) {
     dlog(`updating session ${sessionId} with %o`, session);
     const docRef = dbInstance.doc(`${collectionName}/${sessionId}`);
@@ -283,6 +363,7 @@ function sessions(dbInstance) {
     findSession,
     findAcceptedSession,
     batchFindSessions,
+    findWithStatusesPaged,
     addInAttendance,
     getTotalProfessionalSubmittedForEvent,
     adminUpdate,
