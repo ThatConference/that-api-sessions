@@ -15,7 +15,7 @@ export const fieldResolvers = {
       dlog('session called');
       return sessionStore(firestore).findAcceptedSession(sessionId);
     },
-    paged: (
+    all: (
       _,
       {
         status = ['APPROVED'],
