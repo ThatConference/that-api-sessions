@@ -38,7 +38,7 @@ function scrubSession(session, isNew) {
   return scrubbedSession;
 }
 
-async function handleMentions({ scrubbedSession, firestore }) {
+async function parseAndPersistMentions({ scrubbedSession, firestore }) {
   const promiseSlug = [];
   if (scrubbedSession.shortDescription)
     promiseSlug.push(
@@ -122,7 +122,7 @@ function sessions(dbInstance) {
     }
 
     // mentions
-    await handleMentions({ scrubbedSession, firestore: dbInstance });
+    await parseAndPersistMentions({ scrubbedSession, firestore: dbInstance });
 
     dlog('saving session %o', scrubbedSession);
     const newDocument = await sessionsCol.add(scrubbedSession);
@@ -298,7 +298,7 @@ function sessions(dbInstance) {
     const scrubbedSession = scrubSession(session);
 
     // mentions
-    await handleMentions({ scrubbedSession, firestore: dbInstance });
+    await parseAndPersistMentions({ scrubbedSession, firestore: dbInstance });
 
     await docRef.update(scrubbedSession);
     dlog(`updated session: ${sessionId}`);
@@ -410,3 +410,4 @@ function sessions(dbInstance) {
 }
 
 export default sessions;
+export { parseAndPersistMentions };
