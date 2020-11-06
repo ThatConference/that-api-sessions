@@ -1,7 +1,7 @@
 import debug from 'debug';
 import slugify from 'slugify';
 import * as Sentry from '@sentry/node';
-import { utility } from '@thatconference/api';
+import { utility, mentions } from '@thatconference/api';
 import eventStore from './event';
 
 const sessionDateForge = utility.firestoreDateForge.sessions;
@@ -36,6 +36,38 @@ function scrubSession(session, isNew) {
   scrubbedSession.lastUpdatedAt = modifiedAt;
 
   return scrubbedSession;
+}
+
+async function handleMentions({ scrubbedSession, firestore }) {
+  const promiseSlug = [];
+  if (scrubbedSession.shortDescription)
+    promiseSlug.push(
+      mentions.parseToSlug({
+        text: scrubbedSession.shortDescription,
+        firestore,
+      }),
+    );
+  if (scrubbedSession.longDescription)
+    promiseSlug.push(
+      mentions.parseToSlug({
+        text: scrubbedSession.longDescription,
+        firestore,
+      }),
+    );
+  const slugResult = await Promise.all(promiseSlug);
+  const allMentions = slugResult.reduce((acc, cur) => acc.concat(cur), []);
+  dlog('allMentions %o', allMentions);
+
+  const communitySlugs = allMentions
+    .filter(m => m.type === 'community')
+    .map(m => m.slug);
+  dlog('communitySlugs %o', communitySlugs);
+
+  const workingSession = scrubbedSession;
+  if (!scrubbedSession.communities || scrubbedSession.communities.length === 0)
+    workingSession.communities = ['that'];
+  const [c0] = workingSession.communities;
+  workingSession.communities = [...new Set([c0, ...communitySlugs])];
 }
 
 function sessions(dbInstance) {
@@ -88,8 +120,11 @@ function sessions(dbInstance) {
     if (slug) {
       scrubbedSession.slug = slug;
     }
-    dlog('saving session %o', scrubbedSession);
 
+    // mentions
+    await handleMentions({ scrubbedSession, firestore: dbInstance });
+
+    dlog('saving session %o', scrubbedSession);
     const newDocument = await sessionsCol.add(scrubbedSession);
     dlog(`created new session: ${newDocument.id}`);
 
@@ -261,6 +296,9 @@ function sessions(dbInstance) {
       throw new Error('Requested Session Update Not Found for User');
 
     const scrubbedSession = scrubSession(session);
+
+    // mentions
+    await handleMentions({ scrubbedSession, firestore: dbInstance });
 
     await docRef.update(scrubbedSession);
     dlog(`updated session: ${sessionId}`);
