@@ -21,8 +21,9 @@ async function createNewSession(eventId, user, session, firestore) {
 
 function sendUserEvent({ sessionResults, userResults, userEvents, user }) {
   if (
-    sessionResults.status === 'SUBMITTED' ||
-    sessionResults.status === 'ACCEPTED'
+    (sessionResults.status === 'SUBMITTED' ||
+      sessionResults.status === 'ACCEPTED') &&
+    sessionResults.startTime
   ) {
     userEvents.emit('sessionCreated', {
       user: {
