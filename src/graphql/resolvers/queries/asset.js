@@ -21,9 +21,10 @@ export const fieldResolvers = {
     assignments: async (
       { id: assetId },
       __,
-      { dataSources: { firestore } },
+      { dataSources: { firestore, sessionLoader } },
     ) => {
       dlog(`asset's assignments %s`, assetId);
+      // return assetStore(firestore).getAssetAssignments(assetId);
       const assignments = await assetStore(firestore).getAssetAssignments(
         assetId,
       );
@@ -31,8 +32,11 @@ export const fieldResolvers = {
       dlog('***** assignments', assignments);
       return assignments.map(a => {
         if (a.entityType === 'SESSION') {
-          return sessionStore(firestore)
-            .findSession(a.id)
+          // return sessionStore(firestore)
+          //   .findSession(a.id)
+          //   .then(session => ({ ...session, entityType: a.entityType }));
+          return sessionLoader
+            .load(a.id)
             .then(session => ({ ...session, entityType: a.entityType }));
         }
         dlog('*****  this is a', a);

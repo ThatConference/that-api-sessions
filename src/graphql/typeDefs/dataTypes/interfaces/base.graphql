@@ -38,6 +38,8 @@ interface Base {
 
   "communities (as slug) associated with session. initially same as event community"
   communities: [Slug]
+  "Assets assigned to this session"
+  assets: [Asset]
 
   "date time session created"
   createdAt: Date!

@@ -1,6 +1,7 @@
 import debug from 'debug';
 import favoriteStore from '../../../dataSources/cloudFirestore/favorite';
 import favoritedByFunc from '../shared/favoritedBy';
+import { findAssets } from '../shared/resolveSessionAssets';
 
 const dlog = debug('that:api:sessions:openspace');
 
@@ -26,6 +27,14 @@ export const fieldResolvers = {
       dlog('favoriteCount');
 
       return favoriteStore(firestore).getSessionFavoriteCount(id);
+    },
+    assets: (
+      { id: entityId },
+      __,
+      { dataSources: { firestore, assetLoader } },
+    ) => {
+      dlog('session assets requested');
+      return findAssets({ entityId, firestore, assetLoader });
     },
   },
 };

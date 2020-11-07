@@ -43,7 +43,6 @@ export const fieldResolvers = {
 
       return favoriteStore(firestore).getSessionFavoriteCount(id);
     },
-
     assets: (
       { id: entityId },
       __,
