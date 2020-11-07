@@ -1,5 +1,6 @@
 import debug from 'debug';
 import assetStore from '../../../dataSources/cloudFirestore/asset';
+import sessionStore from '../../../dataSources/cloudFirestore/session';
 
 const dlog = debug('that:api:assets:query:asset');
 
@@ -17,9 +18,30 @@ export const fieldResolvers = {
       return assetLoader.load(id);
     },
 
-    assignments: ({ id: assetId }, __, { dataSources: { firestore } }) => {
+    assignments: async (
+      { id: assetId },
+      __,
+      { dataSources: { firestore } },
+    ) => {
       dlog(`asset's assignments %s`, assetId);
-      return assetStore(firestore).getAssetAssignments(assetId);
+      const assignments = await assetStore(firestore).getAssetAssignments(
+        assetId,
+      );
+      // return assignments.map(a => a);
+      dlog('***** assignments', assignments);
+      return assignments.map(a => {
+        if (a.entityType === 'SESSION') {
+          return sessionStore(firestore)
+            .findSession(a.id)
+            .then(session => ({ ...session, entityType: a.entityType }));
+        }
+        dlog('*****  this is a', a);
+        return a;
+      });
     },
+
+    createdBy: ({ createdBy }) => ({ id: createdBy }),
+
+    lastUpdatedBy: ({ lastUpdatedBy }) => ({ id: lastUpdatedBy }),
   },
 };
