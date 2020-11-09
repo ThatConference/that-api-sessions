@@ -1,5 +1,5 @@
 /* resolvers use thatconference/api which needs these env variables. */
-/* the test is more about successfully bilding the schema then the
+/* this test is more about successfully building the schema then the
  * resulting schema from the build.
  */
 process.env.INFLUX_TOKEN = 'TEST_INFLUX_TOKEN_VALUE';
