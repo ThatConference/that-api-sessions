@@ -54,6 +54,13 @@ async function parseAndPersistMentions({ scrubbedSession, firestore }) {
         firestore,
       }),
     );
+  if (scrubbedSession.title)
+    promiseSlug.push(
+      mentions.parseToSlug({
+        text: scrubbedSession.title,
+        firestore,
+      }),
+    );
   const slugResult = await Promise.all(promiseSlug);
   const allMentions = slugResult.reduce((acc, cur) => acc.concat(cur), []);
   dlog('allMentions %o', allMentions);
