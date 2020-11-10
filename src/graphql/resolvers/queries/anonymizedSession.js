@@ -1,4 +1,5 @@
 import debug from 'debug';
+import { findAssets } from '../shared/resolveSessionAssets';
 
 const dlog = debug('that:api:sessions:query:AnonymizedSession');
 
@@ -18,6 +19,14 @@ export const fieldResolvers = {
 
       if (!parent.tags) return [];
       return parent.tags;
+    },
+    assets: (
+      { id: entityId },
+      __,
+      { dataSources: { firestore, assetLoader } },
+    ) => {
+      dlog('session assets requested');
+      return findAssets({ entityId, firestore, assetLoader });
     },
   },
 };

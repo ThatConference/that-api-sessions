@@ -86,12 +86,12 @@ const createServer = ({ dataSources }, enableMocking = false) => {
               Sentry.withScope(scope => {
                 scope.setLevel('error');
                 scope.setContext(
-                  `Assigned Assets don't exist in asset table`,
+                  `Assigned Asset's don't exist in assets collection`,
                   { ids },
                   { assets },
                 );
                 Sentry.captureMessage(
-                  `Assigned Assets don't exist in asset table`,
+                  `Assigned Asset's don't exist in assets collection`,
                 );
               });
             }
