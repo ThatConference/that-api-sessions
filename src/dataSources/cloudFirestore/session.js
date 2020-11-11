@@ -54,13 +54,17 @@ async function parseAndPersistMentions({ scrubbedSession, firestore }) {
         firestore,
       }),
     );
-  if (scrubbedSession.title)
+  if (scrubbedSession.title || scrubbedSession.tags) {
+    let text = '';
+    text += scrubbedSession.title ? scrubbedSession.title : ' ';
+    text += scrubbedSession.tags ? ` ${scrubbedSession.tags.join(' ')}` : ' ';
     promiseSlug.push(
       mentions.parseToSlug({
-        text: scrubbedSession.title,
+        text,
         firestore,
       }),
     );
+  }
   const slugResult = await Promise.all(promiseSlug);
   const allMentions = slugResult.reduce((acc, cur) => acc.concat(cur), []);
   dlog('allMentions %o', allMentions);
