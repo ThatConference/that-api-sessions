@@ -1,4 +1,3 @@
-/* eslint-disable import/prefer-default-export */
 import 'dotenv/config';
 import connect from 'express';
 import debug from 'debug';
@@ -11,7 +10,6 @@ import * as Sentry from '@sentry/node';
 import apolloGraphServer from './graphql';
 import envConfig from './envConfig';
 import userEventEmitter from './events/user';
-// import { version } from '../package.json';
 
 let version;
 (async () => {
@@ -113,8 +111,7 @@ const createUserContext = (req, res, next) => {
     const rxHost = /^https?\:\/\/([^\/?#]+)(?:[\/?#]|$)/i;
     const refererHost = req.headers['x-forwarded-for'];
     const host = refererHost.match(rxHost);
-    // eslint-disable-next-line prefer-destructuring
-    if (host) site = host[1];
+    if (host) [, site] = host;
   } else {
     site = 'www.thatconference.com';
   }
