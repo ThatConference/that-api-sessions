@@ -7,12 +7,7 @@ process.env.INFLUX_ORG_ID = 'TEST_INFLUX_ORG_ID_VALUE';
 process.env.INFLUX_BUCKET_ID = 'INFLUX_BUCKET_ID';
 process.env.INFLUX_HOST = 'INFLUX_HOST';
 
-import {
-  ApolloServer,
-  gql,
-  addMockFunctionsToSchema,
-  SchemaDirectiveVisitor,
-} from 'apollo-server-express';
+import { gql, SchemaDirectiveVisitor } from 'apollo-server-express';
 import { buildFederatedSchema } from '@apollo/federation';
 import typeDefsRaw from '../../typeDefs';
 const resolvers = require('../../resolvers');
