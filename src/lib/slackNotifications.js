@@ -1,6 +1,7 @@
 import fetch from 'node-fetch';
 import debug from 'debug';
 import envConfig from '../envConfig';
+import scrubSlackTitle from './scrubSlackTitle';
 
 const dlog = debug('that:api:sessions:slack-notifications');
 
@@ -45,7 +46,9 @@ export default {
               type: 'section',
               text: {
                 type: 'mrkdwn',
-                text: `*<https://that.us/activities/${session.id}|${session.title}>*`,
+                text: `*<https://that.us/activities/${
+                  session.id
+                }|${scrubSlackTitle(session.title)}>*`,
               },
             },
             {
@@ -74,7 +77,11 @@ export default {
               type: 'section',
               text: {
                 type: 'mrkdwn',
-                text: `*Submitted by:*\n<https://that.us/members/${user.profileSlug}|${user.firstName} ${user.lastName}>`,
+                text: `*Submitted by:*\n<https://that.us/members/${
+                  user.profileSlug
+                }|${scrubSlackTitle(user.firstName)} ${scrubSlackTitle(
+                  user.lastName,
+                )}>`,
               },
               accessory: {
                 type: 'image',
