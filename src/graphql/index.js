@@ -27,9 +27,7 @@ const { lifecycle } = graph.events;
  *     createGateway(userContext)
  */
 const createServer = ({ dataSources }) => {
-  let schema = {};
-
-  schema = buildFederatedSchema([{ typeDefs, resolvers }]);
+  const schema = buildFederatedSchema([{ typeDefs, resolvers }]);
   SchemaDirectiveVisitor.visitSchemaDirectives(schema, directives);
 
   return new ApolloServer({
