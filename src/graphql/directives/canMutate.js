@@ -17,7 +17,7 @@ class CanMutateDirective extends SchemaDirectiveVisitor {
       // dlog('the args:: %O', args);
       // eslint-disable-next-line no-unused-vars
       const [id, sessionArg, context] = args;
-      dlog('!!id %O', id);
+      dlog('id %o', id);
 
       const { user, dataSources } = context;
       const { firestore } = dataSources;
