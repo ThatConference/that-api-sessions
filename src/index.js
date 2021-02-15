@@ -85,7 +85,10 @@ const createUserContext = (req, res, next) => {
       : uuidv4();
 
   Sentry.configureScope(scope => {
-    scope.setTag('correlationId', correlationId);
+    scope.setTags({
+      correlationId,
+      headers: req.headers,
+    });
   });
 
   let site;
@@ -101,13 +104,17 @@ const createUserContext = (req, res, next) => {
     site = 'www.thatconference.com';
   }
 
+  Sentry.configureScope(scope => {
+    scope.setTag('site', site);
+  });
+
   req.userContext = {
     authToken: req.headers.authorization,
     correlationId,
     site,
   };
-  dlog('headers %O', req.headers);
-  dlog('userContext %O', req.userContext);
+  dlog('headers %o', req.headers);
+  dlog('userContext %o', req.userContext);
 
   next();
 };
