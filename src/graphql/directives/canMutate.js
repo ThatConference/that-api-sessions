@@ -40,12 +40,14 @@ class CanMutateDirective extends SchemaDirectiveVisitor {
         firestore,
       });
       if (!allowResult) {
-        Sentry.configureScope(scope => {
-          scope.setLevel(Sentry.Severity.Info);
-        });
-        throw new ForbiddenError(
+        const err = new ForbiddenError(
           'Insufficient privileges to mutate session in this event',
         );
+        Sentry.configureScope(scope => {
+          scope.setLevel(Sentry.Severity.Info);
+          Sentry.captureException(err);
+        });
+        throw err;
       }
       return resolve.apply(this, args);
     };
