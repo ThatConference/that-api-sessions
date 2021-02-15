@@ -19,17 +19,19 @@ class CanMutateDirective extends SchemaDirectiveVisitor {
       const [id, sessionArg, context] = args;
       dlog('id %o', id);
 
+      let { eventId } = id;
+      const { sessionId } = id;
+      if (!eventId && !sessionId)
+        throw new ForbiddenError('invalid id argument');
+
       const { user, dataSources } = context;
       const { firestore } = dataSources;
 
-      let eventId;
-      if (id.sessionId) {
-        const session = await sessionStore(firestore).findSession(id.sessionId);
+      if (sessionId) {
+        const session = await sessionStore(firestore).findSession(sessionId);
         if (!session) throw new ForbiddenError('invalid session id');
         eventId = session.eventId;
-      } else if (id.eventId) {
-        eventId = id.eventId;
-      } else throw new ForbiddenError('invalid id argument');
+      }
 
       const allowResult = await checkMemberCanMutate({
         user,
