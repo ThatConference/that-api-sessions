@@ -1,4 +1,5 @@
 import debug from 'debug';
+import * as Sentry from '@sentry/node';
 import { SchemaDirectiveVisitor, ForbiddenError } from 'apollo-server-express';
 import { defaultFieldResolver } from 'graphql';
 import sessionStore from '../../dataSources/cloudFirestore/session';
@@ -38,10 +39,14 @@ class CanMutateDirective extends SchemaDirectiveVisitor {
         eventId,
         firestore,
       });
-      if (!allowResult)
+      if (!allowResult) {
+        Sentry.configureScope(scope => {
+          scope.setLevel(Sentry.Severity.Info);
+        });
         throw new ForbiddenError(
           'Insufficient privileges to mutate session in this event',
         );
+      }
       return resolve.apply(this, args);
     };
   }

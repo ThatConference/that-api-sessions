@@ -90,7 +90,7 @@ function userEvents(postmark) {
         });
         scope.setTag('correlationId', user.correlationId);
         Sentry.captureMessage(
-          'No or invalid that-site present when sending session eamil',
+          'No or invalid that-site present when sending session email',
         );
       });
       return undefined;
@@ -166,7 +166,7 @@ function userEvents(postmark) {
         });
         scope.setTag('correlationId', user.correlationId);
         Sentry.captureMessage(
-          'No or invalid that-site present when sending session eamil',
+          'No or invalid that-site present when sending session email',
         );
       });
       return undefined;
