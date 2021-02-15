@@ -4,8 +4,9 @@ import * as Sentry from '@sentry/node';
 import { utility, mentions } from '@thatconference/api';
 import eventStore from './event';
 
-const sessionDateForge = utility.firestoreDateForge.sessions;
-const { dateForge } = utility.firestoreDateForge;
+const { entityDateForge } = utility.firestoreDateForge;
+const forgeFields = ['createdAt', 'lastUpdatedAt', 'startTime'];
+const sessionDateForge = entityDateForge({ fields: forgeFields });
 const dlog = debug('that:api:sessions:datasources:firebase');
 const approvedSessionStatuses = ['ACCEPTED', 'SCHEDULED', 'CANCELLED'];
 
@@ -186,10 +187,11 @@ function sessions(dbInstance) {
           id: docRef.id,
           ...doc,
         };
+        result = sessionDateForge(result);
       }
     }
 
-    return sessionDateForge(result);
+    return result;
   }
 
   async function findSession(sessionId) {
@@ -202,15 +204,16 @@ function sessions(dbInstance) {
         id: docRef.id,
         ...docRef.data(),
       };
+      result = sessionDateForge(result);
     }
 
-    return sessionDateForge(result);
+    return result;
   }
 
   async function findAcceptedSession(sessionId) {
     dlog('find accepted session %s', sessionId);
     const session = await findSession(sessionId);
-    dlog('session returned', session);
+    dlog('session returned %o', session);
     if (session && approvedSessionStatuses.includes(session.status)) {
       return session;
     }
@@ -280,13 +283,19 @@ function sessions(dbInstance) {
     const { size, docs } = await query.get();
     dlog('query returned %d documents', size);
 
-    const sessionList = docs.map(s => ({ id: s.id, ...s.data() }));
+    const sessionList = docs.map(s => {
+      const r = {
+        id: s.id,
+        ...s.data(),
+      };
+      return sessionDateForge(r);
+    });
     const lastDoc = sessionList[sessionList.length - 1];
     let newCursor = '';
     if (lastDoc) {
       const cpieces = JSON.stringify({
-        curStartTime: dateForge(lastDoc.startTime),
-        curCreatedAt: dateForge(lastDoc.createdAt),
+        curStartTime: lastDoc.startTime,
+        curCreatedAt: lastDoc.createdAt,
         curFilter: filter,
       });
       newCursor = Buffer.from(cpieces, 'utf8').toString('base64');

@@ -5,17 +5,17 @@ const dlog = debug('that:api:sessions:mutation:AdminSessionsMutation');
 
 export const fieldResolvers = {
   AdminSessionsMutation: {
-    create: (parent, { eventId }) => {
+    create: (_, { eventId }) => {
       dlog('create called');
       return { eventId };
     },
 
-    delete: (parent, { id }, { dataSources: { firestore } }) => {
+    delete: () => {
       dlog('delete called');
       throw new Error('not implemented yet');
     },
 
-    session: (parent, { id }) => {
+    session: (_, { id }) => {
       dlog('session called');
       return { sessionId: id };
     },

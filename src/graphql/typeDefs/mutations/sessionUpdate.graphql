@@ -1,24 +1,31 @@
 "Update session for user making request. User must be in speakers list"
 type SessionUpdate {
-  "Depricated update session method, prior to session type updates for back compatability"
+  "DEPRECATED: update session method, prior to session type updates for back compatibility"
   update(session: SessionUpdateInput!): MySession
     @auth(requires: "sessions")
+    @canMutate
     @deprecated(reason: "use specific session type update instead")
 
   "Update for an OpenSpace type session"
   openSpace(openspace: OpenSpaceUpdateInput!): OpenSpace!
     @auth(requires: "sessions")
+    @canMutate
 
   "Update for a Keynote type session"
-  keynote(keynote: KeynoteUpdateInput!): Keynote! @auth(requires: "sessions")
+  keynote(keynote: KeynoteUpdateInput!): Keynote!
+    @auth(requires: "sessions")
+    @canMutate
 
   "Update for a Regular type session"
-  regular(regular: RegularUpdateInput!): Regular! @auth(requires: "sessions")
+  regular(regular: RegularUpdateInput!): Regular!
+    @auth(requires: "sessions")
+    @canMutate
 
   "Update for a Workshop type session"
   workshop(workshop: WorkshopUpdateInput!): Workshop!
     @auth(requires: "sessions")
+    @canMutate
 
   "Update for a Panel type session"
-  panel(panel: PanelUpdateInput!): Panel! @auth(requires: "sessions")
+  panel(panel: PanelUpdateInput!): Panel! @auth(requires: "sessions") @canMutate
 }

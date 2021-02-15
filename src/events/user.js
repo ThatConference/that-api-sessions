@@ -6,6 +6,7 @@ import * as Sentry from '@sentry/node';
 import envConfig from '../envConfig';
 import calendarEvent from '../lib/calendarEvent';
 import slackNotifications from '../lib/slackNotifications';
+import { SharedCalendarError, SendEmailError } from '../lib/errors';
 
 const dlog = debug('that:api:sessions:events:user');
 const calEvent = calendarEvent(
@@ -136,7 +137,9 @@ function userEvents(postmark) {
         ],
       })
       .then(dlog('email sent'))
-      .catch(e => process.nextTick(() => userEventEmitter.emit('error', e)));
+      .catch(e =>
+        process.nextTick(() => userEventEmitter.emit('emailError', e)),
+      );
   }
 
   function sendSessionUpdatedEmail({ user, session }) {
@@ -198,7 +201,9 @@ function userEvents(postmark) {
         ],
       })
       .then(dlog('email sent'))
-      .catch(e => process.nextTick(() => userEventEmitter.emit('error', e)));
+      .catch(e =>
+        process.nextTick(() => userEventEmitter.emit('emailError', e)),
+      );
   }
 
   // Creates a new event on a shared google calendar
@@ -209,7 +214,7 @@ function userEvents(postmark) {
       .create(session)
       .then(result => dlog('Event created %d, %O', result.status, result.data))
       .catch(error =>
-        process.nextTick(() => userEventEmitter.emit('error', error)),
+        process.nextTick(() => userEventEmitter.emit('calendarError', error)),
       );
   }
 
@@ -221,7 +226,7 @@ function userEvents(postmark) {
       .update(session)
       .then(result => dlog('Event updated %d, %O', result.status, result.data))
       .catch(error =>
-        process.nextTick(() => userEventEmitter.emit('error', error)),
+        process.nextTick(() => userEventEmitter.emit('calendarError', error)),
       );
   }
 
@@ -235,7 +240,7 @@ function userEvents(postmark) {
         dlog('Event cancelled %d, %O', result.status, result.data),
       )
       .catch(error =>
-        process.nextTick(() => userEventEmitter.emit('error', error)),
+        process.nextTick(() => userEventEmitter.emit('calendarError', error)),
       );
   }
 
@@ -245,8 +250,12 @@ function userEvents(postmark) {
     slackNotifications.sessionCreated({ session, user });
   }
 
-  userEventEmitter.on('error', err => {
-    throw new Error(err);
+  userEventEmitter.on('emailError', err => {
+    throw new SendEmailError(err.message);
+  });
+
+  userEventEmitter.on('calendarError', err => {
+    throw new SharedCalendarError(err.message);
   });
 
   userEventEmitter.on('sessionCreated', sendSessionCreatedEmail);

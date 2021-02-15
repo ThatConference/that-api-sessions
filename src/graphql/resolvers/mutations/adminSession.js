@@ -9,7 +9,7 @@ export const fieldResolvers = {
       dlog('update called', sessionId);
       return { sessionId };
     },
-    cancel: ({ sessionId }, args, { dataSources: { firestore } }) => {
+    cancel: () => {
       dlog('SessionMutation:cancel called');
       throw new Error('not implemented yet');
       // sessionStore(firestore, logger).get(id),

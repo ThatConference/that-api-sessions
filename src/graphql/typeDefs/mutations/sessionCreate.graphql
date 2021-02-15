@@ -1,24 +1,31 @@
 "Create session for user making request. User listed as speaker"
 type SessionCreate {
-  "Deprecated create session method, prior to session-type creates for back compatability"
+  "DEPRECATED: create session method, prior to session-type creates for back compatibility"
   create(session: SessionCreateInput!): MySession!
     @auth(requires: "sessions")
+    @canMutate
     @deprecated(reason: "use specific session type create instead")
 
   "Creates an OpenSpace type session"
   openSpace(openspace: OpenSpaceCreateInput!): OpenSpace!
     @auth(requires: "sessions")
+    @canMutate
 
   "Creates a Keynote type session"
-  keynote(keynote: KeynoteCreateInput!): Keynote! @auth(requires: "sessions")
+  keynote(keynote: KeynoteCreateInput!): Keynote!
+    @auth(requires: "sessions")
+    @canMutate
 
   "Creates a Regular type session"
-  regular(regular: RegularCreateInput!): Regular! @auth(requires: "sessions")
+  regular(regular: RegularCreateInput!): Regular!
+    @auth(requires: "sessions")
+    @canMutate
 
   "Creates a Workshop type session"
   workshop(workshop: WorkshopCreateInput!): Workshop!
     @auth(requires: "sessions")
+    @canMutate
 
   "Creates a panel type session"
-  panel(panel: PanelCreateInput!): Panel! @auth(requires: "sessions")
+  panel(panel: PanelCreateInput!): Panel! @auth(requires: "sessions") @canMutate
 }
