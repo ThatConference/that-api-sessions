@@ -87,6 +87,8 @@ const createUserContext = (req, res, next) => {
   Sentry.configureScope(scope => {
     scope.setTags({
       correlationId,
+    });
+    scope.setContext('headers', {
       headers: req.headers,
     });
   });
