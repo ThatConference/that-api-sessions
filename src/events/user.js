@@ -212,7 +212,7 @@ function userEvents(postmark) {
 
     calEvent
       .create(session)
-      .then(result => dlog('Event created %d, %O', result.status, result.data))
+      .then(result => dlog('Event created %d, %o', result.status, result.data))
       .catch(error =>
         process.nextTick(() => userEventEmitter.emit('calendarError', error)),
       );
@@ -224,7 +224,7 @@ function userEvents(postmark) {
 
     calEvent
       .update(session)
-      .then(result => dlog('Event updated %d, %O', result.status, result.data))
+      .then(result => dlog('Event updated %d, %o', result.status, result.data))
       .catch(error =>
         process.nextTick(() => userEventEmitter.emit('calendarError', error)),
       );
@@ -237,17 +237,17 @@ function userEvents(postmark) {
     calEvent
       .cancel(session)
       .then(result =>
-        dlog('Event cancelled %d, %O', result.status, result.data),
+        dlog('Event cancelled %d, %o', result.status, result.data),
       )
       .catch(error =>
         process.nextTick(() => userEventEmitter.emit('calendarError', error)),
       );
   }
 
-  function sendSessionCreatedSlack({ session, user }) {
+  function sendSessionCreatedSlack({ session, user, event }) {
     dlog('call createdSessionSlack()');
 
-    slackNotifications.sessionCreated({ session, user });
+    slackNotifications.sessionCreated({ session, user, event });
   }
 
   userEventEmitter.on('emailError', err => {
