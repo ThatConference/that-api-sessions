@@ -3,23 +3,31 @@ import debug from 'debug';
 
 import sessionStore from '../../../dataSources/cloudFirestore/session';
 import memberStore from '../../../dataSources/cloudFirestore/member';
+import eventStore from '../../../dataSources/cloudFirestore/event';
 
 const dlog = debug('that:api:sessions:mutation:SessionCreate');
 
 async function createNewSession(eventId, user, session, firestore) {
-  const [sessionResults, userResults] = await Promise.all([
+  const [sessionResults, userResults, eventResults] = await Promise.all([
     sessionStore(firestore).create({
       eventId,
       user,
       session,
     }),
     memberStore(firestore).find(user.sub),
+    eventStore(firestore).getEvent(eventId),
   ]);
 
-  return { sessionResults, userResults };
+  return { sessionResults, userResults, eventResults };
 }
 
-function sendUserEvent({ sessionResults, userResults, userEvents, user }) {
+function sendUserEvent({
+  sessionResults,
+  userResults,
+  eventResults,
+  userEvents,
+  user,
+}) {
   if (
     (sessionResults.status === 'SUBMITTED' ||
       sessionResults.status === 'ACCEPTED') &&
@@ -31,6 +39,7 @@ function sendUserEvent({ sessionResults, userResults, userEvents, user }) {
         ...userResults,
       },
       session: sessionResults,
+      event: eventResults,
     });
   }
 }
@@ -50,16 +59,19 @@ export const fieldResolvers = {
     ) => {
       dlog('create called, user.sub: %s', user.sub);
 
-      const [sessionResults, userResults] = await Promise.all([
-        sessionStore(firestore).create({
-          eventId,
-          user,
-          session,
-        }),
-        memberStore(firestore).find(user.sub),
-      ]);
+      const {
+        sessionResults,
+        userResults,
+        eventResults,
+      } = await createNewSession(eventId, user, session, firestore);
 
-      sendUserEvent({ sessionResults, userResults, userEvents, user });
+      sendUserEvent({
+        sessionResults,
+        userResults,
+        eventResults,
+        userEvents,
+        user,
+      });
 
       return sessionResults;
     },
@@ -79,14 +91,19 @@ export const fieldResolvers = {
       const session = openspace;
       session.type = 'OPEN_SPACE';
 
-      const { sessionResults, userResults } = await createNewSession(
-        eventId,
-        user,
-        session,
-        firestore,
-      );
+      const {
+        sessionResults,
+        userResults,
+        eventResults,
+      } = await createNewSession(eventId, user, session, firestore);
 
-      sendUserEvent({ sessionResults, userResults, userEvents, user });
+      sendUserEvent({
+        sessionResults,
+        userResults,
+        eventResults,
+        userEvents,
+        user,
+      });
 
       return sessionResults;
     },
@@ -106,14 +123,19 @@ export const fieldResolvers = {
       const session = keynote;
       session.type = 'KEYNOTE';
 
-      const { sessionResults, userResults } = await createNewSession(
-        eventId,
-        user,
-        session,
-        firestore,
-      );
+      const {
+        sessionResults,
+        userResults,
+        eventResults,
+      } = await createNewSession(eventId, user, session, firestore);
 
-      sendUserEvent({ sessionResults, userResults, userEvents, user });
+      sendUserEvent({
+        sessionResults,
+        userResults,
+        eventResults,
+        userEvents,
+        user,
+      });
 
       return sessionResults;
     },
@@ -133,14 +155,19 @@ export const fieldResolvers = {
       const session = regular;
       session.type = 'REGULAR';
 
-      const { sessionResults, userResults } = await createNewSession(
-        eventId,
-        user,
-        session,
-        firestore,
-      );
+      const {
+        sessionResults,
+        userResults,
+        eventResults,
+      } = await createNewSession(eventId, user, session, firestore);
 
-      sendUserEvent({ sessionResults, userResults, userEvents, user });
+      sendUserEvent({
+        sessionResults,
+        userResults,
+        eventResults,
+        userEvents,
+        user,
+      });
 
       return sessionResults;
     },
@@ -160,14 +187,19 @@ export const fieldResolvers = {
       const session = panel;
       session.type = 'PANEL';
 
-      const { sessionResults, userResults } = await createNewSession(
-        eventId,
-        user,
-        session,
-        firestore,
-      );
+      const {
+        sessionResults,
+        userResults,
+        eventResults,
+      } = await createNewSession(eventId, user, session, firestore);
 
-      sendUserEvent({ sessionResults, userResults, userEvents, user });
+      sendUserEvent({
+        sessionResults,
+        userResults,
+        eventResults,
+        userEvents,
+        user,
+      });
 
       return sessionResults;
     },
@@ -187,14 +219,19 @@ export const fieldResolvers = {
       const session = workshop;
       session.type = 'WORKSHOP';
 
-      const { sessionResults, userResults } = await createNewSession(
-        eventId,
-        user,
-        session,
-        firestore,
-      );
+      const {
+        sessionResults,
+        userResults,
+        eventResults,
+      } = await createNewSession(eventId, user, session, firestore);
 
-      sendUserEvent({ sessionResults, userResults, userEvents, user });
+      sendUserEvent({
+        sessionResults,
+        userResults,
+        eventResults,
+        userEvents,
+        user,
+      });
 
       return sessionResults;
     },

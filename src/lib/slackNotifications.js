@@ -9,7 +9,7 @@ function callSlackHook(hookBody) {
   dlog('calling Slack hook');
   if (
     process.env.NODE_ENV === 'production' ||
-    process.env.TEST_SLACK_NOTIFICATIONS
+    process.env.TEST_SLACK_NOTIFICATIONS === 'true'
   ) {
     const slackUrl = envConfig.slackWebhookUrl;
     fetch(slackUrl, {
@@ -26,7 +26,7 @@ function callSlackHook(hookBody) {
 }
 
 export default {
-  sessionCreated: ({ session, user }) => {
+  sessionCreated: ({ session, user, event }) => {
     dlog('sessionCreated notification called');
 
     let userProfileImage = user.profileImage;
@@ -87,6 +87,13 @@ export default {
                 type: 'image',
                 image_url: userProfileImage,
                 alt_text: `${user.firstName} ${user.lastName}`,
+              },
+            },
+            {
+              type: 'section',
+              text: {
+                type: 'mrkdwn',
+                text: `${event.name || 'THAT'}`,
               },
             },
           ],
