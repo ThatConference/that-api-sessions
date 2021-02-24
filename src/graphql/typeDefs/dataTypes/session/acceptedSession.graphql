@@ -2,6 +2,7 @@
 type AcceptedSession @key(fields: "id") {
   id: ID!
   eventId: ID!
+  event: Event!
   slug: Slug!
   speakers: [PublicProfile!]!
 
