@@ -21,6 +21,7 @@ export const fieldResolvers = {
 
       return null;
     },
+    event: ({ eventId }) => ({ id: eventId }),
     speakers: parent => {
       dlog('speakers');
 
