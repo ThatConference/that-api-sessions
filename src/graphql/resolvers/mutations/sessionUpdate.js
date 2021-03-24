@@ -1,8 +1,10 @@
 /* eslint-disable import/prefer-default-export */
 import debug from 'debug';
+import { ForbiddenError } from 'apollo-server-express';
 
 import sessionStore from '../../../dataSources/cloudFirestore/session';
 import memberStore from '../../../dataSources/cloudFirestore/member';
+import checkMemberCanMutate from '../../../lib/checkMemberCanMutate';
 
 const dlog = debug('that:api:sessions:mutation:SessionUpdate');
 
@@ -74,6 +76,9 @@ export const fieldResolvers = {
         sessionId,
       });
 
+      if (!originalSession)
+        throw new Error('SessionId not found for for current user.');
+
       const [updatedSession, userResults] = await Promise.all([
         sessionStore(firestore).update({
           user,
@@ -113,6 +118,22 @@ export const fieldResolvers = {
         sessionId,
       });
 
+      if (!originalSession)
+        throw new Error('SessionId not found for for current user.');
+
+      if (openspace.eventId && openspace.eventId !== originalSession.eventId) {
+        // if changing eventId, ensure they have access to new EventId
+        const canMutate = await checkMemberCanMutate({
+          user,
+          eventId: openspace.eventId,
+          firestore,
+        });
+        if (!canMutate)
+          throw new ForbiddenError(
+            'User unable to mutate target eventId. Update failed',
+          );
+      }
+
       const { updatedSession, userResults } = await updateSession(
         sessionId,
         user,
@@ -148,6 +169,9 @@ export const fieldResolvers = {
         user,
         sessionId,
       });
+
+      if (!originalSession)
+        throw new Error('SessionId not found for for current user.');
 
       const { updatedSession, userResults } = await updateSession(
         sessionId,
@@ -185,6 +209,9 @@ export const fieldResolvers = {
         sessionId,
       });
 
+      if (!originalSession)
+        throw new Error('SessionId not found for for current user.');
+
       const { updatedSession, userResults } = await updateSession(
         sessionId,
         user,
@@ -221,6 +248,9 @@ export const fieldResolvers = {
         sessionId,
       });
 
+      if (!originalSession)
+        throw new Error('SessionId not found for for current user.');
+
       const { updatedSession, userResults } = await updateSession(
         sessionId,
         user,
@@ -256,6 +286,9 @@ export const fieldResolvers = {
         user,
         sessionId,
       });
+
+      if (!originalSession)
+        throw new Error('SessionId not found for for current user.');
 
       const { updatedSession, userResults } = await updateSession(
         sessionId,

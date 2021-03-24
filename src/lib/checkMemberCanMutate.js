@@ -7,7 +7,7 @@ import constants from '../constants';
 const dlog = debug('that:api:sessions:checkMemberCanMutate');
 
 export default function checkMemberCanMutate({ user, eventId, firestore }) {
-  dlog('checkMemberCanMutate called');
+  dlog('checkMemberCanMutate called for event %s', eventId);
   const memberId = user.sub;
   let orderStore;
   let eventStore;
@@ -54,6 +54,7 @@ export default function checkMemberCanMutate({ user, eventId, firestore }) {
     else if (isTicketRequiredToMutate && !canMembershipMutate)
       canMutate = tickets.length > 0;
 
+    dlog('canMutate::', canMutate);
     return canMutate;
   });
 }
