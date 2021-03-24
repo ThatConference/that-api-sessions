@@ -25,4 +25,7 @@ input OpenSpaceUpdateInput {
   primaryCategory: SessionCategory
 
   status: Status
+
+  "Member must have access to event to set/change"
+  eventId: ID
 }
