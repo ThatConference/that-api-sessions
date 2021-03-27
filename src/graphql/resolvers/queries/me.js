@@ -31,11 +31,17 @@ export const fieldResolvers = {
       { dataSources: { firestore, sessionLoader }, user },
     ) => {
       dlog('my favorite sessions called');
-
-      const favorites = await favoriteStore(firestore).findFavoritesForMember(
-        eventId,
-        user,
-      );
+      let favorites;
+      if (eventId.toUpperCase() === 'ANY') {
+        favorites = await favoriteStore(firestore).findAllFavoritesForMember(
+          user,
+        );
+      } else {
+        favorites = await favoriteStore(firestore).findFavoritesForMember(
+          eventId,
+          user,
+        );
+      }
       dlog('total favorites returned: %d', favorites.length);
 
       const favoriteSessions = await Promise.all(

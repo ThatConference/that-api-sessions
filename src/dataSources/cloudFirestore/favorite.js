@@ -20,6 +20,16 @@ function favorites(dbInstance) {
     return docs.map(r => ({ id: r.id, ...r.data() }));
   }
 
+  function findAllFavoritesForMember(user) {
+    dlog('findAllFavoritesForMember %s', user.sub);
+
+    return favoriteCollection
+      .where('memberId', '==', user.sub)
+      .where('sessionId', '!=', '')
+      .get()
+      .then(querySnap => querySnap.docs.map(r => ({ id: r.id, ...r.data() })));
+  }
+
   async function findFavoritesForSession(sessionId) {
     dlog('findFavoritesForSession() %s', sessionId);
 
@@ -83,6 +93,7 @@ function favorites(dbInstance) {
 
   return {
     findFavoritesForMember,
+    findAllFavoritesForMember,
     findFavoritesForSession,
     getSessionFavoriteCount,
     findSessionForMember,
