@@ -4,22 +4,23 @@ import { ForbiddenError } from 'apollo-server-express';
 
 import sessionStore from '../../../dataSources/cloudFirestore/session';
 import memberStore from '../../../dataSources/cloudFirestore/member';
+import eventStore from '../../../dataSources/cloudFirestore/event';
 import checkMemberCanMutate from '../../../lib/checkMemberCanMutate';
 
 const dlog = debug('that:api:sessions:mutation:SessionUpdate');
 
-async function updateSession(sessionId, user, session, firestore) {
-  const [updatedSession, userResults] = await Promise.all([
+async function updateSession({ eventId, sessionId, user, session, firestore }) {
+  const [updatedSession, userResults, eventResults] = await Promise.all([
     sessionStore(firestore).update({
       user,
       sessionId,
       session,
     }),
-
     memberStore(firestore).find(user.sub),
+    eventStore(firestore).getEvent(eventId),
   ]);
 
-  return { updatedSession, userResults };
+  return { updatedSession, userResults, eventResults };
 }
 
 function sendUserEvent({
@@ -28,7 +29,14 @@ function sendUserEvent({
   userResults,
   userEvents,
   user,
+  eventResults,
 }) {
+  dlog(
+    'sendUserEvent original status: %s, updated status: %s',
+    originalSession.status,
+    updatedSession.status,
+  );
+  let eventTitle = '';
   const userInfo = {
     ...user,
     ...userResults,
@@ -37,21 +45,18 @@ function sendUserEvent({
     originalSession.status === 'DRAFT' &&
     updatedSession.status === 'SUBMITTED'
   ) {
-    userEvents.emit('sessionCreated', {
-      user: userInfo,
-      session: updatedSession,
-    });
+    eventTitle = 'sessionCreated';
   } else if (updatedSession.status === 'ACCEPTED') {
-    userEvents.emit('sessionUpdated', {
-      user: userInfo,
-      session: updatedSession,
-    });
+    eventTitle = 'sessionUpdated';
   } else if (updatedSession.status === 'CANCELLED') {
-    userEvents.emit('sessionCancelled', {
-      user: userInfo,
-      session: updatedSession,
-    });
+    eventTitle = 'sessionCancelled';
   }
+
+  userEvents.emit(eventTitle, {
+    user: userInfo,
+    session: updatedSession,
+    event: eventResults,
+  });
 }
 
 export const fieldResolvers = {
@@ -79,15 +84,15 @@ export const fieldResolvers = {
       if (!originalSession)
         throw new Error('SessionId not found for for current user.');
 
-      const [updatedSession, userResults] = await Promise.all([
-        sessionStore(firestore).update({
-          user,
+      const { updatedSession, userResults, eventResults } = await updateSession(
+        {
+          eventId: originalSession.eventId,
           sessionId,
+          user,
           session,
-        }),
-
-        memberStore(firestore).find(user.sub),
-      ]);
+          firestore,
+        },
+      );
 
       sendUserEvent({
         originalSession,
@@ -95,6 +100,7 @@ export const fieldResolvers = {
         userResults,
         userEvents,
         user,
+        eventResults,
       });
 
       return updatedSession;
@@ -134,11 +140,14 @@ export const fieldResolvers = {
           );
       }
 
-      const { updatedSession, userResults } = await updateSession(
-        sessionId,
-        user,
-        openspace,
-        firestore,
+      const { updatedSession, userResults, eventResults } = await updateSession(
+        {
+          eventId: originalSession.eventId,
+          sessionId,
+          user,
+          session: openspace,
+          firestore,
+        },
       );
 
       sendUserEvent({
@@ -147,6 +156,7 @@ export const fieldResolvers = {
         userResults,
         userEvents,
         user,
+        eventResults,
       });
 
       return updatedSession;
@@ -173,11 +183,14 @@ export const fieldResolvers = {
       if (!originalSession)
         throw new Error('SessionId not found for for current user.');
 
-      const { updatedSession, userResults } = await updateSession(
-        sessionId,
-        user,
-        keynote,
-        firestore,
+      const { updatedSession, userResults, eventResults } = await updateSession(
+        {
+          eventId: originalSession.eventId,
+          sessionId,
+          user,
+          session: keynote,
+          firestore,
+        },
       );
 
       sendUserEvent({
@@ -186,6 +199,7 @@ export const fieldResolvers = {
         userResults,
         userEvents,
         user,
+        eventResults,
       });
 
       return updatedSession;
@@ -212,11 +226,14 @@ export const fieldResolvers = {
       if (!originalSession)
         throw new Error('SessionId not found for for current user.');
 
-      const { updatedSession, userResults } = await updateSession(
-        sessionId,
-        user,
-        regular,
-        firestore,
+      const { updatedSession, userResults, eventResults } = await updateSession(
+        {
+          eventId: originalSession.eventId,
+          sessionId,
+          user,
+          session: regular,
+          firestore,
+        },
       );
 
       sendUserEvent({
@@ -225,6 +242,7 @@ export const fieldResolvers = {
         userResults,
         userEvents,
         user,
+        eventResults,
       });
 
       return updatedSession;
@@ -251,11 +269,14 @@ export const fieldResolvers = {
       if (!originalSession)
         throw new Error('SessionId not found for for current user.');
 
-      const { updatedSession, userResults } = await updateSession(
-        sessionId,
-        user,
-        panel,
-        firestore,
+      const { updatedSession, userResults, eventResults } = await updateSession(
+        {
+          eventId: originalSession.eventId,
+          sessionId,
+          user,
+          session: panel,
+          firestore,
+        },
       );
 
       sendUserEvent({
@@ -264,6 +285,7 @@ export const fieldResolvers = {
         userResults,
         userEvents,
         user,
+        eventResults,
       });
 
       return updatedSession;
@@ -290,11 +312,14 @@ export const fieldResolvers = {
       if (!originalSession)
         throw new Error('SessionId not found for for current user.');
 
-      const { updatedSession, userResults } = await updateSession(
-        sessionId,
-        user,
-        workshop,
-        firestore,
+      const { updatedSession, userResults, eventResults } = await updateSession(
+        {
+          eventId: originalSession.eventId,
+          sessionId,
+          user,
+          session: workshop,
+          firestore,
+        },
       );
 
       sendUserEvent({
@@ -303,6 +328,7 @@ export const fieldResolvers = {
         userResults,
         userEvents,
         user,
+        eventResults,
       });
 
       return updatedSession;

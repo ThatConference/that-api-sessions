@@ -66,26 +66,32 @@ function userEvents(postmark) {
   const userEventEmitter = new EventEmitter();
   dlog('user event emitter created');
 
-  function sendSessionCreatedEmail({ user, session }) {
+  function sendSessionCreatedEmail({ user, session, event }) {
     dlog('new session created');
 
     let TemplateAlias;
     let link;
 
-    if (user.site === 'www.thatconference.com') {
+    if (['MULTI_DAY', 'MULTI_DAY_HYBRID', 'SINGLE_DAY'].includes(event.type)) {
       TemplateAlias = pmTemplates.thatconference.created;
       link = baseUris.thatconference.session;
-    } else if (user.site === 'that.us') {
+    } else if (['ONLINE', 'DAILY'].includes(event.type)) {
       TemplateAlias = pmTemplates.thatus.created;
       link = `${baseUris.thatus.session}/${session.id}`;
     } else {
-      dlog('unknown or missing user.site value %s', user.site);
+      dlog(
+        'unknown or missing event.type value %s (site: %s)',
+        event.type,
+        user.site,
+      );
       Sentry.withScope(scope => {
         scope.setLevel('info');
         scope.setContext('event information', {
           title: session.title,
           sessionId: session.id,
           'that-site': user.site,
+          eventType: event.type,
+          eventId: event.id,
           memberId: user.id,
         });
         scope.setTag('correlationId', user.correlationId);
@@ -119,14 +125,10 @@ function userEvents(postmark) {
             shortDescription: session.shortDescription,
             link,
           },
-          // Optional (hard coded in email now)
-          // event: {
-          //   name: 'Events name',
-          //   year: 'Event year',
-          //   cfpOpens: 'CallForCounselorOpenDate',
-          //   cfpCloses: 'CallForCounselorCloseDate',
-          //   announceDate: 'scheduleAnnouncedDate',
-          // },
+          event: {
+            name: event.name,
+            startDate: moment.utc(event.startDate).format('M/D/YYYY h:mm:ss A'),
+          },
         },
         Attachments: [
           {
@@ -142,26 +144,32 @@ function userEvents(postmark) {
       );
   }
 
-  function sendSessionUpdatedEmail({ user, session }) {
+  function sendSessionUpdatedEmail({ user, session, event }) {
     dlog('session updated event fired');
 
     let TemplateAlias;
     let link;
 
-    if (user.site === 'www.thatconference.com') {
+    if (['MULTI_DAY', 'MULTI_DAY_HYBRID', 'SINGLE_DAY'].includes(event.type)) {
       TemplateAlias = pmTemplates.thatconference.updated;
       link = `${baseUris.thatconference.session}`;
-    } else if (user.site === 'that.us') {
+    } else if (['ONLINE', 'DAILY'].includes(event.type)) {
       TemplateAlias = pmTemplates.thatus.updated;
       link = `${baseUris.thatus.session}/${session.id}`;
     } else {
-      dlog('unknown or missing user.site value %s', user.site);
+      dlog(
+        'unknown or missing event.type value %s (site: %s)',
+        event.type,
+        user.site,
+      );
       Sentry.withScope(scope => {
         scope.setLevel('info');
         scope.setContext('event information', {
           title: session.title,
           sessionId: session.id,
           'that-site': user.site,
+          eventType: event.type,
+          eventId: event.id,
           memberId: user.id,
         });
         scope.setTag('correlationId', user.correlationId);
@@ -174,7 +182,6 @@ function userEvents(postmark) {
 
     return postmark
       .sendEmailWithTemplate({
-        // TemplateId: 15581957,
         TemplateAlias,
         From: 'Hello@THATConference.com',
         To: user.email,
@@ -190,6 +197,10 @@ function userEvents(postmark) {
               .utc(session.lastUpdatedAt)
               .format('M/D/YYYY h:mm:ss A'),
             link,
+          },
+          event: {
+            name: event.name,
+            startDate: moment.utc(event.startDate).format('M/D/YYYY h:mm:ss A'),
           },
         },
         Attachments: [
@@ -210,24 +221,32 @@ function userEvents(postmark) {
   function insertSharedCalendar({ session }) {
     dlog('insertSharedCalendar');
 
-    calEvent
-      .create(session)
-      .then(result => dlog('Event created %d, %o', result.status, result.data))
-      .catch(error =>
-        process.nextTick(() => userEventEmitter.emit('calendarError', error)),
-      );
+    if (session.status === 'ACCEPTED') {
+      calEvent
+        .create(session)
+        .then(result =>
+          dlog('Event created %d, %o', result.status, result.data),
+        )
+        .catch(error =>
+          process.nextTick(() => userEventEmitter.emit('calendarError', error)),
+        );
+    }
   }
 
   // Updates an event on a shared google calendar
   function updateSharedCalendar({ session }) {
     dlog('updateSharedCalendar');
 
-    calEvent
-      .update(session)
-      .then(result => dlog('Event updated %d, %o', result.status, result.data))
-      .catch(error =>
-        process.nextTick(() => userEventEmitter.emit('calendarError', error)),
-      );
+    if (session.status === 'ACCEPTED') {
+      calEvent
+        .update(session)
+        .then(result =>
+          dlog('Event updated %d, %o', result.status, result.data),
+        )
+        .catch(error =>
+          process.nextTick(() => userEventEmitter.emit('calendarError', error)),
+        );
+    }
   }
 
   // Cancels an event on a shared google calendar
@@ -247,7 +266,9 @@ function userEvents(postmark) {
   function sendSessionCreatedSlack({ session, user, event }) {
     dlog('call createdSessionSlack()');
 
-    slackNotifications.sessionCreated({ session, user, event });
+    if (session.status === 'ACCEPTED') {
+      slackNotifications.sessionCreated({ session, user, event });
+    }
   }
 
   userEventEmitter.on('emailError', err => {
@@ -264,6 +285,10 @@ function userEvents(postmark) {
   userEventEmitter.on('sessionUpdated', sendSessionUpdatedEmail);
   userEventEmitter.on('sessionUpdated', updateSharedCalendar);
   userEventEmitter.on('sessionCancelled', cancelSharedCalendar);
+  // on admin events
+  userEventEmitter.on('adminSessionCreated', insertSharedCalendar);
+  userEventEmitter.on('adminSessionUpdated', updateSharedCalendar);
+  userEventEmitter.on('adminSessionCancelled', cancelSharedCalendar);
 
   return userEventEmitter;
 }
