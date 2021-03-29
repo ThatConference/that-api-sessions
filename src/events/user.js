@@ -16,8 +16,8 @@ const calEvent = calendarEvent(
 
 const baseUris = {
   thatus: {
-    session: 'https://that.us/activities/',
-    join: 'https://that.us/join/',
+    session: 'https://that.us/activities',
+    join: 'https://that.us/join',
   },
   thatconference: {
     session: 'https://www.thatconference.com/member/my-sessions',
