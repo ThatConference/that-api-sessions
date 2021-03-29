@@ -7,7 +7,7 @@ import eventStore from '../../../dataSources/cloudFirestore/event';
 
 const dlog = debug('that:api:sessions:mutation:SessionCreate');
 
-async function createNewSession(eventId, user, session, firestore) {
+async function createNewSession({ eventId, user, session, firestore }) {
   const [sessionResults, userResults, eventResults] = await Promise.all([
     sessionStore(firestore).create({
       eventId,
@@ -63,7 +63,7 @@ export const fieldResolvers = {
         sessionResults,
         userResults,
         eventResults,
-      } = await createNewSession(eventId, user, session, firestore);
+      } = await createNewSession({ eventId, user, session, firestore });
 
       sendUserEvent({
         sessionResults,
@@ -95,7 +95,7 @@ export const fieldResolvers = {
         sessionResults,
         userResults,
         eventResults,
-      } = await createNewSession(eventId, user, session, firestore);
+      } = await createNewSession({ eventId, user, session, firestore });
 
       sendUserEvent({
         sessionResults,
@@ -127,7 +127,7 @@ export const fieldResolvers = {
         sessionResults,
         userResults,
         eventResults,
-      } = await createNewSession(eventId, user, session, firestore);
+      } = await createNewSession({ eventId, user, session, firestore });
 
       sendUserEvent({
         sessionResults,
@@ -159,7 +159,7 @@ export const fieldResolvers = {
         sessionResults,
         userResults,
         eventResults,
-      } = await createNewSession(eventId, user, session, firestore);
+      } = await createNewSession({ eventId, user, session, firestore });
 
       sendUserEvent({
         sessionResults,
@@ -191,7 +191,7 @@ export const fieldResolvers = {
         sessionResults,
         userResults,
         eventResults,
-      } = await createNewSession(eventId, user, session, firestore);
+      } = await createNewSession({ eventId, user, session, firestore });
 
       sendUserEvent({
         sessionResults,
@@ -223,7 +223,7 @@ export const fieldResolvers = {
         sessionResults,
         userResults,
         eventResults,
-      } = await createNewSession(eventId, user, session, firestore);
+      } = await createNewSession({ eventId, user, session, firestore });
 
       sendUserEvent({
         sessionResults,

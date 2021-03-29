@@ -3,26 +3,44 @@ import debug from 'debug';
 
 import sessionStore from '../../../dataSources/cloudFirestore/session';
 import memberStore from '../../../dataSources/cloudFirestore/member';
+import eventStore from '../../../dataSources/cloudFirestore/event';
 
 const dlog = debug('that:api:sessions:mutation:AdminSessionCreate');
 
-async function createNewSession(eventId, user, session, firestore) {
-  const [sessionResults, userResults] = await Promise.all([
+async function createNewSession({ eventId, user, session, firestore }) {
+  const [sessionResults, userResults, eventResults] = await Promise.all([
     sessionStore(firestore).adminCreate({
       eventId,
       session,
     }),
     memberStore(firestore).find(user.sub),
+    eventStore(firestore).getEvent(eventId),
   ]);
 
-  return { sessionResults, userResults };
+  return { sessionResults, userResults, eventResults };
 }
 
-function sendUserEvent(sessionResults, userResults, userEvents) {
-  userEvents.emit('sessionCreated', {
-    user: userResults,
-    session: sessionResults,
-  });
+function sendUserEvent({
+  sessionResults,
+  userResults,
+  eventResults,
+  userEvents,
+  user,
+}) {
+  if (
+    (sessionResults.status === 'SUBMITTED' ||
+      sessionResults.status === 'ACCEPTED') &&
+    sessionResults.startTime
+  ) {
+    userEvents.emit('adminSessionCreated', {
+      user: {
+        ...user,
+        ...userResults,
+      },
+      session: sessionResults,
+      event: eventResults,
+    });
+  }
 }
 
 export const fieldResolvers = {
@@ -43,14 +61,19 @@ export const fieldResolvers = {
       const session = openspace;
       session.type = 'OPEN_SPACE';
 
-      const { sessionResults, userResults } = await createNewSession(
-        eventId,
-        user,
-        session,
-        firestore,
-      );
+      const {
+        sessionResults,
+        userResults,
+        eventResults,
+      } = await createNewSession({ eventId, user, session, firestore });
 
-      sendUserEvent(sessionResults, userResults, userEvents);
+      sendUserEvent({
+        sessionResults,
+        userResults,
+        eventResults,
+        userEvents,
+        user,
+      });
 
       return sessionResults;
     },
@@ -70,14 +93,19 @@ export const fieldResolvers = {
       const session = keynote;
       session.type = 'KEYNOTE';
 
-      const { sessionResults, userResults } = await createNewSession(
-        eventId,
-        user,
-        session,
-        firestore,
-      );
+      const {
+        sessionResults,
+        userResults,
+        eventResults,
+      } = await createNewSession({ eventId, user, session, firestore });
 
-      sendUserEvent(sessionResults, userResults, userEvents);
+      sendUserEvent({
+        sessionResults,
+        userResults,
+        eventResults,
+        userEvents,
+        user,
+      });
 
       return sessionResults;
     },
@@ -97,14 +125,19 @@ export const fieldResolvers = {
       const session = regular;
       session.type = 'REGULAR';
 
-      const { sessionResults, userResults } = await createNewSession(
-        eventId,
-        user,
-        session,
-        firestore,
-      );
+      const {
+        sessionResults,
+        userResults,
+        eventResults,
+      } = await createNewSession({ eventId, user, session, firestore });
 
-      sendUserEvent(sessionResults, userResults, userEvents);
+      sendUserEvent({
+        sessionResults,
+        userResults,
+        eventResults,
+        userEvents,
+        user,
+      });
 
       return sessionResults;
     },
@@ -124,14 +157,19 @@ export const fieldResolvers = {
       const session = panel;
       session.type = 'PANEL';
 
-      const { sessionResults, userResults } = await createNewSession(
-        eventId,
-        user,
-        session,
-        firestore,
-      );
+      const {
+        sessionResults,
+        userResults,
+        eventResults,
+      } = await createNewSession({ eventId, user, session, firestore });
 
-      sendUserEvent(sessionResults, userResults, userEvents);
+      sendUserEvent({
+        sessionResults,
+        userResults,
+        eventResults,
+        userEvents,
+        user,
+      });
 
       return sessionResults;
     },
@@ -151,14 +189,19 @@ export const fieldResolvers = {
       const session = workshop;
       session.type = 'WORKSHOP';
 
-      const { sessionResults, userResults } = await createNewSession(
-        eventId,
-        user,
-        session,
-        firestore,
-      );
+      const {
+        sessionResults,
+        userResults,
+        eventResults,
+      } = await createNewSession({ eventId, user, session, firestore });
 
-      sendUserEvent(sessionResults, userResults, userEvents);
+      sendUserEvent({
+        sessionResults,
+        userResults,
+        eventResults,
+        userEvents,
+        user,
+      });
 
       return sessionResults;
     },
