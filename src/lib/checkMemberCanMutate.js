@@ -31,12 +31,13 @@ export default function checkMemberCanMutate({ user, eventId, firestore }) {
     const [member, event, allocations] = data;
     if (!event) throw new Error('Event record could not be found');
     const {
-      isTicketRequiredToMutate,
-      canMembershipMutate,
+      isTicketRequiredToMutate = false,
+      canMembershipMutate = false,
       callForSpeakersOpenDate,
       callForSpeakersCloseDate,
     } = event;
-    const { isMember } = member;
+    if (!member) return false;
+    const { isMember = false } = member;
     const tickets = allocations.filter(
       a => a.productType === constants.THAT.PRODUCT_TYPE.TICKET,
     );
