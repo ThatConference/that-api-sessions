@@ -36,6 +36,7 @@ export default function checkMemberCanMutate({ user, eventId, firestore }) {
       callForSpeakersOpenDate,
       callForSpeakersCloseDate,
     } = event;
+    if (!member) return false;
     const { isMember } = member;
     const tickets = allocations.filter(
       a => a.productType === constants.THAT.PRODUCT_TYPE.TICKET,

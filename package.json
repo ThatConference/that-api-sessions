@@ -1,6 +1,6 @@
 {
   "name": "that-api-sessions",
-  "version": "1.5.1",
+  "version": "1.5.2",
   "description": "THAT Conference's Sessions Micro Service.",
   "main": "index.js",
   "engines": {
@@ -24,7 +24,7 @@
     "@google-cloud/functions-framework": "^1.7.1",
     "@graphql-tools/load-files": "^6.2.5",
     "@graphql-tools/merge": "^6.2.9",
-    "@sentry/node": "^6.2.3",
+    "@sentry/node": "^6.2.5",
     "@thatconference/api": "~1.22.0",
     "apollo-server-express": "^2.22.1",
     "base32-encode": "^1.1.1",
