@@ -1,6 +1,6 @@
 {
   "name": "that-api-sessions",
-  "version": "1.5.2",
+  "version": "1.5.3",
   "description": "THAT Conference's Sessions Micro Service.",
   "main": "index.js",
   "engines": {
@@ -25,7 +25,7 @@
     "@graphql-tools/load-files": "^6.2.5",
     "@graphql-tools/merge": "^6.2.9",
     "@sentry/node": "^6.2.5",
-    "@thatconference/api": "~1.22.0",
+    "@thatconference/api": "~1.22.1",
     "apollo-server-express": "^2.22.1",
     "base32-encode": "^1.1.1",
     "dataloader": "^2.0.0",
