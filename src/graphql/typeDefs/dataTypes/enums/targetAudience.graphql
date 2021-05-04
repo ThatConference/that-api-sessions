@@ -1,5 +1,9 @@
+"target audience, description text is used in ui"
 enum TargetAudience {
+  "Anybody"
   ANYBODY
+  "Developers"
   DEVELOPERS
+  "Managers"
   MANAGERS
 }

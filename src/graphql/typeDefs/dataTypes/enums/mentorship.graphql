@@ -1,5 +1,9 @@
+"mentorship, description text is used in ui"
 enum Mentorship {
+  "None, I've got this."
   NO
+  "Some would be helpful."
   SOME
+  "All I can get."
   YES
 }

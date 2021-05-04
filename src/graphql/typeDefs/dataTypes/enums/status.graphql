@@ -1,11 +1,21 @@
+"session status, description text is used in ui"
 enum Status {
+  "Draft"
   DRAFT
+  "Submitted"
   SUBMITTED
+  "Accepted"
   ACCEPTED
+  "Not Accepted"
   NOT_ACCEPTED
+  "Withdrew"
   WITHDREW
+  "Wait List"
   WAIT_LIST
+  "Cancelled"
   CANCELLED
+  "Scheduled"
   SCHEDULED
+  "Archived"
   ARCHIVED
 }

@@ -1,5 +1,9 @@
+"category, description text is used in ui"
 enum Category {
+  "Professional"
   PROFESSIONAL
+  "Family"
   FAMILY
+  "Partner"
   PARTNER
 }
