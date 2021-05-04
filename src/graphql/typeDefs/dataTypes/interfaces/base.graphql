@@ -29,7 +29,7 @@ interface Base {
   "tags to describe session"
   tags: [String]
   "Reference materials for all"
-  supportingArtificats: [Artifact]
+  supportingArtifacts: [Artifact]
 
   "members with public profiles who favorited session"
   favoritedBy: [PublicProfile]
