@@ -14,7 +14,7 @@ type Keynote implements EyesFront & Base @key(fields: "id") {
   location: String
 
   tags: [String]
-  supportingArtificats: [Artifact]
+  supportingArtifacts: [Artifact]
   "members with public profiles who favorited session"
   favoritedBy: [PublicProfile]
   "total number of members who favorited, includes non-public in count too"

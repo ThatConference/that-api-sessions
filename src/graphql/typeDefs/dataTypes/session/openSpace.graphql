@@ -15,7 +15,7 @@ type OpenSpace implements Base @key(fields: "id") {
 
   tags: [String]
   "Reference materials for all"
-  supportingArtificats: [Artifact]
+  supportingArtifacts: [Artifact]
   "members with public profiles who favorited session"
   favoritedBy: [PublicProfile]
   "total number of members who favorited, includes non-public in count too"
