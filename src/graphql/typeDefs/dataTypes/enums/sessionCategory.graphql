@@ -1,22 +1,43 @@
+"session category, description text is used in ui"
 enum SessionCategory {
+  "Accessibility"
   ACCESSIBILITY
+  "Architecture"
   ARCHITECTURE
+  "AR/VR"
   AR_VR
+  "Cloud Computing"
   CLOUD_COMPUTING
+  "Database"
   DATABASE_STORAGE
+  "Design UX"
   DESIGN_UX
+  "DevOps"
   DEV_OPS
+  "Infrastructure"
   INFRASTRUCTURE
+  "IoT and Makers"
   IOT_MAKER
+  "Languages"
   LANGUAGES
+  "Machine Learning"
   MACHINE_LEARNING
+  "Mobile"
   MOBILE
+  "Product Management"
   PRODUCT_MANAGEMENT
+  "Soft Skills"
   SOFT_SKILLS
+  "Security"
   SECURITY
+  "Testing"
   TESTING
+  "Tooling"
   TOOLING
+  "User Interfaces"
   USER_INTERFACES
+  "Web"
   WEB
+  "Other"
   OTHER
 }

@@ -1,4 +1,4 @@
-"filter view for returned sessions"
+"filter view for returned sessions, description text is used in ui"
 enum SessionFilter {
   "All sessions, no filtering"
   ALL
