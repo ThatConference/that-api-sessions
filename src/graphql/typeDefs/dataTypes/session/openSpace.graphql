@@ -1,30 +1,45 @@
 type OpenSpace implements Base @key(fields: "id") {
+  # Start Base interface fields
+  "Session unique identifier"
   id: ID!
+  "Event id session is associated with"
   eventId: String!
+  "Session slug unique by eventId"
   slug: Slug!
+  "The session's title"
   title: String!
+  "A shorter more concise description"
   shortDescription: String!
+  "Primary interests category for the session"
   primaryCategory: SessionCategory
-  speakers: [PublicProfile!]!
-
+  "Session's associated speakers. Each will see session under their profile"
+  speakers: [PublicProfile]
+  "The type of session, informs union resolver of session object to return"
   type: SessionType
+  "Session status. ENUM. E.g. accepted, submitted, etc. "
   status: Status
+  "Full duration of session in minutes"
   durationInMinutes: Int
+  "Starting time of this session"
   startTime: Date
+  "Location of session, physical or virtual"
   location: String
-
+  "Tags to describe session"
   tags: [String]
   "Reference materials for all"
   supportingArtifacts: [Artifact]
-  "members with public profiles who favorited session"
+  "Members with public profiles who favorited session"
   favoritedBy: [PublicProfile]
-  "total number of members who favorited, includes non-public in count too"
+  "Total number of members who favorited, includes non-public in count too"
   favoriteCount: Int
-  "communities (as slug) associated with session. initially same as event community"
+  "Communities (as slug) associated with session. initially same as event community"
   communities: [Slug]
   "Assets assigned to this session"
   assets: [Asset]
-
+  "Date time session created"
   createdAt: Date!
+  "Date time session last updated"
   lastUpdatedAt: Date!
+  "Admin-specific fields"
+  admin: SessionAdminFields
 }

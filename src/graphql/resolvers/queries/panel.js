@@ -36,5 +36,6 @@ export const fieldResolvers = {
       dlog('session assets requested');
       return findAssets({ entityId, firestore, assetLoader });
     },
+    admin: parent => parent,
   },
 };

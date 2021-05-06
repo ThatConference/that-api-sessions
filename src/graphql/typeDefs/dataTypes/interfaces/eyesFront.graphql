@@ -1,27 +1,26 @@
-"session fields for eye-forward style sessions. Base must be implemented with EyesFront in types using this interface"
+"Session fields for eye-forward style sessions. Base must be implemented with EyesFront in types using this interface"
 interface EyesFront {
   # Start EyesFront interface fields
   "a longer more verbose session description"
   longDescription: String
   "why are you the best person to perform this session"
   whyAreYou: String
-
+  "other author comments regarding session"
   otherComments: String
-  "expected takeaways for attending this session"
+  "list of expected takeaways for attending this session"
   takeaways: [String]
-
   "does the speaker(s) require mentorship on this session?"
   mentorship: Mentorship
-  "secondary categories for the session"
+  "secondary interests categories for the session"
   secondaryCategory: [SessionCategory]
   "does the speaker(s) allow session to be recorded"
   canRecord: Boolean
   "session being recorded if set true"
   isRecorded: Boolean
-
+  "FUTURE: possible rating holder"
   rating: [Rating]
   "type of audience session is targeted toward"
   targetAudience: [TargetAudience]
-
+  "Main category declaration. e.g. professional, family, etc."
   category: Category
 }

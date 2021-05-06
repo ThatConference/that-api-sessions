@@ -1,48 +1,46 @@
-"base session fields for any type of session"
+"Base session fields for any type of session"
 interface Base {
-  "session unique identifier"
+  # Start Base interface fields
+  "Session unique identifier"
   id: ID!
-  "event id session is associated with"
+  "Event id session is associated with"
   eventId: String!
-  "session slug unique by eventid"
+  "Session slug unique by eventId"
   slug: Slug!
-  "session title"
+  "The session's title"
   title: String!
-  "a shorter more concise desrcription"
+  "A shorter more concise description"
   shortDescription: String!
-  "primary category for the session"
+  "Primary interests category for the session"
   primaryCategory: SessionCategory
-  "associated speakers. will see session as their own"
+  "Session's associated speakers. Each will see session under their profile"
   speakers: [PublicProfile]
-
-  "the type of session, informs union resolver of session object to return"
+  "The type of session, informs union resolver of session object to return"
   type: SessionType
-  "session stats"
+  "Session status. ENUM. E.g. accepted, submitted, etc. "
   status: Status
-  "full duriation of session in munutes"
+  "Full duration of session in minutes"
   durationInMinutes: Int
-  "starting time of this session"
+  "Starting time of this session"
   startTime: Date
-  "location of session, physical or virtual"
+  "Location of session, physical or virtual"
   location: String
-
-  "tags to describe session"
+  "Tags to describe session"
   tags: [String]
   "Reference materials for all"
   supportingArtifacts: [Artifact]
-
-  "members with public profiles who favorited session"
+  "Members with public profiles who favorited session"
   favoritedBy: [PublicProfile]
-  "total number of members who favorited, includes non-public in count too"
+  "Total number of members who favorited, includes non-public in count too"
   favoriteCount: Int
-
-  "communities (as slug) associated with session. initially same as event community"
+  "Communities (as slug) associated with session. initially same as event community"
   communities: [Slug]
   "Assets assigned to this session"
   assets: [Asset]
-
-  "date time session created"
+  "Date time session created"
   createdAt: Date!
-  "date time session last updated"
+  "Date time session last updated"
   lastUpdatedAt: Date!
+  "Admin-specific fields"
+  admin: SessionAdminFields
 }

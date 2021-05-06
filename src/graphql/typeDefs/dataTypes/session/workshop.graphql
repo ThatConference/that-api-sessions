@@ -1,48 +1,76 @@
+"Hands-on session types used for training and other interactive interactions"
 type Workshop implements EyesFront & Base @key(fields: "id") {
+  # Start Base interface fields
+  "Session unique identifier"
   id: ID!
+  "Event id session is associated with"
   eventId: String!
+  "Session slug unique by eventId"
   slug: Slug!
+  "The session's title"
   title: String!
+  "A shorter more concise description"
   shortDescription: String!
+  "Primary interests category for the session"
   primaryCategory: SessionCategory
-  speakers: [PublicProfile!]!
-
+  "Session's associated speakers. Each will see session under their profile"
+  speakers: [PublicProfile]
+  "The type of session, informs union resolver of session object to return"
   type: SessionType
+  "Session status. ENUM. E.g. accepted, submitted, etc. "
   status: Status
+  "Full duration of session in minutes"
   durationInMinutes: Int
+  "Starting time of this session"
   startTime: Date
+  "Location of session, physical or virtual"
   location: String
-
+  "Tags to describe session"
   tags: [String]
+  "Reference materials for all"
   supportingArtifacts: [Artifact]
-  "members with public profiles who favorited session"
+  "Members with public profiles who favorited session"
   favoritedBy: [PublicProfile]
-  "total number of members who favorited, includes non-public in count too"
+  "Total number of members who favorited, includes non-public in count too"
   favoriteCount: Int
-  "communities (as slug) associated with session. initially same as event community"
+  "Communities (as slug) associated with session. initially same as event community"
   communities: [Slug]
   "Assets assigned to this session"
   assets: [Asset]
-
+  "Date time session created"
   createdAt: Date!
+  "Date time session last updated"
   lastUpdatedAt: Date!
+  "Admin-specific fields"
+  admin: SessionAdminFields
 
-  # Start Session interface fields
+  # Start EyesFront interface fields
+  "a longer more verbose session description"
   longDescription: String
+  "why are you the best person to perform this session"
   whyAreYou: String
+  "other author comments regarding session"
   otherComments: String
+  "list of expected takeaways for attending this session"
   takeaways: [String]
+  "does the speaker(s) require mentorship on this session?"
   mentorship: Mentorship
+  "secondary interests categories for the session"
   secondaryCategory: [SessionCategory]
+  "does the speaker(s) allow session to be recorded"
   canRecord: Boolean
+  "session being recorded if set true"
   isRecorded: Boolean
+  "FUTURE: possible rating holder"
   rating: [Rating]
+  "type of audience session is targeted toward"
   targetAudience: [TargetAudience]
+  "Main category declaration. e.g. professional, family, etc."
   category: Category
 
-  # Workshop specific
-  "items and tasks to be done PRIOR to attending session"
+  # Workshop-specific fields
+  "Items and tasks to be done PRIOR to attending session"
   prerequisites: String
-  "detailed agenda of workshop"
+  "Detailed agenda of workshop"
   agenda: String
 }
