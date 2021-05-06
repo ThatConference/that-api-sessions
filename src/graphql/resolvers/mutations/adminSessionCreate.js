@@ -47,7 +47,7 @@ export const fieldResolvers = {
   AdminSessionCreate: {
     openSpace: async (
       { eventId },
-      { openspace },
+      { session: openspace },
       {
         dataSources: {
           firestore,
@@ -79,7 +79,7 @@ export const fieldResolvers = {
     },
     keynote: async (
       { eventId },
-      { keynote },
+      { session: keynote },
       {
         dataSources: {
           firestore,
@@ -111,7 +111,7 @@ export const fieldResolvers = {
     },
     regular: async (
       { eventId },
-      { regular },
+      { session: regular },
       {
         dataSources: {
           firestore,
@@ -143,7 +143,7 @@ export const fieldResolvers = {
     },
     panel: async (
       { eventId },
-      { panel },
+      { session: panel },
       {
         dataSources: {
           firestore,
@@ -175,7 +175,7 @@ export const fieldResolvers = {
     },
     workshop: async (
       { eventId },
-      { workshop },
+      { session: workshop },
       {
         dataSources: {
           firestore,

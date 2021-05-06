@@ -1,18 +1,18 @@
 type AdminSessionCreate {
   "Creates an OpenSpace type session"
-  openSpace(openspace: OpenSpaceAdminCreateInput!): OpenSpace!
+  openSpace(session: OpenSpaceAdminCreateInput!): OpenSpace!
     @auth(requires: "admin")
 
   "Creates a Keynote type session"
-  keynote(keynote: KeynoteAdminCreateInput!): Keynote! @auth(requires: "admin")
+  keynote(session: KeynoteAdminCreateInput!): Keynote! @auth(requires: "admin")
 
   "Creates a Regular type session"
-  regular(regular: RegularAdminCreateInput!): Regular! @auth(requires: "admin")
+  regular(session: RegularAdminCreateInput!): Regular! @auth(requires: "admin")
 
   "Creates a Workshop type session"
-  workshop(workshop: WorkshopAdminCreateInput!): Workshop!
+  workshop(session: WorkshopAdminCreateInput!): Workshop!
     @auth(requires: "admin")
 
   "Creates a panel type session"
-  panel(panel: PanelAdminCreateInput!): Panel! @auth(requires: "admin")
+  panel(session: PanelAdminCreateInput!): Panel! @auth(requires: "admin")
 }
