@@ -7,25 +7,27 @@ type SessionUpdate {
     @deprecated(reason: "use specific session type update instead")
 
   "Update for an OpenSpace type session"
-  openSpace(openspace: OpenSpaceUpdateInput!): OpenSpace!
+  openSpace(session: OpenSpaceUpdateInput!): OpenSpace!
     @auth(requires: "sessions")
     @canMutate
 
   "Update for a Keynote type session"
-  keynote(keynote: KeynoteUpdateInput!): Keynote!
+  keynote(session: KeynoteUpdateInput!): Keynote!
     @auth(requires: "sessions")
     @canMutate
 
   "Update for a Regular type session"
-  regular(regular: RegularUpdateInput!): Regular!
+  regular(session: RegularUpdateInput!): Regular!
     @auth(requires: "sessions")
     @canMutate
 
   "Update for a Workshop type session"
-  workshop(workshop: WorkshopUpdateInput!): Workshop!
+  workshop(session: WorkshopUpdateInput!): Workshop!
     @auth(requires: "sessions")
     @canMutate
 
   "Update for a Panel type session"
-  panel(panel: PanelUpdateInput!): Panel! @auth(requires: "sessions") @canMutate
+  panel(session: PanelUpdateInput!): Panel!
+    @auth(requires: "sessions")
+    @canMutate
 }

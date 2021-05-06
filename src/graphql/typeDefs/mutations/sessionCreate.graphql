@@ -7,25 +7,27 @@ type SessionCreate {
     @deprecated(reason: "use specific session type create instead")
 
   "Creates an OpenSpace type session"
-  openSpace(openspace: OpenSpaceCreateInput!): OpenSpace!
+  openSpace(session: OpenSpaceCreateInput!): OpenSpace!
     @auth(requires: "sessions")
     @canMutate
 
   "Creates a Keynote type session"
-  keynote(keynote: KeynoteCreateInput!): Keynote!
+  keynote(session: KeynoteCreateInput!): Keynote!
     @auth(requires: "sessions")
     @canMutate
 
   "Creates a Regular type session"
-  regular(regular: RegularCreateInput!): Regular!
+  regular(session: RegularCreateInput!): Regular!
     @auth(requires: "sessions")
     @canMutate
 
   "Creates a Workshop type session"
-  workshop(workshop: WorkshopCreateInput!): Workshop!
+  workshop(session: WorkshopCreateInput!): Workshop!
     @auth(requires: "sessions")
     @canMutate
 
   "Creates a panel type session"
-  panel(panel: PanelCreateInput!): Panel! @auth(requires: "sessions") @canMutate
+  panel(session: PanelCreateInput!): Panel!
+    @auth(requires: "sessions")
+    @canMutate
 }
