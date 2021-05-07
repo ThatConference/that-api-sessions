@@ -16,6 +16,7 @@ import { fieldResolvers as assetsFields } from './assets';
 import { fieldResolvers as assetFields } from './asset';
 import { fieldResolvers as entityFields } from './entity';
 import { fieldResolvers as adminFields } from './sessionAdminFields';
+import { fieldResolvers as adminSessionsFields } from './adminSessions';
 
 export default {
   ...root,
@@ -38,4 +39,5 @@ export const fieldResolvers = {
   ...assetFields,
   ...entityFields,
   ...adminFields,
+  ...adminSessionsFields,
 };

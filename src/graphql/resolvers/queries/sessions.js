@@ -45,5 +45,9 @@ export const fieldResolvers = {
         cursor,
       });
     },
+    admin: () => {
+      dlog('admin query path called');
+      return {};
+    },
   },
 };
