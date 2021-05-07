@@ -241,6 +241,28 @@ function sessions(dbInstance) {
     );
   }
 
+  function findWithStatuses({ statuses, orderBy, eventId }) {
+    dlog('findWithStatuses, %o; orderby, %s', statuses, orderBy);
+    const inStatus = validateStatuses(statuses);
+    let startTimeOrder;
+    if (orderBy === 'START_TIME_ASC') startTimeOrder = 'asc';
+    else if (orderBy === 'START_TIME_DESC') startTimeOrder = 'desc';
+    let query = sessionsCol.where('status', 'in', inStatus);
+    if (eventId) query = query.where('eventId', '==', eventId);
+    if (startTimeOrder) query = query.orderBy('startTime', startTimeOrder);
+
+    return query.get().then(qrySnap => {
+      dlog('size of query result:: %d', qrySnap.size);
+      return qrySnap.docs.map(d => {
+        const r = {
+          id: d.id,
+          ...d.data(),
+        };
+        return sessionDateForge(r);
+      });
+    });
+  }
+
   async function findWithStatusesPaged({
     statuses,
     orderBy,
@@ -421,6 +443,7 @@ function sessions(dbInstance) {
     findSession,
     findAcceptedSession,
     batchFindSessions,
+    findWithStatuses,
     findWithStatusesPaged,
     addInAttendance,
     getTotalProfessionalSubmittedForEvent,

@@ -1,0 +1,6 @@
+type AdminSessionsQuery {
+  "Gets all accepted sessions for a given event. Used for scheduling"
+  pullSchedule(eventId: ID!): [TheSessions]
+  "Get all sessions with filters. DEFAULTS: status=APPROVED"
+  all(eventId: ID, status: [Status], orderBy: SessionOrderBy): [TheSessions]
+}

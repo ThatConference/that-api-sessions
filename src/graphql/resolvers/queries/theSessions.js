@@ -6,7 +6,6 @@ const dlog = debug('that:api:sessions:thesessions');
 export const fieldResolvers = {
   TheSessions: {
     __resolveType(obj, context, info) {
-      dlog('__resolveType called');
       let result = null;
       switch (obj.type) {
         case 'REGULAR':
@@ -28,8 +27,10 @@ export const fieldResolvers = {
           result = 'Workshop';
           break;
         default:
+          throw new Error(
+            `Resolver encountered unknown session type ${obj.type}`,
+          );
       }
-      dlog('result:', result);
       return result;
     },
   },

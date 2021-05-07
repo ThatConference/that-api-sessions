@@ -1,0 +1,4 @@
+type SessionAdminFields {
+  "a session's speakers"
+  speakers: [Profile]! @auth(requires: "admin")
+}

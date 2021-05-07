@@ -12,4 +12,6 @@ type SessionsQuery {
     pageSize: Int
     cursor: String
   ): PagedAcceptedSession
+  "Admin-centric queries"
+  admin: AdminSessionsQuery @auth(requires: "admin")
 }
