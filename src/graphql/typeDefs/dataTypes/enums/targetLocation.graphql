@@ -1,0 +1,8 @@
+enum TargetLocation {
+  "Online"
+  ONLINE
+  "In-Person"
+  IN_PERSON
+  "Either online or in-person"
+  EITHER
+}

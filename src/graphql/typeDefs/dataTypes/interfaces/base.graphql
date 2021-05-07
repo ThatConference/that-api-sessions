@@ -17,6 +17,10 @@ interface Base {
   speakers: [PublicProfile]
   "The type of session, informs union resolver of session object to return"
   type: SessionType
+  "The target audience for this session, professional, manager, kids, etc."
+  targetAudience: [TargetAudience]
+  "The target location for this session, in-person, etc."
+  targetLocation: TargetLocation
   "Session status. ENUM. E.g. accepted, submitted, etc. "
   status: Status
   "Full duration of session in minutes"

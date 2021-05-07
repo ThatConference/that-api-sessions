@@ -1,31 +1,32 @@
 input OpenSpaceCreateInput {
   title: String!
   shortDescription: String!
-
+  "The target audience for this session, professional, manager, kids, etc."
+  targetAudience: [TargetAudience]
+  "The target location for this session, in-person, etc."
+  targetLocation: TargetLocation
   durationInMinutes: Int
   startTime: Date
   location: String
   tags: [String]
-
   primaryCategory: SessionCategory
-
   status: Status
 }
 
 input OpenSpaceUpdateInput {
   title: String
   shortDescription: String
-
+  "The target audience for this session, professional, manager, kids, etc."
+  targetAudience: [TargetAudience]
+  "The target location for this session, in-person, etc."
+  targetLocation: TargetLocation
   type: SessionType
   durationInMinutes: Int
   startTime: Date
   location: String
   tags: [String]
-
   primaryCategory: SessionCategory
-
   status: Status
-
   "Member must have access to event to set/change"
   eventId: ID
 }

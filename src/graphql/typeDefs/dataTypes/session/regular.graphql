@@ -17,6 +17,10 @@ type Regular implements EyesFront & Base @key(fields: "id") {
   speakers: [PublicProfile]
   "The type of session, informs union resolver of session object to return"
   type: SessionType
+  "The target audience for this session, professional, manager, kids, etc."
+  targetAudience: [TargetAudience]
+  "The target location for this session, in-person, etc."
+  targetLocation: TargetLocation
   "Session status. ENUM. E.g. accepted, submitted, etc. "
   status: Status
   "Full duration of session in minutes"
@@ -63,8 +67,6 @@ type Regular implements EyesFront & Base @key(fields: "id") {
   isRecorded: Boolean
   "FUTURE: possible rating holder"
   rating: [Rating]
-  "type of audience session is targeted toward"
-  targetAudience: [TargetAudience]
-  "Main category declaration. e.g. professional, family, etc."
+  "Main category/track declaration. e.g. professional, family, etc."
   category: Category
 }

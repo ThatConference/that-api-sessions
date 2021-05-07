@@ -19,8 +19,6 @@ interface EyesFront {
   isRecorded: Boolean
   "FUTURE: possible rating holder"
   rating: [Rating]
-  "type of audience session is targeted toward"
-  targetAudience: [TargetAudience]
-  "Main category declaration. e.g. professional, family, etc."
+  "Main category/track declaration. e.g. professional, family, etc."
   category: Category
 }
