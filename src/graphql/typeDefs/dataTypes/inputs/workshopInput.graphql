@@ -5,7 +5,10 @@ input WorkshopCreateInput {
 
   durationInMinutes: Int
   tags: [String]
-
+  "list of expected takeaways for attending this session"
+  takeaways: [String]
+  "Reference materials for all"
+  supportingArtifacts: [ArtifactInput]
   "The target audience for this session, professional, manager, kids, etc."
   targetAudience: [TargetAudience]
   "The target location for this session, in-person, etc."
@@ -13,14 +16,11 @@ input WorkshopCreateInput {
   whyAreYou: String
   otherComments: String
 
-  takeaways: [String]
   mentorship: Mentorship
 
   category: Category
   primaryCategory: SessionCategory
   secondaryCategory: [SessionCategory]
-
-  supportingArtifacts: [ArtifactInput]
 
   canRecord: Boolean
   status: Status
@@ -46,7 +46,10 @@ input WorkshopUpdateInput {
   type: SessionType
   durationInMinutes: Int
   tags: [String]
-
+  "list of expected takeaways for attending this session"
+  takeaways: [String]
+  "Reference materials for all"
+  supportingArtifacts: [ArtifactInput]
   "The target audience for this session, professional, manager, kids, etc."
   targetAudience: [TargetAudience]
   "The target location for this session, in-person, etc."
@@ -54,14 +57,11 @@ input WorkshopUpdateInput {
   whyAreYou: String
   otherComments: String
 
-  takeaways: [String]
   mentorship: Mentorship
 
   category: Category
   primaryCategory: SessionCategory
   secondaryCategory: [SessionCategory]
-
-  supportingArtifacts: [ArtifactInput]
 
   canRecord: Boolean
   status: Status

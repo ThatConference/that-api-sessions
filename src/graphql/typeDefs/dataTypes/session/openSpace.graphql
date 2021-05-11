@@ -32,6 +32,8 @@ type OpenSpace implements Base @key(fields: "id") {
   location: String
   "Tags to describe session"
   tags: [String]
+  "list of expected takeaways for attending this session"
+  takeaways: [String]
   "Reference materials for all"
   supportingArtifacts: [Artifact]
   "Members with public profiles who favorited session"

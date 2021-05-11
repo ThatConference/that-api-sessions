@@ -6,6 +6,10 @@ input OpenSpaceAdminCreateInput {
   startTime: Date
   location: String
   tags: [String]
+  "list of expected takeaways for attending this session"
+  takeaways: [String]
+  "Reference materials for all"
+  supportingArtifacts: [ArtifactInput]
 
   primaryCategory: SessionCategory
 
@@ -24,6 +28,10 @@ input OpenSpaceAdminUpdateInput {
   startTime: Date
   location: String
   tags: [String]
+  "list of expected takeaways for attending this session"
+  takeaways: [String]
+  "Reference materials for all"
+  supportingArtifacts: [ArtifactInput]
 
   primaryCategory: SessionCategory
 

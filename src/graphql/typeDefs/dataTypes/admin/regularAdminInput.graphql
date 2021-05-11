@@ -7,19 +7,19 @@ input RegularAdminCreateInput {
   startTime: Date
   location: String
   tags: [String]
+  "list of expected takeaways for attending this session"
+  takeaways: [String]
+  "Reference materials for all"
+  supportingArtifacts: [ArtifactInput]
 
   targetAudience: [TargetAudience]
   whyAreYou: String
   otherComments: String
-
-  takeaways: [String]
   mentorship: Mentorship
 
   category: Category
   primaryCategory: SessionCategory
   secondaryCategory: [SessionCategory]
-
-  supportingArtifacts: [ArtifactInput]
 
   canRecord: Boolean
   status: Status
@@ -46,19 +46,19 @@ input RegularAdminUpdateInput {
   startTime: Date
   location: String
   tags: [String]
+  "list of expected takeaways for attending this session"
+  takeaways: [String]
+  "Reference materials for all"
+  supportingArtifacts: [ArtifactInput]
 
-  targetAudience: [TargetAudience]
   whyAreYou: String
   otherComments: String
 
-  takeaways: [String]
   mentorship: Mentorship
 
   category: Category
   primaryCategory: SessionCategory
   secondaryCategory: [SessionCategory]
-
-  supportingArtifacts: [ArtifactInput]
 
   canRecord: Boolean
   status: Status

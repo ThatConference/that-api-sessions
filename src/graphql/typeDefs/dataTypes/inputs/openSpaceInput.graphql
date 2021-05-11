@@ -5,6 +5,10 @@ input OpenSpaceCreateInput {
   targetAudience: [TargetAudience]
   "The target location for this session, in-person, etc."
   targetLocation: TargetLocation
+  "list of expected takeaways for attending this session"
+  takeaways: [String]
+  "Reference materials for all"
+  supportingArtifacts: [ArtifactInput]
   durationInMinutes: Int
   startTime: Date
   location: String
@@ -22,6 +26,10 @@ input OpenSpaceUpdateInput {
   targetAudience: [TargetAudience]
   "The target location for this session, in-person, etc."
   targetLocation: TargetLocation
+  "list of expected takeaways for attending this session"
+  takeaways: [String]
+  "Reference materials for all"
+  supportingArtifacts: [ArtifactInput]
   type: SessionType
   durationInMinutes: Int
   startTime: Date

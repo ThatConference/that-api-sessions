@@ -7,8 +7,6 @@ interface EyesFront {
   whyAreYou: String
   "other author comments regarding session"
   otherComments: String
-  "list of expected takeaways for attending this session"
-  takeaways: [String]
   "does the speaker(s) require mentorship on this session?"
   mentorship: Mentorship
   "secondary interests categories for the session"

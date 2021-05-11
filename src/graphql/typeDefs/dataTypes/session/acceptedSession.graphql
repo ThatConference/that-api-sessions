@@ -23,7 +23,9 @@ type AcceptedSession @key(fields: "id") {
 
   prerequisites: String
   agenda: String
+  "list of expected takeaways for attending this session"
   takeaways: [String]
+  "Reference materials for all"
   supportingArtifacts: [Artifact]
 
   primaryCategory: SessionCategory

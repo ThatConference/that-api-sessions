@@ -12,13 +12,15 @@ input KeynoteAdminCreateInput {
   whyAreYou: String
   otherComments: String
 
-  takeaways: [String]
   mentorship: Mentorship
 
   category: Category
   primaryCategory: SessionCategory
   secondaryCategory: [SessionCategory]
 
+  "list of expected takeaways for attending this session"
+  takeaways: [String]
+  "Reference materials for all"
   supportingArtifacts: [ArtifactInput]
 
   canRecord: Boolean
@@ -52,13 +54,15 @@ input KeynoteAdminUpdateInput {
   otherComments: String
 
   agenda: String
-  takeaways: [String]
   mentorship: Mentorship
 
   category: Category
   primaryCategory: SessionCategory
   secondaryCategory: [SessionCategory]
 
+  "list of expected takeaways for attending this session"
+  takeaways: [String]
+  "Reference materials for all"
   supportingArtifacts: [ArtifactInput]
 
   canRecord: Boolean
