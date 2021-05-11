@@ -5,6 +5,8 @@ type AcceptedSession @key(fields: "id") {
   event: Event!
   slug: Slug!
   speakers: [PublicProfile!]!
+  "Is the primary speakers a minor?"
+  isMinor: Boolean
 
   title: String!
   shortDescription: String

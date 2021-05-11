@@ -24,10 +24,18 @@ input RegularAdminCreateInput {
   canRecord: Boolean
   status: Status
   speakers: [ID!]!
+  "Is the primary speakers a minor?"
+  isMinor: Boolean
+
+  # Regular-specific fields
+  "Items and tasks to be done PRIOR to attending session"
+  prerequisites: String
 }
 
 input RegularAdminUpdateInput {
   speakers: [ID!]
+  "Is the primary speakers a minor?"
+  isMinor: Boolean
 
   title: String
   shortDescription: String
@@ -43,8 +51,6 @@ input RegularAdminUpdateInput {
   whyAreYou: String
   otherComments: String
 
-  prerequisites: String
-  agenda: String
   takeaways: [String]
   mentorship: Mentorship
 
@@ -56,4 +62,8 @@ input RegularAdminUpdateInput {
 
   canRecord: Boolean
   status: Status
+
+  # Regular-specific fields
+  "Items and tasks to be done PRIOR to attending session"
+  prerequisites: String
 }

@@ -11,6 +11,8 @@ input OpenSpaceCreateInput {
   tags: [String]
   primaryCategory: SessionCategory
   status: Status
+  "Is the primary speakers a minor?"
+  isMinor: Boolean
 }
 
 input OpenSpaceUpdateInput {
@@ -29,4 +31,6 @@ input OpenSpaceUpdateInput {
   status: Status
   "Member must have access to event to set/change"
   eventId: ID
+  "Is the primary speakers a minor?"
+  isMinor: Boolean
 }

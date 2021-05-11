@@ -11,6 +11,8 @@ input OpenSpaceAdminCreateInput {
 
   status: Status
   speakers: [ID!]!
+  "Is the primary speakers a minor?"
+  isMinor: Boolean
 }
 
 input OpenSpaceAdminUpdateInput {
@@ -27,4 +29,6 @@ input OpenSpaceAdminUpdateInput {
 
   status: Status
   speakers: [ID!]
+  "Is the primary speakers a minor?"
+  isMinor: Boolean
 }

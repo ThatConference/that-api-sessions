@@ -13,8 +13,6 @@ input WorkshopCreateInput {
   whyAreYou: String
   otherComments: String
 
-  prerequisites: String
-  agenda: String
   takeaways: [String]
   mentorship: Mentorship
 
@@ -26,10 +24,20 @@ input WorkshopCreateInput {
 
   canRecord: Boolean
   status: Status
+  "Is the primary speakers a minor?"
+  isMinor: Boolean
+
+  # Workshop-specific fields
+  "Items and tasks to be done PRIOR to attending session"
+  prerequisites: String
+  "Detailed agenda of workshop"
+  agenda: String
 }
 
 input WorkshopUpdateInput {
   speakers: [ID]
+  "Is the primary speakers a minor?"
+  isMinor: Boolean
 
   title: String
   shortDescription: String
@@ -46,8 +54,6 @@ input WorkshopUpdateInput {
   whyAreYou: String
   otherComments: String
 
-  prerequisites: String
-  agenda: String
   takeaways: [String]
   mentorship: Mentorship
 
@@ -59,4 +65,10 @@ input WorkshopUpdateInput {
 
   canRecord: Boolean
   status: Status
+
+  # Workshop-specific fields
+  "Items and tasks to be done PRIOR to attending session"
+  prerequisites: String
+  "Detailed agenda of workshop"
+  agenda: String
 }

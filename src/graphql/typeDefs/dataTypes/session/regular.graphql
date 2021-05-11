@@ -15,6 +15,8 @@ type Regular implements EyesFront & Base @key(fields: "id") {
   primaryCategory: SessionCategory
   "Session's associated speakers. Each will see session under their profile"
   speakers: [PublicProfile]
+  "Is the primary speakers a minor?"
+  isMinor: Boolean
   "The type of session, informs union resolver of session object to return"
   type: SessionType
   "The target audience for this session, professional, manager, kids, etc."
@@ -69,4 +71,8 @@ type Regular implements EyesFront & Base @key(fields: "id") {
   rating: [Rating]
   "Main category/track declaration. e.g. professional, family, etc."
   category: Category
+
+  # Regular-specific fields
+  "Items and tasks to be done PRIOR to attending session"
+  prerequisites: String
 }

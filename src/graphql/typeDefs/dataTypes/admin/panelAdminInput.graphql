@@ -24,10 +24,14 @@ input PanelAdminCreateInput {
   canRecord: Boolean
   status: Status
   speakers: [ID!]!
+  "Is the primary speakers a minor?"
+  isMinor: Boolean
 }
 
 input PanelAdminUpdateInput {
   speakers: [ID!]
+  "Is the primary speakers a minor?"
+  isMinor: Boolean
 
   title: String
   shortDescription: String

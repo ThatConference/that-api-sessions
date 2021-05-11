@@ -4,11 +4,12 @@ input RegularCreateInput {
   longDescription: String
 
   durationInMinutes: Int
-  startTime: Date
-  location: String
   tags: [String]
 
+  "The target audience for this session, professional, manager, kids, etc."
   targetAudience: [TargetAudience]
+  "The target location for this session, in-person, etc."
+  targetLocation: TargetLocation
   whyAreYou: String
   otherComments: String
 
@@ -23,10 +24,18 @@ input RegularCreateInput {
 
   canRecord: Boolean
   status: Status
+  "Is the primary speakers a minor?"
+  isMinor: Boolean
+
+  # Regular-specific fields
+  "Items and tasks to be done PRIOR to attending session"
+  prerequisites: String
 }
 
 input RegularUpdateInput {
   speakers: [ID]
+  "Is the primary speakers a minor?"
+  isMinor: Boolean
 
   title: String
   shortDescription: String
@@ -34,16 +43,15 @@ input RegularUpdateInput {
 
   type: SessionType
   durationInMinutes: Int
-  startTime: Date
-  location: String
   tags: [String]
 
+  "The target audience for this session, professional, manager, kids, etc."
   targetAudience: [TargetAudience]
+  "The target location for this session, in-person, etc."
+  targetLocation: TargetLocation
   whyAreYou: String
   otherComments: String
 
-  prerequisites: String
-  agenda: String
   takeaways: [String]
   mentorship: Mentorship
 
@@ -55,4 +63,8 @@ input RegularUpdateInput {
 
   canRecord: Boolean
   status: Status
+
+  # Regular-specific fields
+  "Items and tasks to be done PRIOR to attending session"
+  prerequisites: String
 }

@@ -13,7 +13,6 @@ input KeynoteCreateInput {
   whyAreYou: String
   otherComments: String
 
-  agenda: String
   takeaways: [String]
   mentorship: Mentorship
 
@@ -25,10 +24,18 @@ input KeynoteCreateInput {
 
   canRecord: Boolean
   status: Status
+  "Is the primary speakers a minor?"
+  isMinor: Boolean
+
+  # Start Keynote-specific fields
+  "Keynote agenda"
+  agenda: String
 }
 
 input KeynoteUpdateInput {
   speakers: [ID]
+  "Is the primary speakers a minor?"
+  isMinor: Boolean
 
   title: String
   shortDescription: String
@@ -45,7 +52,6 @@ input KeynoteUpdateInput {
   whyAreYou: String
   otherComments: String
 
-  agenda: String
   takeaways: [String]
   mentorship: Mentorship
 
@@ -57,4 +63,8 @@ input KeynoteUpdateInput {
 
   canRecord: Boolean
   status: Status
+
+  # Start Keynote-specific fields
+  "Keynote agenda"
+  agenda: String
 }

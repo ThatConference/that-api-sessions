@@ -40,4 +40,6 @@ enum SessionCategory {
   WEB
   "Other"
   OTHER
+  "THAT"
+  THAT
 }
