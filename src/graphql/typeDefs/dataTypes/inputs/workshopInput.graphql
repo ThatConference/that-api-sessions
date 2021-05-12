@@ -4,6 +4,7 @@ input WorkshopCreateInput {
   longDescription: String
 
   durationInMinutes: Int
+  duration: Duration
   tags: [String]
   "list of expected takeaways for attending this session"
   takeaways: [String]
@@ -45,6 +46,7 @@ input WorkshopUpdateInput {
 
   type: SessionType
   durationInMinutes: Int
+  duration: Duration
   tags: [String]
   "list of expected takeaways for attending this session"
   takeaways: [String]

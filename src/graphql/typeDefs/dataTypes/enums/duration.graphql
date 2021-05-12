@@ -1,0 +1,10 @@
+enum Duration {
+  "2 Hours"
+  QUARTER_DAY
+
+  "4 Hours"
+  HALF_DAY
+
+  "8 Hours"
+  FULL_DAY
+}
