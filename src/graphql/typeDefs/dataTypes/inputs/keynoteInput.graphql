@@ -5,7 +5,10 @@ input KeynoteCreateInput {
 
   durationInMinutes: Int
   tags: [String]
-
+  "list of expected takeaways for attending this session"
+  takeaways: [String]
+  "Reference materials for all"
+  supportingArtifacts: [ArtifactInput]
   "The target audience for this session, professional, manager, kids, etc."
   targetAudience: [TargetAudience]
   "The target location for this session, in-person, etc."
@@ -13,22 +16,26 @@ input KeynoteCreateInput {
   whyAreYou: String
   otherComments: String
 
-  agenda: String
-  takeaways: [String]
   mentorship: Mentorship
 
   category: Category
   primaryCategory: SessionCategory
   secondaryCategory: [SessionCategory]
 
-  supportingArtifacts: [ArtifactInput]
-
   canRecord: Boolean
   status: Status
+  "Is the primary speakers a minor?"
+  isMinor: Boolean
+
+  # Start Keynote-specific fields
+  "Keynote agenda"
+  agenda: String
 }
 
 input KeynoteUpdateInput {
   speakers: [ID]
+  "Is the primary speakers a minor?"
+  isMinor: Boolean
 
   title: String
   shortDescription: String
@@ -37,7 +44,10 @@ input KeynoteUpdateInput {
   type: SessionType
   durationInMinutes: Int
   tags: [String]
-
+  "list of expected takeaways for attending this session"
+  takeaways: [String]
+  "Reference materials for all"
+  supportingArtifacts: [ArtifactInput]
   "The target audience for this session, professional, manager, kids, etc."
   targetAudience: [TargetAudience]
   "The target location for this session, in-person, etc."
@@ -45,16 +55,16 @@ input KeynoteUpdateInput {
   whyAreYou: String
   otherComments: String
 
-  agenda: String
-  takeaways: [String]
   mentorship: Mentorship
 
   category: Category
   primaryCategory: SessionCategory
   secondaryCategory: [SessionCategory]
 
-  supportingArtifacts: [ArtifactInput]
-
   canRecord: Boolean
   status: Status
+
+  # Start Keynote-specific fields
+  "Keynote agenda"
+  agenda: String
 }

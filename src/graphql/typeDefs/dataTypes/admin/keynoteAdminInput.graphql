@@ -12,23 +12,32 @@ input KeynoteAdminCreateInput {
   whyAreYou: String
   otherComments: String
 
-  agenda: String
-  takeaways: [String]
   mentorship: Mentorship
 
   category: Category
   primaryCategory: SessionCategory
   secondaryCategory: [SessionCategory]
 
+  "list of expected takeaways for attending this session"
+  takeaways: [String]
+  "Reference materials for all"
   supportingArtifacts: [ArtifactInput]
 
   canRecord: Boolean
   status: Status
   speakers: [ID!]!
+  "Is the primary speakers a minor?"
+  isMinor: Boolean
+
+  # Start Keynote-specific fields
+  "Keynote agenda"
+  agenda: String
 }
 
 input KeynoteAdminUpdateInput {
   speakers: [ID!]
+  "Is the primary speakers a minor?"
+  isMinor: Boolean
 
   title: String
   shortDescription: String
@@ -45,13 +54,15 @@ input KeynoteAdminUpdateInput {
   otherComments: String
 
   agenda: String
-  takeaways: [String]
   mentorship: Mentorship
 
   category: Category
   primaryCategory: SessionCategory
   secondaryCategory: [SessionCategory]
 
+  "list of expected takeaways for attending this session"
+  takeaways: [String]
+  "Reference materials for all"
   supportingArtifacts: [ArtifactInput]
 
   canRecord: Boolean

@@ -7,4 +7,7 @@ type AdminSessionsMutation {
 
   "specific session mutations"
   session(id: ID!): AdminSessionMutation @auth(requires: "admin")
+
+  "Batch session updates"
+  updateScheduleBatch(sessions: [AdminScheduleUpdateInput!]!): Boolean
 }

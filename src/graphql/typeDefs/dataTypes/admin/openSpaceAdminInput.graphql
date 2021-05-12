@@ -6,11 +6,17 @@ input OpenSpaceAdminCreateInput {
   startTime: Date
   location: String
   tags: [String]
+  "list of expected takeaways for attending this session"
+  takeaways: [String]
+  "Reference materials for all"
+  supportingArtifacts: [ArtifactInput]
 
   primaryCategory: SessionCategory
 
   status: Status
   speakers: [ID!]!
+  "Is the primary speakers a minor?"
+  isMinor: Boolean
 }
 
 input OpenSpaceAdminUpdateInput {
@@ -22,9 +28,15 @@ input OpenSpaceAdminUpdateInput {
   startTime: Date
   location: String
   tags: [String]
+  "list of expected takeaways for attending this session"
+  takeaways: [String]
+  "Reference materials for all"
+  supportingArtifacts: [ArtifactInput]
 
   primaryCategory: SessionCategory
 
   status: Status
   speakers: [ID!]
+  "Is the primary speakers a minor?"
+  isMinor: Boolean
 }

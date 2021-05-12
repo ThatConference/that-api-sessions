@@ -1,18 +1,18 @@
 "session types, description text is used in ui"
 enum SessionType {
-  "Regular, 60 minute presentation."
+  "Regular, 60 minute presentation"
   REGULAR
 
-  "Keynote, 90 minute presentation."
+  "Keynote, 90 minute presentation"
   KEYNOTE
 
-  "Half-day Workshop (pre-conference)."
+  "Half-day Workshop (pre-conference)"
   HALF_DAY_WORKSHOP
 
-  "Full-day Workshop (pre-conference)."
+  "Full-day Workshop (pre-conference)"
   FULL_DAY_WORKSHOP
 
-  "Workshop (pre-conference)."
+  "Workshop (pre-conference)"
   WORKSHOP
 
   "Open Space"

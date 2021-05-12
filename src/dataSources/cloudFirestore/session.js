@@ -9,6 +9,7 @@ const forgeFields = ['createdAt', 'lastUpdatedAt', 'startTime'];
 const sessionDateForge = entityDateForge({ fields: forgeFields });
 const dlog = debug('that:api:sessions:datasources:firebase');
 const approvedSessionStatuses = ['ACCEPTED', 'SCHEDULED', 'CANCELLED'];
+const mentionFields = ['shortDescription', 'longDescription', 'title', 'tags'];
 
 function validateStatuses(statuses) {
   dlog('validateStatuses %o', statuses);
@@ -354,6 +355,35 @@ function sessions(dbInstance) {
     return sessionDateForge(result);
   }
 
+  // This is an admin batch function which will not continue if
+  // mention fields are included.
+  function updateNonMentionBatch({ batchSessions }) {
+    dlog('updateNonMentionBatch called on %d sessions', sessions.length);
+    if (!Array.isArray(batchSessions))
+      throw new Error(' batchSessions must be in the form of an array ');
+    const batchWrite = dbInstance.batch();
+    batchSessions.forEach((bs, idx) => {
+      if (Object.keys(bs).some(k => mentionFields.includes(k))) {
+        throw new Error(
+          `Batch contains a mention parsed field, cannot continue. Mention fields are: ${mentionFields.join(
+            ', ',
+          )}`,
+        );
+      }
+      if (!bs.id) {
+        throw new Error(
+          `Batch session value missing id, cannot update batch. Index: ${idx}`,
+        );
+      }
+      const docRef = sessionsCol.doc(bs.id);
+      const upSession = bs;
+      delete upSession.id;
+      batchWrite.update(docRef, upSession);
+    });
+
+    return batchWrite.commit().then(() => true);
+  }
+
   function getTotalProfessionalSubmittedForEvent(eventId) {
     dlog('getTotalProfessionalSubmittedForEvent');
 
@@ -437,7 +467,6 @@ function sessions(dbInstance) {
 
   return {
     create,
-    update,
     findMy,
     findMySession,
     findSession,
@@ -445,10 +474,12 @@ function sessions(dbInstance) {
     batchFindSessions,
     findWithStatuses,
     findWithStatusesPaged,
-    addInAttendance,
+    update,
+    updateNonMentionBatch,
     getTotalProfessionalSubmittedForEvent,
-    adminUpdate,
+    addInAttendance,
     adminCreate,
+    adminUpdate,
   };
 }
 

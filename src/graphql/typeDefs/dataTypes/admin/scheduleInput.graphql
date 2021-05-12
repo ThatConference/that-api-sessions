@@ -1,0 +1,26 @@
+"Updatable schedule fields which will don't require new mention calculations. E.g. tags"
+input AdminScheduleUpdateInput {
+  # from base
+  "Session status. ENUM. E.g. accepted, submitted, etc. "
+  status: Status
+  "Starting time of this session"
+  startTime: Date
+  "Location of session, physical or virtual"
+  location: String
+  "The target location for this session, in-person, etc."
+  targetLocation: TargetLocation
+  "Presenter(s) of this sessions"
+  speakers: [ID]
+  "Is the primary speakers a minor?"
+  isMinor: Boolean
+  "The type of session. E.g. Regular, Keynote, etc."
+  type: SessionType
+  "Full duration of session in minutes"
+  durationInMinutes: Int
+  "Primary interests category for the session"
+  primaryCategory: SessionCategory
+
+  # from eyes-front
+  "session being recorded if set true"
+  isRecorded: Boolean
+}

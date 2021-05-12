@@ -4,6 +4,8 @@ type MySession @key(fields: "id") {
   eventId: ID!
   slug: Slug!
   speakers: [PublicProfile!]!
+  "Is the primary speakers a minor?"
+  isMinor: Boolean
 
   title: String!
   shortDescription: String
@@ -21,7 +23,9 @@ type MySession @key(fields: "id") {
 
   prerequisites: String
   agenda: String
+  "list of expected takeaways for attending this session"
   takeaways: [String]
+  "Reference materials for all"
   supportingArtifacts: [Artifact]
   mentorship: Mentorship
 

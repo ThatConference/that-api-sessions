@@ -1,20 +1,21 @@
-input RegularAdminCreateInput {
+input RegularCreateInput {
   title: String!
   shortDescription: String
   longDescription: String
 
   durationInMinutes: Int
-  startTime: Date
-  location: String
   tags: [String]
   "list of expected takeaways for attending this session"
   takeaways: [String]
   "Reference materials for all"
   supportingArtifacts: [ArtifactInput]
-
+  "The target audience for this session, professional, manager, kids, etc."
   targetAudience: [TargetAudience]
+  "The target location for this session, in-person, etc."
+  targetLocation: TargetLocation
   whyAreYou: String
   otherComments: String
+
   mentorship: Mentorship
 
   category: Category
@@ -23,7 +24,6 @@ input RegularAdminCreateInput {
 
   canRecord: Boolean
   status: Status
-  speakers: [ID!]!
   "Is the primary speakers a minor?"
   isMinor: Boolean
 
@@ -32,8 +32,8 @@ input RegularAdminCreateInput {
   prerequisites: String
 }
 
-input RegularAdminUpdateInput {
-  speakers: [ID!]
+input RegularUpdateInput {
+  speakers: [ID]
   "Is the primary speakers a minor?"
   isMinor: Boolean
 
@@ -43,14 +43,15 @@ input RegularAdminUpdateInput {
 
   type: SessionType
   durationInMinutes: Int
-  startTime: Date
-  location: String
   tags: [String]
   "list of expected takeaways for attending this session"
   takeaways: [String]
   "Reference materials for all"
   supportingArtifacts: [ArtifactInput]
-
+  "The target audience for this session, professional, manager, kids, etc."
+  targetAudience: [TargetAudience]
+  "The target location for this session, in-person, etc."
+  targetLocation: TargetLocation
   whyAreYou: String
   otherComments: String
 

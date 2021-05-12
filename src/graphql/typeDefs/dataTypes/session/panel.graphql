@@ -15,6 +15,8 @@ type Panel implements EyesFront & Base @key(fields: "id") {
   primaryCategory: SessionCategory
   "Session's associated speakers. Each will see session under their profile"
   speakers: [PublicProfile]
+  "Is the primary speakers a minor?"
+  isMinor: Boolean
   "The type of session, informs union resolver of session object to return"
   type: SessionType
   "The target audience for this session, professional, manager, kids, etc."
@@ -31,6 +33,8 @@ type Panel implements EyesFront & Base @key(fields: "id") {
   location: String
   "Tags to describe session"
   tags: [String]
+  "list of expected takeaways for attending this session"
+  takeaways: [String]
   "Reference materials for all"
   supportingArtifacts: [Artifact]
   "Members with public profiles who favorited session"
@@ -55,8 +59,6 @@ type Panel implements EyesFront & Base @key(fields: "id") {
   whyAreYou: String
   "other author comments regarding session"
   otherComments: String
-  "list of expected takeaways for attending this session"
-  takeaways: [String]
   "does the speaker(s) require mentorship on this session?"
   mentorship: Mentorship
   "secondary interests categories for the session"

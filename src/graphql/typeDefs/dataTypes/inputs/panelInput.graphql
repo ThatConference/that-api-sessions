@@ -5,7 +5,10 @@ input PanelCreateInput {
 
   durationInMinutes: Int
   tags: [String]
-
+  "list of expected takeaways for attending this session"
+  takeaways: [String]
+  "Reference materials for all"
+  supportingArtifacts: [ArtifactInput]
   "The target audience for this session, professional, manager, kids, etc."
   targetAudience: [TargetAudience]
   "The target location for this session, in-person, etc."
@@ -13,21 +16,22 @@ input PanelCreateInput {
   whyAreYou: String
   otherComments: String
 
-  takeaways: [String]
   mentorship: Mentorship
 
   category: Category
   primaryCategory: SessionCategory
   secondaryCategory: [SessionCategory]
 
-  supportingArtifacts: [ArtifactInput]
-
   canRecord: Boolean
   status: Status
+  "Is the primary speakers a minor?"
+  isMinor: Boolean
 }
 
 input PanelUpdateInput {
   speakers: [ID]
+  "Is the primary speakers a minor?"
+  isMinor: Boolean
 
   title: String
   shortDescription: String
@@ -36,7 +40,10 @@ input PanelUpdateInput {
   type: SessionType
   durationInMinutes: Int
   tags: [String]
-
+  "list of expected takeaways for attending this session"
+  takeaways: [String]
+  "Reference materials for all"
+  supportingArtifacts: [ArtifactInput]
   "The target audience for this session, professional, manager, kids, etc."
   targetAudience: [TargetAudience]
   "The target location for this session, in-person, etc."
@@ -44,14 +51,11 @@ input PanelUpdateInput {
   whyAreYou: String
   otherComments: String
 
-  takeaways: [String]
   mentorship: Mentorship
 
   category: Category
   primaryCategory: SessionCategory
   secondaryCategory: [SessionCategory]
-
-  supportingArtifacts: [ArtifactInput]
 
   canRecord: Boolean
   status: Status
