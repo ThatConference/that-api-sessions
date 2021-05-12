@@ -4,6 +4,7 @@ input WorkshopAdminCreateInput {
   longDescription: String
 
   durationInMinutes: Int
+  duration: Duration
   startTime: Date
   location: String
   tags: [String]
@@ -42,6 +43,7 @@ input WorkshopAdminUpdateInput {
 
   type: SessionType
   durationInMinutes: Int
+  duration: Duration
   startTime: Date
   location: String
   tags: [String]

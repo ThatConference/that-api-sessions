@@ -77,4 +77,6 @@ type Workshop implements EyesFront & Base @key(fields: "id") {
   prerequisites: String
   "Detailed agenda of workshop"
   agenda: String
+  "Duration of Workshop"
+  duration: Duration
 }

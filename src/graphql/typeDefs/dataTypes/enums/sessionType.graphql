@@ -6,12 +6,6 @@ enum SessionType {
   "Keynote, 90 minute presentation"
   KEYNOTE
 
-  "Half-day Workshop (pre-conference)"
-  HALF_DAY_WORKSHOP
-
-  "Full-day Workshop (pre-conference)"
-  FULL_DAY_WORKSHOP
-
   "Workshop (pre-conference)"
   WORKSHOP
 
