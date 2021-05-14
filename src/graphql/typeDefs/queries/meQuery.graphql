@@ -3,7 +3,7 @@ type MeQuery {
     @auth(requires: "sessions")
     @deprecated(reason: "Use submitted which returns session union")
 
-  session(id: ID!): MySession @auth(requires: "sessions")
+  session(id: ID!): TheSessions @auth(requires: "sessions")
 
   voting(eventId: ID!): VotingQuery @auth(requires: "sessions")
 
