@@ -20,10 +20,7 @@ export const fieldResolvers = {
         case 'PANEL':
           result = 'Panel';
           break;
-        case 'FULL_DAY_WORKSHOP':
-          result = 'Workshop';
-          break;
-        case 'HALF_DAY_WORKSHOP':
+        case 'WORKSHOP':
           result = 'Workshop';
           break;
         default:

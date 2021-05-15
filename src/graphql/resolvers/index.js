@@ -1,4 +1,7 @@
-import { URLResolver as URL } from 'graphql-scalars';
+import {
+  URLResolver as URL,
+  DateTimeResolver as DateTime,
+} from 'graphql-scalars';
 import { graph } from '@thatconference/api';
 
 import queries, { fieldResolvers as qFieldResolvers } from './queries';
@@ -6,7 +9,8 @@ import mutations, { fieldResolvers as mFieldResolvers } from './mutations';
 
 const createServer = {
   URL,
-  ...graph.scalars.date,
+  DateTime,
+  ...graph.scalars.Date,
   ...graph.scalars.slug,
 
   ...qFieldResolvers,

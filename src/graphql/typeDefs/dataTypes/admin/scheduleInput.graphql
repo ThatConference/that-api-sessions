@@ -1,6 +1,8 @@
 "Updatable schedule fields which will don't require new mention calculations. E.g. tags"
 input AdminScheduleUpdateInput {
   # from base
+  "ID of Session. For Lookup only, will not be updated!!"
+  id: ID!
   "Session status. ENUM. E.g. accepted, submitted, etc. "
   status: Status
   "Starting time of this session"
