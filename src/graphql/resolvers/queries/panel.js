@@ -37,5 +37,6 @@ export const fieldResolvers = {
       return findAssets({ entityId, firestore, assetLoader });
     },
     admin: parent => parent,
+    event: ({ eventId }) => ({ id: eventId }),
   },
 };

@@ -5,6 +5,8 @@ type Workshop implements EyesFront & Base @key(fields: "id") {
   id: ID!
   "Event id session is associated with"
   eventId: String!
+  "Event this session is associated with"
+  event: Event!
   "Session slug unique by eventId"
   slug: Slug!
   "The session's title"
