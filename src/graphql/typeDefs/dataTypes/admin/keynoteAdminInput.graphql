@@ -67,4 +67,6 @@ input KeynoteAdminUpdateInput {
 
   canRecord: Boolean
   status: Status
+  "Member must have access to event to set/change"
+  eventId: ID
 }

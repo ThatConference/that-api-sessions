@@ -63,6 +63,8 @@ input KeynoteUpdateInput {
 
   canRecord: Boolean
   status: Status
+  "Member must have access to event to set/change"
+  eventId: ID
 
   # Start Keynote-specific fields
   "Keynote agenda"
