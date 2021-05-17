@@ -28,6 +28,8 @@ enum SessionCategory {
   MOBILE
   "Product Management"
   PRODUCT_MANAGEMENT
+  "Project Management"
+  PROJECT_MANAGEMENT
   "Soft Skills"
   SOFT_SKILLS
   "Security"
