@@ -39,4 +39,6 @@ input OpenSpaceAdminUpdateInput {
   speakers: [ID!]
   "Is the primary speakers a minor?"
   isMinor: Boolean
+  "Member must have access to event to set/change"
+  eventId: ID
 }
