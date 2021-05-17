@@ -1,3 +1,4 @@
 scalar URL
 scalar Date
 scalar Slug
+scalar DateTime

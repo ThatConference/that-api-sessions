@@ -2,8 +2,26 @@
 enum TargetAudience {
   "Anybody"
   ANYBODY
+  "Architects"
+  ARCHITECTS
+  "Consultants"
+  CONSULTANTS
+  "CxO"
+  CXO
+  "Data Geeks"
+  DATA_GEEKS
+  "Designers"
+  DESIGNERS
   "Developers"
   DEVELOPERS
+  "Kids"
+  KIDS
   "Managers"
   MANAGERS
+  "Parents"
+  PARENTS
+  "QA/Testers"
+  QA_TESTERS
+  "Students"
+  STUDENTS
 }

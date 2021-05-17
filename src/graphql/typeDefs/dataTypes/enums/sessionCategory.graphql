@@ -14,6 +14,8 @@ enum SessionCategory {
   DESIGN_UX
   "DevOps"
   DEV_OPS
+  "Game Development"
+  GAME_DEVELOPMENT
   "Infrastructure"
   INFRASTRUCTURE
   "IoT and Makers"
@@ -26,6 +28,8 @@ enum SessionCategory {
   MOBILE
   "Product Management"
   PRODUCT_MANAGEMENT
+  "Project Management"
+  PROJECT_MANAGEMENT
   "Soft Skills"
   SOFT_SKILLS
   "Security"
