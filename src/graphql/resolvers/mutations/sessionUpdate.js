@@ -8,6 +8,12 @@ import eventStore from '../../../dataSources/cloudFirestore/event';
 import checkMemberCanMutate from '../../../lib/checkMemberCanMutate';
 
 const dlog = debug('that:api:sessions:mutation:SessionUpdate');
+const clearProtectedFieldStatus = [
+  'SUBMITTED',
+  'DRAFT',
+  'CANCELLED',
+  'WITHDREW',
+];
 
 async function updateSession({ eventId, sessionId, user, session, firestore }) {
   const [updatedSession, userResults, eventResults] = await Promise.all([
@@ -21,6 +27,35 @@ async function updateSession({ eventId, sessionId, user, session, firestore }) {
   ]);
 
   return { updatedSession, userResults, eventResults };
+}
+
+// Clear protected fields; used when switching session type
+// from OpenSpace to others.
+function clearProtectedFields(clsSession) {
+  dlog('Clearing Protected Fields.');
+  const cs = clsSession;
+  cs.startTime = null;
+  cs.location = '';
+}
+
+async function validateEventIdUpdate({
+  newEventId,
+  originalEventId,
+  user,
+  firestore,
+}) {
+  if (newEventId && newEventId !== originalEventId) {
+    // if changing eventId, ensure they have access to new EventId
+    const canMutate = await checkMemberCanMutate({
+      user,
+      eventId: newEventId,
+      firestore,
+    });
+    if (!canMutate)
+      throw new ForbiddenError(
+        'User unable to mutate target eventId. Update failed',
+      );
+  }
 }
 
 function sendUserEvent({
@@ -61,49 +96,8 @@ function sendUserEvent({
 
 export const fieldResolvers = {
   SessionUpdate: {
-    update: async (
-      { sessionId },
-      { session },
-      {
-        dataSources: {
-          firestore,
-          events: { userEvents },
-        },
-        user,
-      },
-    ) => {
-      dlog('TCL: events %o', userEvents);
-      dlog('update called', sessionId);
-
-      // we need the original before we update it.
-      const originalSession = await sessionStore(firestore).findMySession({
-        user,
-        sessionId,
-      });
-
-      if (!originalSession)
-        throw new Error('SessionId not found for for current user.');
-
-      const { updatedSession, userResults, eventResults } = await updateSession(
-        {
-          eventId: originalSession.eventId,
-          sessionId,
-          user,
-          session,
-          firestore,
-        },
-      );
-
-      sendUserEvent({
-        originalSession,
-        updatedSession,
-        userResults,
-        userEvents,
-        user,
-        eventResults,
-      });
-
-      return updatedSession;
+    update: async () => {
+      throw Error('No Longer Implemented');
     },
     openSpace: async (
       { sessionId },
@@ -127,18 +121,12 @@ export const fieldResolvers = {
       if (!originalSession)
         throw new Error('SessionId not found for for current user.');
 
-      if (openspace.eventId && openspace.eventId !== originalSession.eventId) {
-        // if changing eventId, ensure they have access to new EventId
-        const canMutate = await checkMemberCanMutate({
-          user,
-          eventId: openspace.eventId,
-          firestore,
-        });
-        if (!canMutate)
-          throw new ForbiddenError(
-            'User unable to mutate target eventId. Update failed',
-          );
-      }
+      await validateEventIdUpdate({
+        newEventId: openspace.eventId,
+        originalEventId: originalSession.eventId,
+        user,
+        firestore,
+      });
 
       const { updatedSession, userResults, eventResults } = await updateSession(
         {
@@ -183,6 +171,16 @@ export const fieldResolvers = {
       if (!originalSession)
         throw new Error('SessionId not found for for current user.');
 
+      await validateEventIdUpdate({
+        newEventId: keynote.eventId,
+        originalEventId: originalSession.eventId,
+        user,
+        firestore,
+      });
+
+      if (clearProtectedFieldStatus.includes(keynote.status))
+        clearProtectedFields(keynote);
+
       const { updatedSession, userResults, eventResults } = await updateSession(
         {
           eventId: originalSession.eventId,
@@ -225,6 +223,16 @@ export const fieldResolvers = {
 
       if (!originalSession)
         throw new Error('SessionId not found for for current user.');
+
+      await validateEventIdUpdate({
+        newEventId: regular.eventId,
+        originalEventId: originalSession.eventId,
+        user,
+        firestore,
+      });
+
+      if (clearProtectedFieldStatus.includes(regular.status))
+        clearProtectedFields(regular);
 
       const { updatedSession, userResults, eventResults } = await updateSession(
         {
@@ -269,6 +277,16 @@ export const fieldResolvers = {
       if (!originalSession)
         throw new Error('SessionId not found for for current user.');
 
+      await validateEventIdUpdate({
+        newEventId: panel.eventId,
+        originalEventId: originalSession.eventId,
+        user,
+        firestore,
+      });
+
+      if (clearProtectedFieldStatus.includes(panel.status))
+        clearProtectedFields(panel);
+
       const { updatedSession, userResults, eventResults } = await updateSession(
         {
           eventId: originalSession.eventId,
@@ -311,6 +329,16 @@ export const fieldResolvers = {
 
       if (!originalSession)
         throw new Error('SessionId not found for for current user.');
+
+      await validateEventIdUpdate({
+        newEventId: workshop.eventId,
+        originalEventId: originalSession.eventId,
+        user,
+        firestore,
+      });
+
+      if (clearProtectedFieldStatus.includes(workshop.status))
+        clearProtectedFields(workshop);
 
       const { updatedSession, userResults, eventResults } = await updateSession(
         {
