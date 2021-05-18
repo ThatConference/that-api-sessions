@@ -10,7 +10,7 @@ import mutations, { fieldResolvers as mFieldResolvers } from './mutations';
 const createServer = {
   URL,
   DateTime,
-  ...graph.scalars.Date,
+  ...graph.scalars.date,
   ...graph.scalars.slug,
 
   ...qFieldResolvers,
