@@ -72,7 +72,7 @@ function userEvents(postmark) {
     let TemplateAlias;
     let link;
 
-    if (['MULTI_DAY', 'MULTI_DAY_HYBRID', 'SINGLE_DAY'].includes(event.type)) {
+    if (['MULTI_DAY', 'HYBRID_MULTI_DAY', 'SINGLE_DAY'].includes(event.type)) {
       TemplateAlias = pmTemplates.thatconference.created;
       link = baseUris.thatconference.session;
     } else if (['ONLINE', 'DAILY'].includes(event.type)) {
@@ -102,6 +102,15 @@ function userEvents(postmark) {
       return undefined;
     }
 
+    const attachments = [];
+    if (session.StartTime && session.durationInMinutes) {
+      attachments.push({
+        Name: `${session.slug}@${user.site}.ics`,
+        Content: createIcal({ session, user }),
+        ContentType: 'text/calendar; charset=utf-8; method=REQUEST',
+      });
+    }
+
     return postmark
       .sendEmailWithTemplate({
         TemplateAlias,
@@ -128,15 +137,15 @@ function userEvents(postmark) {
           event: {
             name: event.name,
             startDate: moment.utc(event.startDate).format('M/D/YYYY h:mm:ss A'),
+            cfpOpen: moment
+              .utc(event.callForSpeakersOpenDate)
+              .format('M/D/YYYY'),
+            cfpClose: moment
+              .utc(event.callForSpeakersCloseDate)
+              .format('M/D/YYYY'),
           },
         },
-        Attachments: [
-          {
-            Name: `${session.slug}@${user.site}.ics`,
-            Content: createIcal({ session, user }),
-            ContentType: 'text/calendar; charset=utf-8; method=REQUEST',
-          },
-        ],
+        Attachments: attachments,
       })
       .then(dlog('email sent'))
       .catch(e =>
@@ -150,7 +159,7 @@ function userEvents(postmark) {
     let TemplateAlias;
     let link;
 
-    if (['MULTI_DAY', 'MULTI_DAY_HYBRID', 'SINGLE_DAY'].includes(event.type)) {
+    if (['MULTI_DAY', 'HYBRID_MULTI_DAY', 'SINGLE_DAY'].includes(event.type)) {
       TemplateAlias = pmTemplates.thatconference.updated;
       link = `${baseUris.thatconference.session}`;
     } else if (['ONLINE', 'DAILY'].includes(event.type)) {
@@ -180,6 +189,15 @@ function userEvents(postmark) {
       return undefined;
     }
 
+    const attachments = [];
+    if (session.StartTime && session.durationInMinutes) {
+      attachments.push({
+        Name: `${session.slug}@${user.site}.ics`,
+        Content: createIcal({ session, user }),
+        ContentType: 'text/calendar; charset=utf-8; method=REQUEST',
+      });
+    }
+
     return postmark
       .sendEmailWithTemplate({
         TemplateAlias,
@@ -203,13 +221,7 @@ function userEvents(postmark) {
             startDate: moment.utc(event.startDate).format('M/D/YYYY h:mm:ss A'),
           },
         },
-        Attachments: [
-          {
-            Name: `${session.slug}@${user.site}.ics`,
-            Content: createIcal({ session, user }),
-            ContentType: 'text/calendar; charset=utf-8; method=REQUEST',
-          },
-        ],
+        Attachments: attachments,
       })
       .then(dlog('email sent'))
       .catch(e =>
@@ -218,10 +230,13 @@ function userEvents(postmark) {
   }
 
   // Creates a new event on a shared google calendar
-  function insertSharedCalendar({ session }) {
+  function insertSharedCalendar({ session, event }) {
     dlog('insertSharedCalendar');
 
-    if (session.status === 'ACCEPTED') {
+    if (
+      session.status === 'ACCEPTED' &&
+      ['ONLINE', 'DAILY'].includes(event.type)
+    ) {
       calEvent
         .create(session)
         .then(result =>
@@ -234,10 +249,13 @@ function userEvents(postmark) {
   }
 
   // Updates an event on a shared google calendar
-  function updateSharedCalendar({ session }) {
+  function updateSharedCalendar({ session, event }) {
     dlog('updateSharedCalendar');
 
-    if (session.status === 'ACCEPTED') {
+    if (
+      session.status === 'ACCEPTED' &&
+      ['ONLINE', 'DAILY'].includes(event.type)
+    ) {
       calEvent
         .update(session)
         .then(result =>
