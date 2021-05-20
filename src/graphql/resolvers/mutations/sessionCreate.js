@@ -28,11 +28,7 @@ function sendUserEvent({
   userEvents,
   user,
 }) {
-  if (
-    (sessionResults.status === 'SUBMITTED' ||
-      sessionResults.status === 'ACCEPTED') &&
-    sessionResults.startTime
-  ) {
+  if (['SUBMITTED', 'ACCEPTED'].includes(sessionResults.status)) {
     userEvents.emit('sessionCreated', {
       user: {
         ...user,

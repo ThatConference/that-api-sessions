@@ -81,7 +81,11 @@ function sendUserEvent({
     updatedSession.status === 'SUBMITTED'
   ) {
     eventTitle = 'sessionCreated';
-  } else if (updatedSession.status === 'ACCEPTED') {
+  } else if (
+    updatedSession.status === 'ACCEPTED' ||
+    (originalSession.status === 'SUBMITTED' &&
+      updatedSession.status === 'SUBMITTED')
+  ) {
     eventTitle = 'sessionUpdated';
   } else if (updatedSession.status === 'CANCELLED') {
     eventTitle = 'sessionCancelled';
