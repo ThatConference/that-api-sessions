@@ -11,7 +11,6 @@ import typeDefs from './typeDefs';
 import resolvers from './resolvers';
 import directives from './directives';
 import sessionStore from '../dataSources/cloudFirestore/session';
-import assetStore from '../dataSources/cloudFirestore/asset';
 
 const dlog = debug('that:api:sessions:graphServer');
 const jwtClient = security.jwt();
@@ -53,31 +52,9 @@ const createServer = ({ dataSources }) => {
         });
       });
 
-      const assetLoader = new DataLoader(ids =>
-        assetStore(firestore)
-          .getBatch(ids)
-          .then(assets => {
-            if (assets.includes(null)) {
-              Sentry.withScope(scope => {
-                scope.setLevel('error');
-                scope.setContext(
-                  `Assigned Asset's don't exist in assets collection`,
-                  { ids },
-                  { assets },
-                );
-                Sentry.captureMessage(
-                  `Assigned Asset's don't exist in assets collection`,
-                );
-              });
-            }
-            return ids.map(id => assets.find(a => a && a.id === id));
-          }),
-      );
-
       return {
         ...dataSources,
         sessionLoader,
-        assetLoader,
       };
     },
 

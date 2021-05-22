@@ -1,4 +1,0 @@
-type AssetMutation {
-  "Updates referenced asset"
-  update(asset: AssetUpdateInput!): Asset @auth(requires: "admin")
-}
