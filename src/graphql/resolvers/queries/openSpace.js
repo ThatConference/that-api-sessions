@@ -28,13 +28,9 @@ export const fieldResolvers = {
 
       return favoriteStore(firestore).getSessionFavoriteCount(id);
     },
-    assets: (
-      { id: entityId },
-      __,
-      { dataSources: { firestore, assetLoader } },
-    ) => {
+    assets: ({ id: entityId }, __, { dataSources: { firestore } }) => {
       dlog('session assets requested');
-      return findAssets({ entityId, firestore, assetLoader });
+      return findAssets({ entityId, firestore });
     },
     admin: parent => parent,
     event: ({ eventId }) => ({ id: eventId }),

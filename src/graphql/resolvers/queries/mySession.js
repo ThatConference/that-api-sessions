@@ -22,13 +22,9 @@ export const fieldResolvers = {
         id: s,
       }));
     },
-    assets: (
-      { id: entityId },
-      __,
-      { dataSources: { firestore, assetLoader } },
-    ) => {
+    assets: ({ id: entityId }, __, { dataSources: { firestore } }) => {
       dlog('session assets requested');
-      return findAssets({ entityId, firestore, assetLoader });
+      return findAssets({ entityId, firestore });
     },
   },
 };

@@ -1,3 +1,0 @@
-type AssetsQuery {
-  asset(assetId: ID!): AssetQuery
-}

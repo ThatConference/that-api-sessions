@@ -1,4 +1,0 @@
-input AssetLinkInput {
-  linkType: AssetLinkType!
-  url: URL!
-}

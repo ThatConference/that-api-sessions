@@ -12,9 +12,6 @@ import { fieldResolvers as openSpaceFields } from './openSpace';
 import { fieldResolvers as keynoteFields } from './keynote';
 import { fieldResolvers as panelFields } from './panel';
 import { fieldResolvers as workshopFields } from './workshop';
-import { fieldResolvers as assetsFields } from './assets';
-import { fieldResolvers as assetFields } from './asset';
-import { fieldResolvers as entityFields } from './entity';
 import { fieldResolvers as adminFields } from './sessionAdminFields';
 import { fieldResolvers as adminSessionsFields } from './adminSessions';
 
@@ -35,9 +32,6 @@ export const fieldResolvers = {
   ...keynoteFields,
   ...panelFields,
   ...workshopFields,
-  ...assetsFields,
-  ...assetFields,
-  ...entityFields,
   ...adminFields,
   ...adminSessionsFields,
 };

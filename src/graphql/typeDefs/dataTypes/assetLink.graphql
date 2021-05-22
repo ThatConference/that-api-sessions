@@ -1,4 +1,0 @@
-type AssetLink {
-  linkType: AssetLinkType!
-  url: URL!
-}

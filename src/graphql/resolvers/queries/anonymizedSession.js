@@ -20,13 +20,9 @@ export const fieldResolvers = {
       if (!parent.tags) return [];
       return parent.tags;
     },
-    assets: (
-      { id: entityId },
-      __,
-      { dataSources: { firestore, assetLoader } },
-    ) => {
+    assets: ({ id: entityId }, __, { dataSources: { firestore } }) => {
       dlog('session assets requested');
-      return findAssets({ entityId, firestore, assetLoader });
+      return findAssets({ entityId, firestore });
     },
   },
 };

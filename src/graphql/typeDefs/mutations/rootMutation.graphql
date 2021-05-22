@@ -1,6 +1,4 @@
 type Mutation {
   "sessions mutation path"
   sessions: SessionsMutation @auth(requires: "sessions")
-  "assets mutation path"
-  assets: AssetsMutation @auth(requires: "admin")
 }
