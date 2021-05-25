@@ -11,7 +11,6 @@ input OpenSpaceCreateInput {
   supportingArtifacts: [ArtifactInput]
   durationInMinutes: Int
   startTime: Date
-  location: String
   tags: [String]
   primaryCategory: SessionCategory
   status: Status
@@ -33,7 +32,6 @@ input OpenSpaceUpdateInput {
   type: SessionType
   durationInMinutes: Int
   startTime: Date
-  location: String
   tags: [String]
   primaryCategory: SessionCategory
   status: Status

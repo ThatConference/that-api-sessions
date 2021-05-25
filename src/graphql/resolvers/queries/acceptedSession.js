@@ -48,5 +48,7 @@ export const fieldResolvers = {
       dlog('session assets requested');
       return findAssets({ entityId, firestore });
     },
+    location: ({ location }) => location || null,
+    secondaryLocations: ({ secondaryLocations }) => secondaryLocations || [],
   },
 };

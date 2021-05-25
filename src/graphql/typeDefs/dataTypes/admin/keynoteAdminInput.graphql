@@ -5,7 +5,8 @@ input KeynoteAdminCreateInput {
 
   durationInMinutes: Int
   startTime: Date
-  location: String
+  location: SessionLocationCreateInput
+  secondaryLocations: [SessionLocationCreateInput]
   tags: [String]
 
   targetAudience: [TargetAudience]
@@ -46,7 +47,8 @@ input KeynoteAdminUpdateInput {
   type: SessionType
   durationInMinutes: Int
   startTime: Date
-  location: String
+  location: SessionLocationUpdateInput
+  secondaryLocations: [SessionLocationUpdateInput]
   tags: [String]
 
   targetAudience: [TargetAudience]

@@ -34,5 +34,7 @@ export const fieldResolvers = {
     },
     admin: parent => parent,
     event: ({ eventId }) => ({ id: eventId }),
+    location: ({ location }) => location || null,
+    secondaryLocations: ({ secondaryLocations }) => secondaryLocations || [],
   },
 };

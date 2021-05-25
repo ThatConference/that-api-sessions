@@ -31,8 +31,10 @@ type Regular implements EyesFront & Base @key(fields: "id") {
   durationInMinutes: Int
   "Starting time of this session"
   startTime: Date
-  "Location of session, physical or virtual"
-  location: String
+  "Location of session, contains destination, room, physical or virtual"
+  location: SessionLocation
+  "Additional locations (secondary) for this session"
+  secondaryLocations: [SessionLocation]!
   "Tags to describe session"
   tags: [String]
   "list of expected takeaways for attending this session"

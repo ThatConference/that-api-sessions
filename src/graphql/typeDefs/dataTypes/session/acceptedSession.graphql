@@ -35,7 +35,10 @@ type AcceptedSession @key(fields: "id") {
 
   status: Status
   startTime: Date
-  location: String
+  "Location of session, contains destination, room, physical or virtual"
+  location: SessionLocation
+  "Additional locations (secondary) for this session"
+  secondaryLocations: [SessionLocation]!
 
   tags: [String]
   favoritedBy: [PublicProfile]
