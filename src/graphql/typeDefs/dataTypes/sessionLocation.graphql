@@ -1,0 +1,7 @@
+"Location where a session is held"
+type SessionLocation {
+  destination: SessionLocationDestination!
+  url: URL
+  digitalSign: URL
+  isOnline: Boolean!
+}

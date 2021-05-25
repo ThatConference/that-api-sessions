@@ -5,7 +5,8 @@ input PanelAdminCreateInput {
 
   durationInMinutes: Int
   startTime: Date
-  location: String
+  location: SessionLocationCreateInput
+  secondaryLocations: [SessionLocationCreateInput]
   tags: [String]
   "list of expected takeaways for attending this session"
   takeaways: [String]
@@ -40,7 +41,8 @@ input PanelAdminUpdateInput {
   type: SessionType
   durationInMinutes: Int
   startTime: Date
-  location: String
+  location: SessionLocationUpdateInput
+  secondaryLocations: [SessionLocationUpdateInput]
   tags: [String]
   "list of expected takeaways for attending this session"
   takeaways: [String]

@@ -1,0 +1,13 @@
+input SessionLocationCreateInput {
+  destination: SessionLocationDestination!
+  url: URL
+  digitalSign: URL
+  isOnline: Boolean!
+}
+
+input SessionLocationUpdateInput {
+  destination: SessionLocationDestination
+  url: URL
+  digitalSign: URL
+  isOnline: Boolean
+}

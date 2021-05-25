@@ -8,7 +8,9 @@ input AdminScheduleUpdateInput {
   "Starting time of this session"
   startTime: Date
   "Location of session, physical or virtual"
-  location: String
+  location: SessionLocationUpdateInput
+  "Additional locations (secondary) for this session"
+  secondaryLocations: [SessionLocationUpdateInput]
   "The target location for this session, in-person, etc."
   targetLocation: TargetLocation
   "Presenter(s) of this sessions"
