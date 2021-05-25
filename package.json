@@ -24,7 +24,7 @@
     "@google-cloud/functions-framework": "^1.7.1",
     "@graphql-tools/load-files": "6.2.7",
     "@graphql-tools/merge": "6.2.10",
-    "@sentry/node": "^6.3.5",
+    "@sentry/node": "^6.4.1",
     "@thatconference/api": "~1.23.0",
     "apollo-server-express": "2.22.2",
     "base32-encode": "^1.2.0",
@@ -42,7 +42,7 @@
     "node-fetch": "^2.6.1",
     "postmark": "^2.7.4",
     "response-time": "^2.3.2",
-    "slugify": "^1.5.1",
+    "slugify": "^1.5.3",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
