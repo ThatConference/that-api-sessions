@@ -1,5 +1,6 @@
 /* eslint-disable import/prefer-default-export */
 import debug from 'debug';
+import sessionStore from '../../../dataSources/cloudFirestore/session';
 
 const dlog = debug('that:api:sessions:mutation:AdminSessions');
 
@@ -21,8 +22,12 @@ export const fieldResolvers = {
     },
 
     updateScheduleBatch: (_, { sessions }, { dataSources: { firestore } }) => {
-      dlog('update batch colled on %d sessions', sessions?.length);
-      throw new Error('Not Implemented!');
+      dlog('update batch called on %d sessions', sessions?.length);
+
+      if (!Array.isArray(sessions))
+        throw new Error('Session for batch update must be in an array.');
+
+      return sessionStore(firestore).updateNonMentionBatch(sessions);
     },
   },
 };

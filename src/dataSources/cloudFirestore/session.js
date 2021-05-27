@@ -34,8 +34,13 @@ function scrubSession(session, isNew) {
 
   const modifiedAt = new Date();
   if (isNew) scrubbedSession.createdAt = modifiedAt;
-
   scrubbedSession.lastUpdatedAt = modifiedAt;
+
+  if (scrubbedSession?.location?.url?.href)
+    scrubbedSession.location.url = scrubbedSession.location.url.href;
+  if (scrubbedSession?.location?.digitalSign?.href)
+    scrubbedSession.location.digitalSign =
+      scrubbedSession.location.digitalSign.href;
 
   return scrubbedSession;
 }
@@ -357,10 +362,12 @@ function sessions(dbInstance) {
 
   // This is an admin batch function which will not continue if
   // mention fields are included.
-  function updateNonMentionBatch({ batchSessions }) {
-    dlog('updateNonMentionBatch called on %d sessions', sessions.length);
+  // One use, schedule updates.
+  // id required and passed in sessions object
+  function updateNonMentionBatch(batchSessions) {
     if (!Array.isArray(batchSessions))
-      throw new Error(' batchSessions must be in the form of an array ');
+      throw new Error('batchSessions must be in the form of an array');
+    dlog('updateNonMentionBatch called on %d sessions', batchSessions.length);
     const batchWrite = dbInstance.batch();
     batchSessions.forEach((bs, idx) => {
       if (Object.keys(bs).some(k => mentionFields.includes(k))) {
@@ -375,9 +382,11 @@ function sessions(dbInstance) {
           `Batch session value missing id, cannot update batch. Index: ${idx}`,
         );
       }
+      scrubSession(bs, false);
       const docRef = sessionsCol.doc(bs.id);
       const upSession = bs;
       delete upSession.id;
+
       batchWrite.update(docRef, upSession);
     });
 
