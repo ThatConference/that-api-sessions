@@ -1,6 +1,6 @@
 {
   "name": "that-api-sessions",
-  "version": "1.8.0",
+  "version": "1.9.0",
   "description": "THAT Conference's Sessions Micro Service.",
   "main": "index.js",
   "engines": {
