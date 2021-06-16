@@ -7,6 +7,9 @@ const dlog = debug('that:api:sessions:keynote');
 
 export const fieldResolvers = {
   Keynote: {
+    __resolveReference({ id }, { dataSources: { sessionLoader } }) {
+      return sessionLoader.load(id);
+    },
     speakers: parent => {
       dlog('speakers');
 

@@ -7,6 +7,9 @@ const dlog = debug('that:api:sessions:workshop');
 
 export const fieldResolvers = {
   Workshop: {
+    __resolveReference({ id }, { dataSources: { sessionLoader } }) {
+      return sessionLoader.load(id);
+    },
     speakers: parent => {
       dlog('speakers');
 

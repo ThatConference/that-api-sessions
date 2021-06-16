@@ -4,50 +4,62 @@ type AcceptedSession @key(fields: "id") {
   eventId: ID!
   event: Event!
   slug: Slug!
+  "All speakers of this session"
   speakers: [PublicProfile!]!
-
+  "The session title"
   title: String!
+  "A shorter, TL;DR;, description of the session"
   shortDescription: String
+  "A longer, more explicit description of the session"
   longDescription: String
-
+  "The type of session, Regular, OpenSpace, Keynote, etc."
   type: SessionType
+  "Main category/track declaration. e.g. professional, family, etc."
   category: Category
+  "Duration of session in minutes (usually based on type)"
   durationInMinutes: Int
-  "Duration of Workshop"
+  "Duration of Workshop (enum)"
   duration: Duration
   "The target audience for this session, professional, manager, kids, etc."
   targetAudience: [TargetAudience]
   "The target location for this session, in-person, etc."
   targetLocation: TargetLocation
+  "why are you the best person to perform this session"
   whyAreYou: String
-
+  "(workshop) Items and tasks to be done PRIOR to attending session"
   prerequisites: String
+  "(workshop) Detailed agenda of workshop"
   agenda: String
   "list of expected takeaways for attending this session"
   takeaways: [String]
   "Reference materials for all"
   supportingArtifacts: [Artifact]
-
+  "Primary interests category for the session"
   primaryCategory: SessionCategory
+  "secondary interests categories for the session"
   secondaryCategory: [SessionCategory]
-
+  "session being recorded if set true"
   isRecored: Boolean
-
+  "Session status. ENUM. E.g. accepted, submitted, etc. "
   status: Status
+  "Starting time of this session"
   startTime: Date
   "Location of session, contains destination, room, physical or virtual"
   location: SessionLocation
   "Additional locations (secondary) for this session"
   secondaryLocations: [SessionLocation]!
-
+  "Tags to describe session"
   tags: [String]
+  "Members with public profiles who favorited session"
   favoritedBy: [PublicProfile]
+  "Total number of members who favorited, includes non-public in count too"
   favoriteCount: Int
   "communities (as slug) associated with session. initially same as event community"
   communities: [Slug]
   "Assets assigned to this session"
   assets: [Asset]
-
+  "FUTURE: possible rating holder"
   rating: [Rating]
+  "Date time session last updated"
   lastUpdatedAt: Date!
 }
