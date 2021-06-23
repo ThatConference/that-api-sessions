@@ -35,7 +35,7 @@ function clearProtectedFields(clsSession) {
   dlog('Clearing Protected Fields.');
   const cs = clsSession;
   cs.startTime = null;
-  cs.location = '';
+  cs.location = null;
 }
 
 async function validateEventIdUpdate({
