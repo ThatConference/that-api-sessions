@@ -10,6 +10,7 @@ import * as Sentry from '@sentry/node';
 import apolloGraphServer from './graphql';
 import envConfig from './envConfig';
 import userEventEmitter from './events/user';
+import adminEventEmitter from './events/admin';
 
 let version;
 (async () => {
@@ -29,6 +30,7 @@ const defaultVersion = `that-api-sessions@${version}`;
 
 const postmark = new Postmark(envConfig.postmarkApiToken);
 const userEvents = userEventEmitter(postmark);
+const adminEvents = adminEventEmitter(postmark);
 
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
@@ -48,6 +50,7 @@ const createConfig = () => ({
     postmark,
     events: {
       userEvents,
+      adminEvents,
     },
   },
 });
