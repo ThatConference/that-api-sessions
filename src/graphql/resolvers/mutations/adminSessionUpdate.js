@@ -6,53 +6,64 @@ import eventStore from '../../../dataSources/cloudFirestore/event';
 
 const dlog = debug('that:api:sessions:mutation:AdminSessionUpdate');
 
-async function updateSession({ eventId, sessionId, user, session, firestore }) {
-  const [updatedSession, userResults, eventResults] = await Promise.all([
+async function updateSession({
+  eventId,
+  sessionId,
+  session,
+  originalSession,
+  firestore,
+}) {
+  const [updatedSession, speakerResults, eventResults] = await Promise.all([
     sessionStore(firestore).adminUpdate({
       sessionId,
       session,
     }),
-    memberStore(firestore).find(user.sub),
+    memberStore(firestore).find(originalSession.speakers[0]),
     eventStore(firestore).getEvent(eventId),
   ]);
 
-  return { updatedSession, userResults, eventResults };
+  return { updatedSession, speakerResults, eventResults };
 }
 
-function sendUserEvent({
+function sendAdminEvent({
   originalSession,
   updatedSession,
-  userResults,
-  userEvents,
+  speakerResults,
+  adminEvents,
   user,
   eventResults,
+  sendNotification,
+  firestore,
 }) {
   dlog(
-    'sendUserEvent original status: %s, updated status: %s',
+    'sendAdminEvent original status: %s, updated status: %s',
     originalSession.status,
     updatedSession.status,
   );
   let eventTitle = '';
-  const userInfo = {
-    ...user,
-    ...userResults,
-  };
 
   if (
     originalSession.status === 'DRAFT' &&
     updatedSession.status === 'SUBMITTED'
   ) {
-    eventTitle = 'adminSessionCreated';
-  } else if (updatedSession.status === 'ACCEPTED') {
-    eventTitle = 'adminSessionUpdated';
+    // eventTitle = 'sessionCreated';
+    // no admin events on create
+    return;
+  }
+  if (updatedSession.status === 'ACCEPTED') {
+    eventTitle = 'sessionUpdated';
   } else if (updatedSession.status === 'CANCELLED') {
-    eventTitle = 'adminSessionCancelled';
+    eventTitle = 'sessionCancelled';
   }
 
-  userEvents.emit(eventTitle, {
-    user: userInfo,
+  adminEvents.emit(eventTitle, {
+    user,
+    speaker: speakerResults,
     session: updatedSession,
+    originalSession,
     event: eventResults,
+    sendNotification,
+    firestore,
   });
 }
 
@@ -60,11 +71,11 @@ export const fieldResolvers = {
   AdminSessionUpdate: {
     openSpace: async (
       { sessionId },
-      { session: openspace },
+      { session: openspace, sendNotification = false },
       {
         dataSources: {
           firestore,
-          events: { userEvents },
+          events: { adminEvents },
         },
         user,
       },
@@ -81,34 +92,38 @@ export const fieldResolvers = {
           `sessionId ${sessionId}, not found. Unable to update session`,
         );
 
-      const { updatedSession, userResults, eventResults } = await updateSession(
-        {
-          eventId: originalSession.eventId,
-          sessionId,
-          user,
-          session: openspace,
-          firestore,
-        },
-      );
+      const {
+        updatedSession,
+        speakerResults,
+        eventResults,
+      } = await updateSession({
+        eventId: originalSession.eventId,
+        sessionId,
+        session: openspace,
+        originalSession,
+        firestore,
+      });
 
-      sendUserEvent({
+      sendAdminEvent({
         originalSession,
         updatedSession,
-        userResults,
-        userEvents,
+        speakerResults,
+        adminEvents,
         user,
         eventResults,
+        sendNotification,
+        firestore,
       });
 
       return updatedSession;
     },
     keynote: async (
-      { sessionId },
+      { sessionId, sendNotification = false },
       { session: keynote },
       {
         dataSources: {
           firestore,
-          events: { userEvents },
+          events: { adminEvents },
         },
         user,
       },
@@ -125,34 +140,38 @@ export const fieldResolvers = {
           `sessionId ${sessionId}, not found. Unable to update session`,
         );
 
-      const { updatedSession, userResults, eventResults } = await updateSession(
-        {
-          eventId: originalSession.eventId,
-          sessionId,
-          user,
-          session: keynote,
-          firestore,
-        },
-      );
+      const {
+        updatedSession,
+        speakerResults,
+        eventResults,
+      } = await updateSession({
+        eventId: originalSession.eventId,
+        sessionId,
+        session: keynote,
+        originalSession,
+        firestore,
+      });
 
-      sendUserEvent({
+      sendAdminEvent({
         originalSession,
         updatedSession,
-        userResults,
-        userEvents,
+        speakerResults,
+        adminEvents,
         user,
         eventResults,
+        sendNotification,
+        firestore,
       });
 
       return updatedSession;
     },
     regular: async (
       { sessionId },
-      { session: regular },
+      { session: regular, sendNotification = false },
       {
         dataSources: {
           firestore,
-          events: { userEvents },
+          events: { adminEvents },
         },
         user,
       },
@@ -169,34 +188,38 @@ export const fieldResolvers = {
           `sessionId ${sessionId}, not found. Unable to update session`,
         );
 
-      const { updatedSession, userResults, eventResults } = await updateSession(
-        {
-          eventId: originalSession.eventId,
-          sessionId,
-          user,
-          session: regular,
-          firestore,
-        },
-      );
+      const {
+        updatedSession,
+        speakerResults,
+        eventResults,
+      } = await updateSession({
+        eventId: originalSession.eventId,
+        sessionId,
+        session: regular,
+        originalSession,
+        firestore,
+      });
 
-      sendUserEvent({
+      sendAdminEvent({
         originalSession,
         updatedSession,
-        userResults,
-        userEvents,
+        speakerResults,
+        adminEvents,
         user,
         eventResults,
+        sendNotification,
+        firestore,
       });
 
       return updatedSession;
     },
     panel: async (
       { sessionId },
-      { session: panel },
+      { session: panel, sendNotification = false },
       {
         dataSources: {
           firestore,
-          events: { userEvents },
+          events: { adminEvents },
         },
         user,
       },
@@ -213,34 +236,38 @@ export const fieldResolvers = {
           `sessionId ${sessionId}, not found. Unable to update session`,
         );
 
-      const { updatedSession, userResults, eventResults } = await updateSession(
-        {
-          eventId: originalSession.eventId,
-          sessionId,
-          user,
-          session: panel,
-          firestore,
-        },
-      );
+      const {
+        updatedSession,
+        speakerResults,
+        eventResults,
+      } = await updateSession({
+        eventId: originalSession.eventId,
+        sessionId,
+        session: panel,
+        originalSession,
+        firestore,
+      });
 
-      sendUserEvent({
+      sendAdminEvent({
         originalSession,
         updatedSession,
-        userResults,
-        userEvents,
+        speakerResults,
+        adminEvents,
         user,
         eventResults,
+        sendNotification,
+        firestore,
       });
 
       return updatedSession;
     },
     workshop: async (
       { sessionId },
-      { session: workshop },
+      { session: workshop, sendNotification = false },
       {
         dataSources: {
           firestore,
-          events: { userEvents },
+          events: { adminEvents },
         },
         user,
       },
@@ -257,23 +284,27 @@ export const fieldResolvers = {
           `sessionId ${sessionId}, not found. Unable to update session`,
         );
 
-      const { updatedSession, userResults, eventResults } = await updateSession(
-        {
-          eventId: originalSession.eventId,
-          sessionId,
-          user,
-          session: workshop,
-          firestore,
-        },
-      );
+      const {
+        updatedSession,
+        speakerResults,
+        eventResults,
+      } = await updateSession({
+        eventId: originalSession.eventId,
+        sessionId,
+        session: workshop,
+        originalSession,
+        firestore,
+      });
 
-      sendUserEvent({
+      sendAdminEvent({
         originalSession,
         updatedSession,
-        userResults,
-        userEvents,
+        speakerResults,
+        adminEvents,
         user,
         eventResults,
+        sendNotification,
+        firestore,
       });
 
       return updatedSession;

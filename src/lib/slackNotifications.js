@@ -104,7 +104,128 @@ export default {
     callSlackHook(slackBody);
   },
 
-  sessionCancelled: () => {
+  sessionUpdated: ({ session, changes, speaker, event }) => {
+    dlog('sessionUpdated notification called');
+
+    let userProfileImage = speaker.profileImage;
+    if (!userProfileImage || userProfileImage.length < 7)
+      userProfileImage = envConfig.defaultProfileImage;
+
+    const slackBody = {
+      channel: envConfig.sessionNotifSlackChannel,
+      username: 'THAT.us Session Bot',
+      icon_emoji: ':that10:',
+      text: `Session Updated :bacon: :tada:`,
+      attachments: [
+        {
+          color: '#26529a',
+          blocks: [
+            {
+              type: 'section',
+              text: {
+                type: 'mrkdwn',
+                text: `*<https://that.us/activities/${
+                  session.id
+                }|${scrubSlackTitle(session.title)}>*`,
+              },
+            },
+            {
+              type: 'section',
+              text: {
+                type: 'mrkdwn',
+                text: `*Start Time:*\n${changes.time.value}`,
+              },
+            },
+            {
+              type: 'section',
+              text: {
+                type: 'mrkdwn',
+                text: `*Room:*\n${changes.room.value}`,
+              },
+            },
+            {
+              type: 'section',
+              text: {
+                type: 'mrkdwn',
+                text: `*Presented by:*\n<https://that.us/members/${
+                  speaker.profileSlug
+                }|${scrubSlackTitle(speaker.firstName)} ${scrubSlackTitle(
+                  speaker.lastName,
+                )}>`,
+              },
+              accessory: {
+                type: 'image',
+                image_url: userProfileImage,
+                alt_text: `${speaker.firstName} ${speaker.lastName}`,
+              },
+            },
+            {
+              type: 'section',
+              text: {
+                type: 'mrkdwn',
+                text: `${event.name || 'THAT'}`,
+              },
+            },
+          ],
+        },
+      ],
+    };
+
+    callSlackHook(slackBody);
+  },
+
+  sessionCancelled: ({ session, speaker, event }) => {
     dlog('sessionCancelled notification called');
+    let userProfileImage = speaker.profileImage;
+    if (!userProfileImage || userProfileImage.length < 7)
+      userProfileImage = envConfig.defaultProfileImage;
+
+    const slackBody = {
+      channel: envConfig.sessionNotifSlackChannel,
+      username: 'THAT.us Session Bot',
+      icon_emoji: ':that10:',
+      text: `Session Cancelled :cry:`,
+      attachments: [
+        {
+          color: '#26529a',
+          blocks: [
+            {
+              type: 'section',
+              text: {
+                type: 'mrkdwn',
+                text: `*<https://that.us/activities/${
+                  session.id
+                }|${scrubSlackTitle(session.title)}>*`,
+              },
+            },
+            {
+              type: 'section',
+              text: {
+                type: 'mrkdwn',
+                text: `*Presented by:*\n<https://that.us/members/${
+                  speaker.profileSlug
+                }|${scrubSlackTitle(speaker.firstName)} ${scrubSlackTitle(
+                  speaker.lastName,
+                )}>`,
+              },
+              accessory: {
+                type: 'image',
+                image_url: userProfileImage,
+                alt_text: `${speaker.firstName} ${speaker.lastName}`,
+              },
+            },
+            {
+              type: 'section',
+              text: {
+                type: 'mrkdwn',
+                text: `${event.name || 'THAT'}`,
+              },
+            },
+          ],
+        },
+      ],
+    };
+
+    callSlackHook(slackBody);
   },
 };

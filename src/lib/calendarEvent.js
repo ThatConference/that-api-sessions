@@ -41,7 +41,14 @@ function calendarEvent(credentials, calendarId) {
     const endTime = new Date(
       session.startTime.getTime() + 60000 * session.durationInMinutes,
     );
-    const description = `${session.shortDescription}\n\nJoin at: https://that.us/activities/${session.id}`;
+    let description = `${session.shortDescription}\n\n`;
+    if (!session.location || session?.location?.isOnline === true)
+      description += 'Join ';
+    else description += 'Details ';
+    description += `at: https://that.us/activities/${session.id}`;
+    let location = 'THAT.us';
+    if (session?.location?.destination && session?.location?.isOnline !== true)
+      location = `Room: ${session.location.destination}`;
 
     const payload = {
       start: {
@@ -53,7 +60,7 @@ function calendarEvent(credentials, calendarId) {
       id: makeEventId(session.id),
       description,
       summary: session.title,
-      location: 'THAT.us',
+      location,
       visibility: 'public',
       transparency: 'transparent',
       status: 'confirmed',
@@ -84,11 +91,18 @@ function calendarEvent(credentials, calendarId) {
     delete eventPayload.id;
 
     // Make call
-    return calendar.events.update({
-      calendarId,
-      eventId,
-      requestBody: eventPayload,
-    });
+    return calendar.events
+      .update({
+        calendarId,
+        eventId,
+        requestBody: eventPayload,
+      })
+      .catch(res => {
+        if (res.code === 404) {
+          return create(session);
+        }
+        return res;
+      });
 
     // 404 doesn't exist to update
   }
@@ -96,10 +110,19 @@ function calendarEvent(credentials, calendarId) {
   function cancel(session) {
     dlog('cancel');
 
-    const eventPayload = makeEventPayload(session);
-    const eventId = eventPayload.id;
-    delete eventPayload.id;
-    eventPayload.status = 'cancelled';
+    const fakeTime = new Date('2000-01-01T06:00:00.000Z');
+    const eventPayload = {
+      start: {
+        dateTime: fakeTime,
+      },
+      end: {
+        dateTime: fakeTime,
+      },
+      status: 'cancelled',
+      visibility: 'public',
+      transparency: 'transparent',
+    };
+    const eventId = makeEventId(session.id);
 
     // Make call
     return calendar.events.update({

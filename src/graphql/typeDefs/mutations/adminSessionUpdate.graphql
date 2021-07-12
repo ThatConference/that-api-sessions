@@ -1,18 +1,29 @@
 type AdminSessionUpdate {
-  "Update for an OpenSpace type session"
-  openSpace(session: OpenSpaceAdminUpdateInput!): OpenSpace!
+  "Update for an OpenSpace type session. sendNotification default FALSE"
+  openSpace(
+    session: OpenSpaceAdminUpdateInput!
+    sendNotification: Boolean
+  ): OpenSpace! @auth(requires: "admin")
+
+  "Update for a Keynote type session. sendNotification default FALSE"
+  keynote(
+    session: KeynoteAdminUpdateInput!
+    sendNotification: Boolean
+  ): Keynote! @auth(requires: "admin")
+
+  "Update for a Regular type session. sendNotification default FALSE"
+  regular(
+    session: RegularAdminUpdateInput!
+    sendNotification: Boolean
+  ): Regular! @auth(requires: "admin")
+
+  "Update for a Workshop type session. sendNotification default FALSE"
+  workshop(
+    session: WorkshopAdminUpdateInput!
+    sendNotification: Boolean
+  ): Workshop! @auth(requires: "admin")
+
+  "Update for a Panel type session. sendNotification default FALSE"
+  panel(session: PanelAdminUpdateInput!, sendNotification: Boolean): Panel!
     @auth(requires: "admin")
-
-  "Update for a Keynote type session"
-  keynote(session: KeynoteAdminUpdateInput!): Keynote! @auth(requires: "admin")
-
-  "Update for a Regular type session"
-  regular(session: RegularAdminUpdateInput!): Regular! @auth(requires: "admin")
-
-  "Update for a Workshop type session"
-  workshop(session: WorkshopAdminUpdateInput!): Workshop!
-    @auth(requires: "admin")
-
-  "Update for a Panel type session"
-  panel(session: PanelAdminUpdateInput!): Panel! @auth(requires: "admin")
 }

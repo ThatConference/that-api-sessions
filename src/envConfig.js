@@ -12,9 +12,12 @@ const requiredConfig = () => ({
     process.env.SHARED_CALENDAR_ID || configMissing('SHARED_CALENDAR_ID'),
   slackWebhookUrl:
     process.env.SLACK_WEBHOOK_URL || configMissing('SLACK_WEBHOOK_URL'),
-  sessionNotifSlackChannel: '#that_board',
+  sessionNotifSlackChannel:
+    process.env.SLACK_NOTIFICATION_CHANNEL || '#that_board',
   defaultProfileImage:
     'https://images.that.tech/members/person-placeholder.jpg',
+  notificationEmailFrom:
+    process.env.NOTIFICATION_EMAIL_FROM || 'hello@thatconference.com',
 });
 
 export default requiredConfig();
