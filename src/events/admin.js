@@ -112,6 +112,8 @@ export default function adminEvents(postmark) {
           from: envConfig.notificationEmailFrom,
           to: m.email,
           templateAlias: 'notification-session-updated',
+          trackOpens: true,
+          tag: 'notification_update',
           templateModel: {
             session: {
               id: session.id,
@@ -129,6 +131,9 @@ export default function adminEvents(postmark) {
               slug: speaker.profileSlug,
             },
           },
+          metadata: {
+            sessionId: session.id,
+          },
         })),
       );
     } else if (sessionStatus === 'CANCELLED') {
@@ -145,6 +150,8 @@ export default function adminEvents(postmark) {
           from: envConfig.notificationEmailFrom,
           to: m.email,
           templateAlias: 'notification-session-cancelled',
+          trackOpens: true,
+          tag: 'notification_cancel',
           templateModel: {
             session: {
               id: session.id,
@@ -161,6 +168,9 @@ export default function adminEvents(postmark) {
               lastName: speaker.lastName,
               slug: speaker.profileSlug,
             },
+          },
+          metadata: {
+            sessionId: session.id,
           },
         })),
       );

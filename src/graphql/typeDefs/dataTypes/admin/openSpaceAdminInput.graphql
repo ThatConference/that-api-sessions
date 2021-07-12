@@ -3,9 +3,13 @@ input OpenSpaceAdminCreateInput {
   shortDescription: String!
 
   durationInMinutes: Int
+  "Starting time of this session"
   startTime: Date
+  "Location of session, physical or virtual"
   location: SessionLocationCreateInput
   secondaryLocations: [SessionLocationCreateInput]
+  "The target location for this session, in-person, etc."
+  targetLocation: TargetLocation
   tags: [String]
   "list of expected takeaways for attending this session"
   takeaways: [String]
@@ -29,6 +33,8 @@ input OpenSpaceAdminUpdateInput {
   startTime: Date
   location: SessionLocationUpdateInput
   secondaryLocations: [SessionLocationUpdateInput]
+  "The target location for this session, in-person, etc."
+  targetLocation: TargetLocation
   tags: [String]
   "list of expected takeaways for attending this session"
   takeaways: [String]
@@ -37,6 +43,7 @@ input OpenSpaceAdminUpdateInput {
 
   primaryCategory: SessionCategory
 
+  "Session status. ENUM. E.g. accepted, submitted, etc. "
   status: Status
   speakers: [ID!]
   "Is the primary speakers a minor?"
