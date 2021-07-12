@@ -25,6 +25,25 @@ async function updateSession({
   return { updatedSession, speakerResults, eventResults };
 }
 
+function hasChangesforEventNotification({ originalSession, updatedSession }) {
+  const originalDate =
+    originalSession.startTime instanceof Date
+      ? originalSession.startTime.getTime()
+      : 'TBD';
+  const updatedDate =
+    updatedSession.startTIme instanceof Date
+      ? updatedSession.startTime.getTime()
+      : 'TBD';
+  const originalRoom = originalSession?.location?.destination || 'TBD';
+  const updatedRoom = updatedSession?.location?.destination || 'TBD';
+
+  return (
+    originalDate !== updatedDate ||
+    originalRoom !== updatedRoom ||
+    originalSession.type !== updatedSession.type
+  );
+}
+
 function sendAdminEvent({
   originalSession,
   updatedSession,
@@ -55,6 +74,12 @@ function sendAdminEvent({
   } else if (updatedSession.status === 'CANCELLED') {
     eventTitle = 'sessionCancelled';
   }
+  // determines if there are actual chages in update
+  // to send notifications to members;
+  const hasChanges = hasChangesforEventNotification({
+    originalSession,
+    updatedSession,
+  });
 
   adminEvents.emit(eventTitle, {
     user,
@@ -62,7 +87,7 @@ function sendAdminEvent({
     session: updatedSession,
     originalSession,
     event: eventResults,
-    sendNotification,
+    sendNotification: sendNotification && hasChanges,
     firestore,
   });
 }
