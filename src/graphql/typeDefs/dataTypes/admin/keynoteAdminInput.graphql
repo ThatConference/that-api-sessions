@@ -4,9 +4,13 @@ input KeynoteAdminCreateInput {
   longDescription: String
 
   durationInMinutes: Int
+  "Starting time of this session"
   startTime: Date
+  "Location of session, physical or virtual"
   location: SessionLocationCreateInput
   secondaryLocations: [SessionLocationCreateInput]
+  "The target location for this session, in-person, etc."
+  targetLocation: TargetLocation
   tags: [String]
 
   targetAudience: [TargetAudience]
@@ -25,6 +29,7 @@ input KeynoteAdminCreateInput {
   supportingArtifacts: [ArtifactInput]
 
   canRecord: Boolean
+  "Session status. ENUM. E.g. accepted, submitted, etc. "
   status: Status
   speakers: [ID!]!
   "Is the primary speakers a minor?"
@@ -47,8 +52,11 @@ input KeynoteAdminUpdateInput {
   type: SessionType
   durationInMinutes: Int
   startTime: Date
+  "Location of session, physical or virtual"
   location: SessionLocationUpdateInput
   secondaryLocations: [SessionLocationUpdateInput]
+  "The target location for this session, in-person, etc."
+  targetLocation: TargetLocation
   tags: [String]
 
   targetAudience: [TargetAudience]
@@ -67,7 +75,11 @@ input KeynoteAdminUpdateInput {
   "Reference materials for all"
   supportingArtifacts: [ArtifactInput]
 
+  "Has the speaker indicated this session may be recorded"
   canRecord: Boolean
+  "Is this session being recorded"
+  isRecorded: Boolean
+  "Session status. ENUM. E.g. accepted, submitted, etc. "
   status: Status
   "Member must have access to event to set/change"
   eventId: ID
