@@ -25,13 +25,16 @@ async function updateSession({
   return { updatedSession, speakerResults, eventResults };
 }
 
-function hasChangesforEventNotification({ originalSession, updatedSession }) {
+export function hasChangesforEventNotification({
+  originalSession,
+  updatedSession,
+}) {
   const originalDate =
     originalSession.startTime instanceof Date
       ? originalSession.startTime.getTime()
       : 'TBD';
   const updatedDate =
-    updatedSession.startTIme instanceof Date
+    updatedSession.startTime instanceof Date
       ? updatedSession.startTime.getTime()
       : 'TBD';
   const originalRoom = originalSession?.location?.destination || 'TBD';
