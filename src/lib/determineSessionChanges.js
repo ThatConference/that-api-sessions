@@ -5,6 +5,7 @@ export default function determineSessionChanges({
   const changes = {
     room: {},
     time: {},
+    targetLocation: {},
   };
   changes.room.changed =
     originalSession?.location?.destination !==
@@ -22,6 +23,10 @@ export default function determineSessionChanges({
   changes.time.changed = origStart !== updStart;
   changes.time.original = originalSession.startTime;
   changes.time.updated = updatedSession.startTime;
+  changes.targetLocation.changed =
+    originalSession.targetLocation !== updatedSession.targetLocation;
+  changes.targetLocation.original = originalSession.targetLocation;
+  changes.targetLocation.updated = updatedSession.targetLocation;
 
   return changes;
 }

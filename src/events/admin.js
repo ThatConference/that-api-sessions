@@ -106,6 +106,9 @@ export default function adminEvents(postmark) {
       const startTime = changes.time.changed
         ? `${changes.time.original} ➡️ ${changes.time.updated}`
         : changes.time.updated;
+      const targetLocation = changes.targetLocation.changed
+        ? `${changes.targetLocation.original} ➡️ ${changes.targetLocation.updated}`
+        : changes.targetLocation.updated;
 
       sendMail = postmark.sendEmailBatchWithTemplates(
         members.map(m => ({
@@ -120,6 +123,7 @@ export default function adminEvents(postmark) {
               title: session.title,
               room,
               startTime,
+              targetLocation,
               link: `https://THAT.us/activities/${session.id}`,
             },
             event: {
