@@ -119,6 +119,24 @@ enum SessionLocationDestination {
   "Wisteria"
   WISTERIA
 
+  # Start combined room destinations
+  "3 & 6"
+  RM_3_6
+  "4 & 5"
+  RM_4_5
+  "A & H"
+  A_H
+  "B & G"
+  B_G
+  "C – F"
+  C_D_E_F
+  "Aralia_Marula"
+  ARALIA_MARULA
+  "African 50 & African 60"
+  AFRICAN_50_AFRICAN_60
+  "African 70 & African 80"
+  AFRICAN_70_AFRICAN_80
+
   # Start on-the-line destinations
   "https://that.live"
   THAT_LIVE
