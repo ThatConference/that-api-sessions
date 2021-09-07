@@ -1,9 +1,10 @@
 import debug from 'debug';
+import { dataSources } from '@thatconference/api';
 import memberLib from '../dataSources/cloudFirestore/member';
-import eventLib from '../dataSources/cloudFirestore/event';
 import orderLib from '../dataSources/cloudFirestore/order';
 import constants from '../constants';
 
+const eventLib = dataSources.cloudFirestore.event;
 const dlog = debug('that:api:sessions:checkMemberCanMutate');
 
 export default function checkMemberCanMutate({ user, eventId, firestore }) {
@@ -21,7 +22,7 @@ export default function checkMemberCanMutate({ user, eventId, firestore }) {
   }
 
   const memberFunc = memberStore.find(memberId);
-  const eventFunc = eventStore.getEvent(eventId);
+  const eventFunc = eventStore.get(eventId);
   const allocationFunc = orderStore.findMeOrderAllocationsForEvent({
     memberId,
     eventId,

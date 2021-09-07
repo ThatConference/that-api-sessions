@@ -1,12 +1,13 @@
 /* eslint-disable import/prefer-default-export */
 import debug from 'debug';
+import { dataSources } from '@thatconference/api';
 import { ForbiddenError } from 'apollo-server-express';
 
 import sessionStore from '../../../dataSources/cloudFirestore/session';
 import memberStore from '../../../dataSources/cloudFirestore/member';
-import eventStore from '../../../dataSources/cloudFirestore/event';
 import checkMemberCanMutate from '../../../lib/checkMemberCanMutate';
 
+const eventStore = dataSources.cloudFirestore.event;
 const dlog = debug('that:api:sessions:mutation:SessionUpdate');
 const clearProtectedFieldStatus = [
   'SUBMITTED',
@@ -23,7 +24,7 @@ async function updateSession({ eventId, sessionId, user, session, firestore }) {
       session,
     }),
     memberStore(firestore).find(user.sub),
-    eventStore(firestore).getEvent(eventId),
+    eventStore(firestore).get(eventId),
   ]);
 
   return { updatedSession, userResults, eventResults };

@@ -1,9 +1,10 @@
 import debug from 'debug';
+import { dataSources } from '@thatconference/api';
 
 import sessionStore from '../../../dataSources/cloudFirestore/session';
-import eventStore from '../../../dataSources/cloudFirestore/event';
 import favoriteStore from '../../../dataSources/cloudFirestore/favorite';
 
+const eventStore = dataSources.cloudFirestore.event;
 const dlog = debug('that:api:sessions:me');
 
 export const fieldResolvers = {
@@ -21,7 +22,7 @@ export const fieldResolvers = {
       });
     },
     voting: async (_, { eventId }, { dataSources: { firestore } }) => {
-      const { isVotingOpen } = await eventStore(firestore).getEvent(eventId);
+      const { isVotingOpen } = await eventStore(firestore).get(eventId);
 
       return { eventId, isVotingOpen };
     },

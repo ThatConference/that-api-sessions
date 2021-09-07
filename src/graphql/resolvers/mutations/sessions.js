@@ -1,8 +1,8 @@
 /* eslint-disable import/prefer-default-export */
 import debug from 'debug';
+import { dataSources } from '@thatconference/api';
 
-import eventStore from '../../../dataSources/cloudFirestore/event';
-
+const eventStore = dataSources.cloudFirestore.event;
 const dlog = debug('that:api:sessions:mutation:SessionsMutation');
 
 export const fieldResolvers = {
@@ -19,7 +19,7 @@ export const fieldResolvers = {
 
     voting: async (_, { eventId }, { dataSources: { firestore } }) => {
       dlog('voting');
-      const { isVotingOpen } = await eventStore(firestore).getEvent(eventId);
+      const { isVotingOpen } = await eventStore(firestore).get(eventId);
 
       if (!isVotingOpen) throw new Error('voting is currently closed');
 

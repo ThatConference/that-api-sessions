@@ -1,3 +1,4 @@
+// ** DEPRECATED **
 import debug from 'debug';
 
 const dlog = debug('that:api:sessions:datasources:firebase:event');

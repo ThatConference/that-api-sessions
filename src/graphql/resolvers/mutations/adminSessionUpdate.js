@@ -1,9 +1,10 @@
 import debug from 'debug';
+import { dataSources } from '@thatconference/api';
 
 import sessionStore from '../../../dataSources/cloudFirestore/session';
 import memberStore from '../../../dataSources/cloudFirestore/member';
-import eventStore from '../../../dataSources/cloudFirestore/event';
 
+const eventStore = dataSources.cloudFirestore.event;
 const dlog = debug('that:api:sessions:mutation:AdminSessionUpdate');
 
 async function updateSession({
@@ -19,7 +20,7 @@ async function updateSession({
       session,
     }),
     memberStore(firestore).find(originalSession.speakers[0]),
-    eventStore(firestore).getEvent(eventId),
+    eventStore(firestore).get(eventId),
   ]);
 
   return { updatedSession, speakerResults, eventResults };
