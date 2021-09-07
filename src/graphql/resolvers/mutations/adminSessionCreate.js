@@ -1,10 +1,11 @@
 /* eslint-disable import/prefer-default-export */
 import debug from 'debug';
+import { dataSources } from '@thatconference/api';
 
 import sessionStore from '../../../dataSources/cloudFirestore/session';
 import memberStore from '../../../dataSources/cloudFirestore/member';
-import eventStore from '../../../dataSources/cloudFirestore/event';
 
+const eventStore = dataSources.cloudFirestore.event;
 const dlog = debug('that:api:sessions:mutation:AdminSessionCreate');
 
 async function createNewSession({ eventId, user, session, firestore }) {
@@ -14,7 +15,7 @@ async function createNewSession({ eventId, user, session, firestore }) {
       session,
     }),
     memberStore(firestore).find(user.sub),
-    eventStore(firestore).getEvent(eventId),
+    eventStore(firestore).get(eventId),
   ]);
 
   return { sessionResults, userResults, eventResults };
