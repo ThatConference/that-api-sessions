@@ -62,11 +62,8 @@ export const fieldResolvers = {
       const session = openspace;
       session.type = 'OPEN_SPACE';
 
-      const {
-        sessionResults,
-        userResults,
-        eventResults,
-      } = await createNewSession({ eventId, user, session, firestore });
+      const { sessionResults, userResults, eventResults } =
+        await createNewSession({ eventId, user, session, firestore });
 
       sendUserEvent({
         sessionResults,
@@ -94,11 +91,8 @@ export const fieldResolvers = {
       const session = keynote;
       session.type = 'KEYNOTE';
 
-      const {
-        sessionResults,
-        userResults,
-        eventResults,
-      } = await createNewSession({ eventId, user, session, firestore });
+      const { sessionResults, userResults, eventResults } =
+        await createNewSession({ eventId, user, session, firestore });
 
       sendUserEvent({
         sessionResults,
@@ -126,11 +120,8 @@ export const fieldResolvers = {
       const session = regular;
       session.type = 'REGULAR';
 
-      const {
-        sessionResults,
-        userResults,
-        eventResults,
-      } = await createNewSession({ eventId, user, session, firestore });
+      const { sessionResults, userResults, eventResults } =
+        await createNewSession({ eventId, user, session, firestore });
 
       sendUserEvent({
         sessionResults,
@@ -158,11 +149,8 @@ export const fieldResolvers = {
       const session = panel;
       session.type = 'PANEL';
 
-      const {
-        sessionResults,
-        userResults,
-        eventResults,
-      } = await createNewSession({ eventId, user, session, firestore });
+      const { sessionResults, userResults, eventResults } =
+        await createNewSession({ eventId, user, session, firestore });
 
       sendUserEvent({
         sessionResults,
@@ -190,11 +178,8 @@ export const fieldResolvers = {
       const session = workshop;
       session.type = 'WORKSHOP';
 
-      const {
-        sessionResults,
-        userResults,
-        eventResults,
-      } = await createNewSession({ eventId, user, session, firestore });
+      const { sessionResults, userResults, eventResults } =
+        await createNewSession({ eventId, user, session, firestore });
 
       sendUserEvent({
         sessionResults,

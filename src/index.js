@@ -131,17 +131,10 @@ function failure(err, req, res, next) {
   dlog('error %o', err);
   Sentry.captureException(err);
 
-  res
-    .set('Content-Type', 'application/json')
-    .status(500)
-    .json(err);
+  res.set('Content-Type', 'application/json').status(500).json(err);
 }
 
-api
-  .use(responseTime())
-  .use(useSentry)
-  .use(createUserContext)
-  .use(failure);
+api.use(responseTime()).use(useSentry).use(createUserContext).use(failure);
 
 const port = process.env.PORT || 8003;
 graphServer
