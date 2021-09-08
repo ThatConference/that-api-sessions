@@ -143,9 +143,7 @@ export default function adminEvents(postmark) {
     } else if (sessionStatus === 'CANCELLED') {
       // cancelled session
       let startTime = originalSession.startTime
-        ? moment(originalSession.startTime)
-            .tz(timezone)
-            .format(timeFormat)
+        ? moment(originalSession.startTime).tz(timezone).format(timeFormat)
         : '';
       startTime += ' ➡️ CANCELLED';
 
@@ -258,14 +256,10 @@ export default function adminEvents(postmark) {
       updatedSession: session,
     });
     changes.time.original = changes.time.original
-      ? moment(changes.time.original)
-          .tz(timezone)
-          .format(timeFormat)
+      ? moment(changes.time.original).tz(timezone).format(timeFormat)
       : 'TBD';
     changes.time.updated = changes.time.updated
-      ? moment(changes.time.updated)
-          .tz(timezone)
-          .format(timeFormat)
+      ? moment(changes.time.updated).tz(timezone).format(timeFormat)
       : 'TBD';
     changes.room.value = changes.room.changed
       ? `${changes.room.original}  :arrow_right:  ${changes.room.updated}`

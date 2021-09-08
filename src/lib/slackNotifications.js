@@ -56,9 +56,9 @@ export default {
               fields: [
                 {
                   type: 'mrkdwn',
-                  text: `*Start Time:*\n<!date^${new Date(
-                    session.startTime,
-                  ).getTime() / 1000}^{date} @ {time}|time is hard>`,
+                  text: `*Start Time:*\n<!date^${
+                    new Date(session.startTime).getTime() / 1000
+                  }^{date} @ {time}|time is hard>`,
                 },
                 {
                   type: 'mrkdwn',

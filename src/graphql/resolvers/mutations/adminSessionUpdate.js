@@ -121,17 +121,14 @@ export const fieldResolvers = {
           `sessionId ${sessionId}, not found. Unable to update session`,
         );
 
-      const {
-        updatedSession,
-        speakerResults,
-        eventResults,
-      } = await updateSession({
-        eventId: originalSession.eventId,
-        sessionId,
-        session: openspace,
-        originalSession,
-        firestore,
-      });
+      const { updatedSession, speakerResults, eventResults } =
+        await updateSession({
+          eventId: originalSession.eventId,
+          sessionId,
+          session: openspace,
+          originalSession,
+          firestore,
+        });
 
       sendAdminEvent({
         originalSession,
@@ -169,17 +166,14 @@ export const fieldResolvers = {
           `sessionId ${sessionId}, not found. Unable to update session`,
         );
 
-      const {
-        updatedSession,
-        speakerResults,
-        eventResults,
-      } = await updateSession({
-        eventId: originalSession.eventId,
-        sessionId,
-        session: keynote,
-        originalSession,
-        firestore,
-      });
+      const { updatedSession, speakerResults, eventResults } =
+        await updateSession({
+          eventId: originalSession.eventId,
+          sessionId,
+          session: keynote,
+          originalSession,
+          firestore,
+        });
 
       sendAdminEvent({
         originalSession,
@@ -217,17 +211,14 @@ export const fieldResolvers = {
           `sessionId ${sessionId}, not found. Unable to update session`,
         );
 
-      const {
-        updatedSession,
-        speakerResults,
-        eventResults,
-      } = await updateSession({
-        eventId: originalSession.eventId,
-        sessionId,
-        session: regular,
-        originalSession,
-        firestore,
-      });
+      const { updatedSession, speakerResults, eventResults } =
+        await updateSession({
+          eventId: originalSession.eventId,
+          sessionId,
+          session: regular,
+          originalSession,
+          firestore,
+        });
 
       sendAdminEvent({
         originalSession,
@@ -265,17 +256,14 @@ export const fieldResolvers = {
           `sessionId ${sessionId}, not found. Unable to update session`,
         );
 
-      const {
-        updatedSession,
-        speakerResults,
-        eventResults,
-      } = await updateSession({
-        eventId: originalSession.eventId,
-        sessionId,
-        session: panel,
-        originalSession,
-        firestore,
-      });
+      const { updatedSession, speakerResults, eventResults } =
+        await updateSession({
+          eventId: originalSession.eventId,
+          sessionId,
+          session: panel,
+          originalSession,
+          firestore,
+        });
 
       sendAdminEvent({
         originalSession,
@@ -313,17 +301,14 @@ export const fieldResolvers = {
           `sessionId ${sessionId}, not found. Unable to update session`,
         );
 
-      const {
-        updatedSession,
-        speakerResults,
-        eventResults,
-      } = await updateSession({
-        eventId: originalSession.eventId,
-        sessionId,
-        session: workshop,
-        originalSession,
-        firestore,
-      });
+      const { updatedSession, speakerResults, eventResults } =
+        await updateSession({
+          eventId: originalSession.eventId,
+          sessionId,
+          session: workshop,
+          originalSession,
+          firestore,
+        });
 
       sendAdminEvent({
         originalSession,

@@ -13,7 +13,7 @@ class CanMutateDirective extends SchemaDirectiveVisitor {
     const field = inField;
     const { resolve = defaultFieldResolver } = field;
     // eslint-disable-next-line func-names
-    field.resolve = async function(...args) {
+    field.resolve = async function (...args) {
       dlog('field.resolve called');
       // dlog('the args:: %O', args);
       // eslint-disable-next-line no-unused-vars
