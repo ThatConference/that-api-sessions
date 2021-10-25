@@ -1,8 +1,8 @@
 enum TargetLocation {
-  "Online"
+  "ON THAT (Online Only)"
   ONLINE
-  "In-Person"
+  "AT THAT (In-Person Only)"
   IN_PERSON
-  "Either online or in-person"
+  "Either-Or (AT or ON)"
   EITHER
 }
