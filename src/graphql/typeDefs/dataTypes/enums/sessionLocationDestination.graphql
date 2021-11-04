@@ -16,6 +16,10 @@ enum SessionLocationDestination {
   RM_7
   "8"
   RM_8
+  "9"
+  RM_9
+  "10"
+  RM_10
   "A"
   A
   "B"
@@ -82,8 +86,12 @@ enum SessionLocationDestination {
   INDOOR_WATERPARK
   "Iron Wood"
   IRON_WOOD
+  "Kalahari Ballroom"
+  KALAHARI_BALLROOM
   "Kalahari Drive, South Side of Double Cut"
   KALAHARI_DRIVE_SOUTH_SIDE_OF_DOUBLE_CUT
+  "Kilimanjaro Ballroom"
+  KILIMANJARO_BALLROOM
   "Maji Lounge"
   MAJI_LOUNGE
   "Mangrove"
@@ -92,6 +100,8 @@ enum SessionLocationDestination {
   MARULA
   "Mess Hall"
   MESS_HALL
+  "Nile"
+  NILE
   "North Atrium"
   NORTH_ATRIUM
   "North Atrium / Registration"
@@ -108,6 +118,24 @@ enum SessionLocationDestination {
   PORTIA
   "Registration"
   REGISTRATION
+  "Salon A"
+  SALON_A
+  "Salon B"
+  SALON_B
+  "Salon C"
+  SALON_C
+  "Salon D"
+  SALON_D
+  "Salon E"
+  SALON_E
+  "Salon F"
+  SALON_F
+  "Salon G"
+  SALON_G
+  "Salon H"
+  SALON_H
+  "Salon I"
+  SALON_I
   "Tamarind"
   TAMARIND
   "Tamboti"
@@ -118,6 +146,8 @@ enum SessionLocationDestination {
   THAT_TRAIL
   "Wisteria"
   WISTERIA
+  "Zambezi"
+  ZAMBEZI
 
   # Start combined room destinations
   "3 & 6"
