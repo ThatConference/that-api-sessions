@@ -28,6 +28,10 @@ function calendarEvent(credentials, calendarId) {
   const calendar = google.calendar({
     version: 'v3',
     auth,
+    retryOptions: {
+      autoRetry: true,
+      maxRetries: 10,
+    },
   });
 
   // Utility functions

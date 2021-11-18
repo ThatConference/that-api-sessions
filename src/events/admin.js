@@ -298,7 +298,13 @@ export default function adminEvents(postmark) {
   // ********************
   // Intiaialize emitters
   adminEventEmitter.on('calendarError', err => {
-    throw new SharedCalendarError(err.message);
+    Sentry.setTag('section', 'adminEventEmitter');
+    Sentry.captureException(new SharedCalendarError(err.message));
+  });
+
+  adminEventEmitter.on('error', err => {
+    Sentry.setTag('section', 'adminEventEmitter');
+    Sentry.captureException(new Error(err.message));
   });
 
   adminEventEmitter.on('sessionCreated', insertSharedCalendar);
