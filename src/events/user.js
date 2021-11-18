@@ -290,11 +290,17 @@ function userEvents(postmark) {
   }
 
   userEventEmitter.on('emailError', err => {
-    throw new SendEmailError(err.message);
+    Sentry.setTag('section', 'userEventEmitter');
+    Sentry.captureException(new SendEmailError(err.message));
   });
 
   userEventEmitter.on('calendarError', err => {
-    throw new SharedCalendarError(err.message);
+    Sentry.setTag('section', 'userEventEmitter');
+    Sentry.captureException(new SharedCalendarError(err.message));
+  });
+  userEventEmitter.on('error', err => {
+    Sentry.setTag('section', 'adminEventEmitter');
+    Sentry.captureException(new Error(err.message));
   });
 
   userEventEmitter.on('sessionCreated', sendSessionCreatedEmail);
