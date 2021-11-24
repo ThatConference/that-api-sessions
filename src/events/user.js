@@ -6,6 +6,7 @@ import * as Sentry from '@sentry/node';
 import envConfig from '../envConfig';
 import calendarEvent from '../lib/calendarEvent';
 import slackNotifications from '../lib/slackNotifications';
+import callOgImage from '../lib/callOgImage';
 import { SharedCalendarError, SendEmailError } from '../lib/errors';
 
 const dlog = debug('that:api:sessions:events:user');
@@ -289,6 +290,13 @@ function userEvents(postmark) {
     }
   }
 
+  function setOgImage({ session }) {
+    dlog('call setOgImage');
+    callOgImage(session.id)
+      .then(res => dlog('setOgImage result: %o', res))
+      .catch(e => process.nextTick(() => userEventEmitter.emit('error', e)));
+  }
+
   userEventEmitter.on('emailError', err => {
     Sentry.setTag('section', 'userEventEmitter');
     Sentry.captureException(new SendEmailError(err.message));
@@ -306,12 +314,16 @@ function userEvents(postmark) {
   userEventEmitter.on('sessionCreated', sendSessionCreatedEmail);
   userEventEmitter.on('sessionCreated', insertSharedCalendar);
   userEventEmitter.on('sessionCreated', sendSessionCreatedSlack);
+  userEventEmitter.on('sessionCreated', setOgImage);
   userEventEmitter.on('sessionUpdated', sendSessionUpdatedEmail);
   userEventEmitter.on('sessionUpdated', updateSharedCalendar);
+  userEventEmitter.on('sessionUpdated', setOgImage);
   userEventEmitter.on('sessionCancelled', cancelSharedCalendar);
   // on admin events
   userEventEmitter.on('adminSessionCreated', insertSharedCalendar);
+  userEventEmitter.on('adminSessionCreated', setOgImage);
   userEventEmitter.on('adminSessionUpdated', updateSharedCalendar);
+  userEventEmitter.on('adminSessionUpdated', setOgImage);
   userEventEmitter.on('adminSessionCancelled', cancelSharedCalendar);
 
   return userEventEmitter;
