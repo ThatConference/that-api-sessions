@@ -9,6 +9,7 @@ import envConfig from '../envConfig';
 import calendarEvent from '../lib/calendarEvent';
 import determineSessionChanges from '../lib/determineSessionChanges';
 import slackNotifications from '../lib/slackNotifications';
+import callOgImage from '../lib/callOgImage';
 
 const dlog = debug('that:api:sessions:events:admin');
 const calEvent = calendarEvent(
@@ -295,6 +296,13 @@ export default function adminEvents(postmark) {
     });
   }
 
+  function setOgImage({ session }) {
+    dlog('call setOgImage');
+    callOgImage(session.id)
+      .then(res => dlog('setOgImage result: %o', res))
+      .catch(e => process.nextTick(() => adminEventEmitter.emit('error', e)));
+  }
+
   // ********************
   // Intiaialize emitters
   adminEventEmitter.on('calendarError', err => {
@@ -308,9 +316,11 @@ export default function adminEvents(postmark) {
   });
 
   adminEventEmitter.on('sessionCreated', insertSharedCalendar);
+  adminEventEmitter.on('sessionCreated', setOgImage);
   adminEventEmitter.on('sessionUpdated', sendFavoritesSessionUpdateEmail);
   adminEventEmitter.on('sessionUpdated', updateSharedCalendar);
   adminEventEmitter.on('sessionUpdated', sendSessionUpdatedSlack);
+  adminEventEmitter.on('sessionUpdated', setOgImage);
   adminEventEmitter.on('sessionCancelled', sendFavoritesSessionUpdateEmail);
   adminEventEmitter.on('sessionCancelled', cancelSharedCalendar);
   adminEventEmitter.on('sessionCancelled', sendSessionCancelledSlack);
