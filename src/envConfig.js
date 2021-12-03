@@ -18,7 +18,7 @@ const requiredConfig = () => ({
     'https://images.that.tech/members/person-placeholder.jpg',
   notificationEmailFrom:
     process.env.NOTIFICATION_EMAIL_FROM || 'hello@thatconference.com',
-  ogImgeBaseUrl:
+  ogImageBaseUrl:
     process.env.OG_IMAGE_BASE_URL || configMissing('OG_IMAGE_BASE_URL'),
 });
 
