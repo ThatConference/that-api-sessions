@@ -1,6 +1,6 @@
 {
   "name": "that-api-sessions",
-  "version": "2.3.0",
+  "version": "2.4.0",
   "description": "THAT Conference Sessions Service.",
   "main": "index.js",
   "engines": {
@@ -21,20 +21,21 @@
   },
   "dependencies": {
     "@apollo/federation": "0.22.0",
-    "@google-cloud/firestore": "^4.15.1",
+    "@google-cloud/firestore": "^5.0.1",
+    "@google-cloud/trace-agent": "^5.1.6",
     "@graphql-tools/load-files": "6.2.7",
     "@graphql-tools/merge": "6.2.10",
-    "@sentry/node": "^6.15.0",
+    "@sentry/node": "^6.16.1",
     "@thatconference/api": "~2.3.0",
     "@thatconference/schema": "^1.4.0",
     "apollo-server-express": "2.22.2",
     "base32-encode": "^1.2.0",
     "dataloader": "^2.0.0",
-    "debug": "^4.3.2",
+    "debug": "^4.3.3",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
-    "googleapis": "^91.0.0",
-    "graphql": "^15.7.2",
+    "googleapis": "^92.0.0",
+    "graphql": "^15.8.0",
     "graphql-scalars": "^1.13.6",
     "graphql-type-json": "^0.3.2",
     "ical-generator": "~3.1.0",
@@ -44,7 +45,7 @@
     "node-fetch": "^2.6.6",
     "postmark": "^2.7.8",
     "response-time": "^2.3.2",
-    "slugify": "^1.6.2",
+    "slugify": "^1.6.3",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
