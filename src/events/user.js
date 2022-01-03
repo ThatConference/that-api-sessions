@@ -292,6 +292,11 @@ function userEvents(postmark) {
 
   function setOgImage({ session }) {
     dlog('call setOgImage');
+    if (session.status !== 'ACCEPTED') {
+      dlog('session not accepted, leaving setOgImage');
+      return;
+    }
+
     callOgImage(session.id)
       .then(res => dlog('setOgImage result: %o', res))
       .catch(e => process.nextTick(() => userEventEmitter.emit('error', e)));
