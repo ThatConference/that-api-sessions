@@ -10,7 +10,7 @@ export const fieldResolvers = {
     },
     all: (
       _,
-      { eventId, status = ['APPROVED'], orderBy = 'START_TIME_ASC' },
+      { eventId, status = ['APPROVED'], orderBy },
       { dataSources: { firestore } },
     ) => {
       dlog('all called with statuses %o, orderBy %s', status, orderBy);
