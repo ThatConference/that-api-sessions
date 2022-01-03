@@ -39,5 +39,6 @@ export const fieldResolvers = {
     event: ({ eventId }) => ({ id: eventId }),
     location: ({ location }) => location || null,
     secondaryLocations: ({ secondaryLocations }) => secondaryLocations || [],
+    shortDescription: ({ shortDescription }) => shortDescription ?? '',
   },
 };
