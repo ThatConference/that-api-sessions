@@ -3,6 +3,7 @@ import { dataSources } from '@thatconference/api';
 
 import sessionStore from '../../../dataSources/cloudFirestore/session';
 import memberStore from '../../../dataSources/cloudFirestore/member';
+import constants from '../../../constants';
 
 const eventStore = dataSources.cloudFirestore.event;
 const dlog = debug('that:api:sessions:mutation:AdminSessionUpdate');
@@ -96,6 +97,14 @@ function sendAdminEvent({
   });
 }
 
+function sendGraphCdnEvent({ graphCdnEvents, updatedSession }) {
+  graphCdnEvents.emit(
+    constants.GRAPHCDN.EVENT_NAME.PURGE,
+    constants.GRAPHCDN.PURGE.SESSION,
+    updatedSession.id,
+  );
+}
+
 export const fieldResolvers = {
   AdminSessionUpdate: {
     openSpace: async (
@@ -104,7 +113,7 @@ export const fieldResolvers = {
       {
         dataSources: {
           firestore,
-          events: { adminEvents },
+          events: { adminEvents, graphCdnEvents },
         },
         user,
       },
@@ -140,6 +149,7 @@ export const fieldResolvers = {
         sendNotification,
         firestore,
       });
+      sendGraphCdnEvent({ graphCdnEvents, updatedSession });
 
       return updatedSession;
     },
@@ -149,7 +159,7 @@ export const fieldResolvers = {
       {
         dataSources: {
           firestore,
-          events: { adminEvents },
+          events: { adminEvents, graphCdnEvents },
         },
         user,
       },
@@ -185,6 +195,7 @@ export const fieldResolvers = {
         sendNotification,
         firestore,
       });
+      sendGraphCdnEvent({ graphCdnEvents, updatedSession });
 
       return updatedSession;
     },
@@ -194,7 +205,7 @@ export const fieldResolvers = {
       {
         dataSources: {
           firestore,
-          events: { adminEvents },
+          events: { adminEvents, graphCdnEvents },
         },
         user,
       },
@@ -230,6 +241,7 @@ export const fieldResolvers = {
         sendNotification,
         firestore,
       });
+      sendGraphCdnEvent({ graphCdnEvents, updatedSession });
 
       return updatedSession;
     },
@@ -239,7 +251,7 @@ export const fieldResolvers = {
       {
         dataSources: {
           firestore,
-          events: { adminEvents },
+          events: { adminEvents, graphCdnEvents },
         },
         user,
       },
@@ -275,6 +287,7 @@ export const fieldResolvers = {
         sendNotification,
         firestore,
       });
+      sendGraphCdnEvent({ graphCdnEvents, updatedSession });
 
       return updatedSession;
     },
@@ -284,7 +297,7 @@ export const fieldResolvers = {
       {
         dataSources: {
           firestore,
-          events: { adminEvents },
+          events: { adminEvents, graphCdnEvents },
         },
         user,
       },
@@ -320,6 +333,7 @@ export const fieldResolvers = {
         sendNotification,
         firestore,
       });
+      sendGraphCdnEvent({ graphCdnEvents, updatedSession });
 
       return updatedSession;
     },

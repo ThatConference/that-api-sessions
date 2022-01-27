@@ -4,6 +4,7 @@ import { dataSources } from '@thatconference/api';
 
 import sessionStore from '../../../dataSources/cloudFirestore/session';
 import memberStore from '../../../dataSources/cloudFirestore/member';
+import constants from '../../../constants';
 
 const eventStore = dataSources.cloudFirestore.event;
 
@@ -42,33 +43,19 @@ function sendUserEvent({
   }
 }
 
+function sendGraphCdnEvent({ graphCdnEvents, sessionResults }) {
+  if (['ACCEPTED'].includes(sessionResults.status)) {
+    graphCdnEvents.emit(constants.GRAPHCDN.EVENT_NAME.CREATED_SESSION, {
+      eventId: sessionResults.eventId,
+      memberIds: sessionResults.speakers,
+    });
+  }
+}
+
 export const fieldResolvers = {
   SessionCreate: {
-    create: async (
-      { eventId },
-      { session },
-      {
-        dataSources: {
-          firestore,
-          events: { userEvents },
-        },
-        user,
-      },
-    ) => {
-      dlog('create called, user.sub: %s', user.sub);
-
-      const { sessionResults, userResults, eventResults } =
-        await createNewSession({ eventId, user, session, firestore });
-
-      sendUserEvent({
-        sessionResults,
-        userResults,
-        eventResults,
-        userEvents,
-        user,
-      });
-
-      return sessionResults;
+    create: async () => {
+      throw Error('No Longer Implemented');
     },
     openSpace: async (
       { eventId },
@@ -76,7 +63,7 @@ export const fieldResolvers = {
       {
         dataSources: {
           firestore,
-          events: { userEvents },
+          events: { userEvents, graphCdnEvents },
         },
         user,
       },
@@ -96,6 +83,7 @@ export const fieldResolvers = {
         userEvents,
         user,
       });
+      sendGraphCdnEvent({ graphCdnEvents, sessionResults });
 
       return sessionResults;
     },
@@ -105,7 +93,7 @@ export const fieldResolvers = {
       {
         dataSources: {
           firestore,
-          events: { userEvents },
+          events: { userEvents, graphCdnEvents },
         },
         user,
       },
@@ -125,6 +113,7 @@ export const fieldResolvers = {
         userEvents,
         user,
       });
+      sendGraphCdnEvent({ graphCdnEvents, sessionResults });
 
       return sessionResults;
     },
@@ -134,7 +123,7 @@ export const fieldResolvers = {
       {
         dataSources: {
           firestore,
-          events: { userEvents },
+          events: { userEvents, graphCdnEvents },
         },
         user,
       },
@@ -154,6 +143,7 @@ export const fieldResolvers = {
         userEvents,
         user,
       });
+      sendGraphCdnEvent({ graphCdnEvents, sessionResults });
 
       return sessionResults;
     },
@@ -163,7 +153,7 @@ export const fieldResolvers = {
       {
         dataSources: {
           firestore,
-          events: { userEvents },
+          events: { userEvents, graphCdnEvents },
         },
         user,
       },
@@ -183,6 +173,7 @@ export const fieldResolvers = {
         userEvents,
         user,
       });
+      sendGraphCdnEvent({ graphCdnEvents, sessionResults });
 
       return sessionResults;
     },
@@ -192,7 +183,7 @@ export const fieldResolvers = {
       {
         dataSources: {
           firestore,
-          events: { userEvents },
+          events: { userEvents, graphCdnEvents },
         },
         user,
       },
@@ -212,6 +203,7 @@ export const fieldResolvers = {
         userEvents,
         user,
       });
+      sendGraphCdnEvent({ graphCdnEvents, sessionResults });
 
       return sessionResults;
     },

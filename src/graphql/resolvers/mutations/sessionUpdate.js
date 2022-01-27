@@ -6,6 +6,7 @@ import { ForbiddenError } from 'apollo-server-express';
 import sessionStore from '../../../dataSources/cloudFirestore/session';
 import memberStore from '../../../dataSources/cloudFirestore/member';
 import checkMemberCanMutate from '../../../lib/checkMemberCanMutate';
+import constants from '../../../constants';
 
 const eventStore = dataSources.cloudFirestore.event;
 const dlog = debug('that:api:sessions:mutation:SessionUpdate');
@@ -99,6 +100,14 @@ function sendUserEvent({
   });
 }
 
+function sendGraphCdnEvent({ graphCdnEvents, updatedSession }) {
+  graphCdnEvents.emit(
+    constants.GRAPHCDN.EVENT_NAME.PURGE,
+    constants.GRAPHCDN.PURGE.SESSION,
+    updatedSession.id,
+  );
+}
+
 export const fieldResolvers = {
   SessionUpdate: {
     update: async () => {
@@ -110,7 +119,7 @@ export const fieldResolvers = {
       {
         dataSources: {
           firestore,
-          events: { userEvents },
+          events: { userEvents, graphCdnEvents },
         },
         user,
       },
@@ -151,6 +160,7 @@ export const fieldResolvers = {
         user,
         eventResults,
       });
+      sendGraphCdnEvent({ graphCdnEvents, updatedSession });
 
       return updatedSession;
     },
@@ -160,7 +170,7 @@ export const fieldResolvers = {
       {
         dataSources: {
           firestore,
-          events: { userEvents },
+          events: { userEvents, graphCdnEvents },
         },
         user,
       },
@@ -204,6 +214,7 @@ export const fieldResolvers = {
         user,
         eventResults,
       });
+      sendGraphCdnEvent({ graphCdnEvents, updatedSession });
 
       return updatedSession;
     },
@@ -213,7 +224,7 @@ export const fieldResolvers = {
       {
         dataSources: {
           firestore,
-          events: { userEvents },
+          events: { userEvents, graphCdnEvents },
         },
         user,
       },
@@ -257,6 +268,7 @@ export const fieldResolvers = {
         user,
         eventResults,
       });
+      sendGraphCdnEvent({ graphCdnEvents, updatedSession });
 
       return updatedSession;
     },
@@ -266,7 +278,7 @@ export const fieldResolvers = {
       {
         dataSources: {
           firestore,
-          events: { userEvents },
+          events: { userEvents, graphCdnEvents },
         },
         user,
       },
@@ -310,6 +322,7 @@ export const fieldResolvers = {
         user,
         eventResults,
       });
+      sendGraphCdnEvent({ graphCdnEvents, updatedSession });
 
       return updatedSession;
     },
@@ -319,7 +332,7 @@ export const fieldResolvers = {
       {
         dataSources: {
           firestore,
-          events: { userEvents },
+          events: { userEvents, graphCdnEvents },
         },
         user,
       },
@@ -363,6 +376,7 @@ export const fieldResolvers = {
         user,
         eventResults,
       });
+      sendGraphCdnEvent({ graphCdnEvents, updatedSession });
 
       return updatedSession;
     },

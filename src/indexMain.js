@@ -1,12 +1,13 @@
 /* eslint-disable no-console */
 /* eslint-disable import/no-unresolved */
-import connect from 'express';
+import express from 'express';
 import debug from 'debug';
 import { Firestore } from '@google-cloud/firestore';
 import { Client as Postmark } from 'postmark';
 import responseTime from 'response-time';
 import { v4 as uuidv4 } from 'uuid';
 import * as Sentry from '@sentry/node';
+import { events as apiEvents } from '@thatconference/api';
 
 import apolloGraphServer from './graphql';
 import envConfig from './envConfig';
@@ -26,12 +27,14 @@ let version;
 
 const firestore = new Firestore();
 const dlog = debug('that:api:sessions:index');
-const api = connect();
+const api = express();
 const defaultVersion = `that-api-sessions@${version}`;
+const graphCdnEmitter = apiEvents.graphCdn;
 
 const postmark = new Postmark(envConfig.postmarkApiToken);
 const userEvents = userEventEmitter(postmark);
 const adminEvents = adminEventEmitter(postmark);
+const graphCdnEvents = graphCdnEmitter(Sentry);
 
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
@@ -52,6 +55,7 @@ const createConfig = () => ({
     events: {
       userEvents,
       adminEvents,
+      graphCdnEvents,
     },
   },
 });
