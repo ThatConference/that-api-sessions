@@ -101,11 +101,13 @@ function sendUserEvent({
 }
 
 function sendGraphCdnEvent({ graphCdnEvents, updatedSession }) {
-  graphCdnEvents.emit(
-    constants.GRAPHCDN.EVENT_NAME.PURGE,
-    constants.GRAPHCDN.PURGE.SESSION,
-    updatedSession.id,
-  );
+  if (['ACCEPTED', 'CANCELLED', 'SCHEDULED'].includes(updatedSession.status)) {
+    graphCdnEvents.emit(
+      constants.GRAPHCDN.EVENT_NAME.PURGE,
+      constants.GRAPHCDN.PURGE.SESSION,
+      updatedSession.id,
+    );
+  }
 }
 
 export const fieldResolvers = {
