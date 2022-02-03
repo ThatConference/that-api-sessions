@@ -101,7 +101,11 @@ function sendUserEvent({
 }
 
 function sendGraphCdnEvent({ graphCdnEvents, updatedSession }) {
-  if (['ACCEPTED', 'CANCELLED', 'SCHEDULED'].includes(updatedSession.status)) {
+  if (
+    ['ACCEPTED', 'CANCELLED', 'SCHEDULED', 'WITHDREW'].includes(
+      updatedSession.status,
+    )
+  ) {
     graphCdnEvents.emit(
       constants.GRAPHCDN.EVENT_NAME.PURGE,
       constants.GRAPHCDN.PURGE.SESSION,
