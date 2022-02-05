@@ -3,6 +3,7 @@ import debug from 'debug';
 import moment from 'moment';
 import iCal from 'ical-generator';
 import * as Sentry from '@sentry/node';
+import { orbitLove } from '@thatconference/api';
 import envConfig from '../envConfig';
 import calendarEvent from '../lib/calendarEvent';
 import slackNotifications from '../lib/slackNotifications';
@@ -302,6 +303,56 @@ function userEvents(postmark) {
       .catch(e => process.nextTick(() => userEventEmitter.emit('error', e)));
   }
 
+  function sendOrbitLoveActivityOnCreate({ session, user, event, firestore }) {
+    dlog('call sendOrbitLove Activity, on create');
+    const orbitLoveApi = orbitLove.orbitLoveApi({ firestore });
+
+    let getOrbitActivityType = null;
+    if (session.status === 'ACCEPTED')
+      getOrbitActivityType = orbitLove.activityTypes.session.createOpenSpace;
+    else if (session.status === 'SUBMITTED')
+      getOrbitActivityType = orbitLove.activityTypes.session.submit;
+    else return undefined;
+
+    return (
+      orbitLoveApi
+        .addSessionActivity({
+          activityType: getOrbitActivityType(),
+          user,
+          session,
+          event,
+        })
+        // .then(res => dlog('sendOrbitLove result: %o', res))
+        .catch(err =>
+          process.nextTick(() => userEventEmitter.emit('error', err)),
+        )
+    );
+  }
+
+  function sendOrbitLoveActivtyOnUpdate({ session, user, event, firestore }) {
+    dlog('call sendOrbitLove Activty, onUpdate');
+    const orbitLoveApi = orbitLove.orbitLoveApi({ firestore });
+
+    let getOrbitActivityType = null;
+    if (session.status === 'ACCEPTED' && session.type === 'OPENSPACE')
+      getOrbitActivityType = orbitLove.activityTypes.session.createOpenSpace;
+    else if (session.status === 'SUBMITTED')
+      getOrbitActivityType = orbitLove.activityTypes.session.submit;
+    else return undefined;
+
+    return orbitLoveApi
+      .addSessionActivity({
+        activityType: getOrbitActivityType(),
+        user,
+        session,
+        event,
+      })
+      .then(res => dlog('sendOrbitLove result: %o', res))
+      .catch(err =>
+        process.nextTick(() => userEventEmitter.emit('error', err)),
+      );
+  }
+
   userEventEmitter.on('emailError', err => {
     Sentry.setTag('section', 'userEventEmitter');
     Sentry.captureException(new SendEmailError(err.message));
@@ -320,9 +371,11 @@ function userEvents(postmark) {
   userEventEmitter.on('sessionCreated', insertSharedCalendar);
   userEventEmitter.on('sessionCreated', sendSessionCreatedSlack);
   userEventEmitter.on('sessionCreated', setOgImage);
+  userEventEmitter.on('sessionCreated', sendOrbitLoveActivityOnCreate);
   userEventEmitter.on('sessionUpdated', sendSessionUpdatedEmail);
   userEventEmitter.on('sessionUpdated', updateSharedCalendar);
   userEventEmitter.on('sessionUpdated', setOgImage);
+  userEventEmitter.on('sessionUpdated', sendOrbitLoveActivtyOnUpdate);
   userEventEmitter.on('sessionCancelled', cancelSharedCalendar);
   // on admin events
   userEventEmitter.on('adminSessionCreated', insertSharedCalendar);
