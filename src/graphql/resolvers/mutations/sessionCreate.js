@@ -30,6 +30,7 @@ function sendUserEvent({
   eventResults,
   userEvents,
   user,
+  firestore,
 }) {
   if (['SUBMITTED', 'ACCEPTED'].includes(sessionResults.status)) {
     userEvents.emit('sessionCreated', {
@@ -39,6 +40,7 @@ function sendUserEvent({
       },
       session: sessionResults,
       event: eventResults,
+      firestore,
     });
   }
 }
@@ -82,6 +84,7 @@ export const fieldResolvers = {
         eventResults,
         userEvents,
         user,
+        firestore,
       });
       sendGraphCdnEvent({ graphCdnEvents, sessionResults });
 
@@ -112,6 +115,7 @@ export const fieldResolvers = {
         eventResults,
         userEvents,
         user,
+        firestore,
       });
       sendGraphCdnEvent({ graphCdnEvents, sessionResults });
 
@@ -142,6 +146,7 @@ export const fieldResolvers = {
         eventResults,
         userEvents,
         user,
+        firestore,
       });
       sendGraphCdnEvent({ graphCdnEvents, sessionResults });
 
@@ -172,6 +177,7 @@ export const fieldResolvers = {
         eventResults,
         userEvents,
         user,
+        firestore,
       });
       sendGraphCdnEvent({ graphCdnEvents, sessionResults });
 
@@ -202,6 +208,7 @@ export const fieldResolvers = {
         eventResults,
         userEvents,
         user,
+        firestore,
       });
       sendGraphCdnEvent({ graphCdnEvents, sessionResults });
 

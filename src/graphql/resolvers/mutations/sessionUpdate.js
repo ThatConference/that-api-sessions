@@ -67,6 +67,7 @@ function sendUserEvent({
   userEvents,
   user,
   eventResults,
+  firestore,
 }) {
   dlog(
     'sendUserEvent original status: %s, updated status: %s',
@@ -97,6 +98,7 @@ function sendUserEvent({
     user: userInfo,
     session: updatedSession,
     event: eventResults,
+    firestore,
   });
 }
 
@@ -165,6 +167,7 @@ export const fieldResolvers = {
         userEvents,
         user,
         eventResults,
+        firestore,
       });
       sendGraphCdnEvent({ graphCdnEvents, updatedSession });
 
@@ -219,6 +222,7 @@ export const fieldResolvers = {
         userEvents,
         user,
         eventResults,
+        firestore,
       });
       sendGraphCdnEvent({ graphCdnEvents, updatedSession });
 
@@ -273,6 +277,7 @@ export const fieldResolvers = {
         userEvents,
         user,
         eventResults,
+        firestore,
       });
       sendGraphCdnEvent({ graphCdnEvents, updatedSession });
 
@@ -327,6 +332,7 @@ export const fieldResolvers = {
         userEvents,
         user,
         eventResults,
+        firestore,
       });
       sendGraphCdnEvent({ graphCdnEvents, updatedSession });
 
@@ -381,6 +387,7 @@ export const fieldResolvers = {
         userEvents,
         user,
         eventResults,
+        firestore,
       });
       sendGraphCdnEvent({ graphCdnEvents, updatedSession });
 
