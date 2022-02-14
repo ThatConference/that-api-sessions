@@ -5,4 +5,6 @@ enum TargetLocation {
   IN_PERSON
   "Either-Or (AT or ON)"
   EITHER
+  "Other Platform"
+  OTHER
 }
