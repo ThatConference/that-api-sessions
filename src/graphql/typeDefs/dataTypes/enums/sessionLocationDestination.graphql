@@ -178,4 +178,6 @@ enum SessionLocationDestination {
   YOUTUBE
   "Facebook"
   FACEBOOK
+  "Google Meet"
+  GOOGLE_MEET
 }
