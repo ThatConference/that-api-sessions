@@ -1,18 +1,11 @@
-/* have not found a solution to not requires these to run the tests
- * they are needed by @thatconference/api
- */
-process.env.INFLUX_TOKEN = 'TEST_INFLUX_TOKEN_VALUE';
-process.env.INFLUX_ORG_ID = 'TEST_INFLUX_ORG_ID_VALUE';
-process.env.INFLUX_BUCKET_ID = 'INFLUX_BUCKET_ID';
-process.env.INFLUX_HOST = 'INFLUX_HOST';
-
-const mentions = require('@thatconference/api').mentions;
+let mentions;
 const handleMentions = require('../session').parseAndPersistMentions;
 
 jest.mock('@thatconference/api');
 
 let scrubbedSession = {};
 let returnSlugs;
+let origEnv;
 
 const javascriptSlug = {
   slug: 'javascript',
@@ -21,6 +14,14 @@ const javascriptSlug = {
 };
 
 describe('parseAndPersistMentions tests', () => {
+  beforeAll(() => {
+    mentions = require('@thatconference/api').mentions;
+    origEnv = process.env;
+    process.env.DEGUB = null;
+  });
+  afterAll(() => {
+    process.env = origEnv;
+  });
   beforeEach(() => {
     scrubbedSession = {
       id: 'testid-scrubbedSession',
@@ -41,8 +42,6 @@ describe('parseAndPersistMentions tests', () => {
     scrubbedSession = null;
     returnSlugs = null;
   });
-
-  mentions.parseToSlug.mockResolvedValue(returnSlugs);
 
   it('will be a function', () => {
     expect(typeof handleMentions).toBe('function');

@@ -15,7 +15,6 @@ function favorites(dbInstance) {
       .where('memberId', '==', user.sub)
       .where('eventId', '==', eventId)
       .get();
-    dlog('favorites docs count %d', docs.length);
 
     return docs.map(r => ({ id: r.id, ...r.data() }));
   }
@@ -36,7 +35,6 @@ function favorites(dbInstance) {
     const { docs } = await favoriteCollection
       .where('sessionId', '==', sessionId)
       .get();
-    dlog('favorites docs count %d', docs.length);
 
     return docs.map(r => ({ id: r.id, ...r.data() }));
   }
@@ -47,7 +45,6 @@ function favorites(dbInstance) {
       .where('sessionId', '==', sessionId)
       .get();
 
-    dlog('docRef Size: %d', snapshot.size);
     return snapshot.size;
   }
 
