@@ -228,22 +228,24 @@ function sessions(dbInstance) {
   }
 
   async function batchFindSessions(sessionIds) {
-    dlog('batchFindSessions %o', sessionIds);
+    dlog('batchFindSessions called on %d ids', sessionIds?.length);
+    if (!Array.isArray(sessionIds))
+      throw new Error('batchFindSessions parameter must be an array');
 
     const docRefs = sessionIds.map(id =>
       dbInstance.doc(`${collectionName}/${id}`),
     );
+    if (docRefs.length < 1) return [];
 
-    return Promise.all(docRefs.map(d => d.get())).then(res =>
-      res
-        .filter(r => r.exists)
-        .map(r => {
-          const result = {
-            id: r.id,
-            ...r.data(),
-          };
-          return sessionDateForge(result);
-        }),
+    return dbInstance.getAll(...docRefs).then(docSnaps =>
+      docSnaps.map(r => {
+        const result = {
+          id: r.id,
+          ...r.data(),
+        };
+
+        return sessionDateForge(result);
+      }),
     );
   }
 
