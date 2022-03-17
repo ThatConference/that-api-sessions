@@ -2,6 +2,7 @@ import debug from 'debug';
 import slugify from 'slugify';
 import * as Sentry from '@sentry/node';
 import { utility, mentions } from '@thatconference/api';
+import moment from 'moment';
 import eventStore from './event';
 
 const { entityDateForge } = utility.firestoreDateForge;
@@ -337,6 +338,50 @@ function sessions(dbInstance) {
     };
   }
 
+  function findByEventRoom({
+    eventId,
+    distination = '',
+    asOfDate = new Date(),
+  }) {
+    dlog('findByEventRoom called for %s, room %s', eventId, distination);
+    if (!eventId)
+      throw new Error('findByEventRoom, eventId is a required parameter');
+    if (!(asOfDate instanceof Date))
+      throw new Error('findByEventRoom, asOfDate must be a Date object');
+
+    // get all sessions for 'today' from datastore
+    const queryDate = moment(asOfDate).startOf('day').toDate();
+    return sessionsCol
+      .where('eventId', '==', eventId)
+      .where('location.destination', '==', distination)
+      .where('status', 'in', approvedSessionStatuses)
+      .where('startTime', '>=', queryDate)
+      .get()
+      .then(querySnap => {
+        if (querySnap.size === 0) return [];
+        const roomSessions = querySnap.docs.map(s => {
+          const record = {
+            id: s.id,
+            ...s.data(),
+          };
+
+          return sessionDateForge(record);
+        });
+        // add a stop time, filter out old sessions and sort
+        const filteredRoomSessions = roomSessions
+          .map(s => ({
+            ...s,
+            stopTime: moment(s.startTime)
+              .add(s.durationInMinutes ?? 60)
+              .toDate(),
+          }))
+          .filter(s => s.stopTime.getTime() >= asOfDate.getTime())
+          .sort((a, b) => a.startTime.getTime() - b.startTime.getTime());
+
+        return filteredRoomSessions;
+      });
+  }
+
   async function update({ user, sessionId, session }) {
     dlog(`updating session ${sessionId} with %o`, session);
     const docRef = dbInstance.doc(`${collectionName}/${sessionId}`);
@@ -485,6 +530,7 @@ function sessions(dbInstance) {
     batchFindSessions,
     findWithStatuses,
     findWithStatusesPaged,
+    findByEventRoom,
     update,
     updateNonMentionBatch,
     getTotalProfessionalSubmittedForEvent,
