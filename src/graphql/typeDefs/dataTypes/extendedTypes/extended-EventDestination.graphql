@@ -1,0 +1,6 @@
+extend type EventDestinationQuery @key(fields: "eventId") {
+  eventId: ID! @external
+  name: SessionLocationDestination! @external
+
+  sessions: [AcceptedSession]! @requires(fields: "name")
+}

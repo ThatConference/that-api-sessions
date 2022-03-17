@@ -14,6 +14,7 @@ import { fieldResolvers as panelFields } from './panel';
 import { fieldResolvers as workshopFields } from './workshop';
 import { fieldResolvers as adminFields } from './sessionAdminFields';
 import { fieldResolvers as adminSessionsFields } from './adminSessions';
+import { fieldResolvers as eventDestinationFields } from './eventDestination';
 
 export default {
   ...root,
@@ -34,4 +35,5 @@ export const fieldResolvers = {
   ...workshopFields,
   ...adminFields,
   ...adminSessionsFields,
+  ...eventDestinationFields,
 };
