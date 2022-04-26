@@ -1,5 +1,7 @@
 "Session fields for eye-forward style sessions. Base must be implemented with EyesFront in types using this interface"
-interface EyesFront {
+interface EyesFront @key(fields: "id") {
+  id: ID!
+
   # Start EyesFront interface fields
   "a longer more verbose session description"
   longDescription: String

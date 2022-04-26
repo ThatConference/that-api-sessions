@@ -1,5 +1,5 @@
 "Base session fields for any type of session"
-interface Base {
+interface Base @key(fields: "id") {
   # Start Base interface fields
   "Session unique identifier"
   id: ID!
