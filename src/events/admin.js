@@ -43,7 +43,7 @@ export default function adminEvents(postmark) {
         sessionId: session?.id,
         sessionTitle: session?.title,
       });
-      scope.setLevel(Sentry.Severity.Error);
+      scope.setLevel('error');
     });
 
     if (!firestore || !firestore.collection) {
@@ -78,7 +78,7 @@ export default function adminEvents(postmark) {
         Sentry.captureMessage(
           `Members retrieved count doesn't match follower count`,
           {
-            level: Sentry.Severity.Warning,
+            level: 'warning',
           },
         );
       });

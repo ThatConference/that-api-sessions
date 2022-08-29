@@ -1,57 +1,74 @@
 import debug from 'debug';
 import * as Sentry from '@sentry/node';
-import { SchemaDirectiveVisitor, ForbiddenError } from 'apollo-server-express';
+import { mapSchema, getDirective, MapperKind } from '@graphql-tools/utils';
+import { ForbiddenError } from 'apollo-server-express';
 import { defaultFieldResolver } from 'graphql';
 import sessionStore from '../../dataSources/cloudFirestore/session';
 import checkMemberCanMutate from '../../lib/checkMemberCanMutate';
 
 const dlog = debug('that:api:sessions:directives:canMutate');
 
-class CanMutateDirective extends SchemaDirectiveVisitor {
-  // eslint-disable-next-line class-methods-use-this
-  visitFieldDefinition(inField) {
-    const field = inField;
-    const { resolve = defaultFieldResolver } = field;
-    // eslint-disable-next-line func-names
-    field.resolve = async function (...args) {
-      dlog('field.resolve called');
-      // dlog('the args:: %O', args);
-      // eslint-disable-next-line no-unused-vars
-      const [id, sessionArg, context] = args;
-      dlog('id %o', id);
+export default function canMutateDirectiveMapper(directiveName = 'canMutate') {
+  dlog('canMutateDirectiveMapper called as %s', directiveName);
 
-      let { eventId } = id;
-      const { sessionId } = id;
-      if (!eventId && !sessionId)
-        throw new ForbiddenError('invalid id argument');
+  return {
+    canMutateDirectiveTransformer: schema =>
+      mapSchema(schema, {
+        [MapperKind.OBJECT_FIELD]: fieldConfig => {
+          const canMutateDirective = getDirective(
+            schema,
+            fieldConfig,
+            directiveName,
+          )?.[0];
+          if (canMutateDirective) {
+            dlog('resolve: %s', fieldConfig?.astNode?.name?.value);
+            const { resolve = defaultFieldResolver } = fieldConfig;
+            return {
+              ...fieldConfig,
+              async resolve(source, args, context, info) {
+                dlog('source: %o', source);
+                dlog('args: %o', args);
 
-      const { user, dataSources } = context;
-      const { firestore } = dataSources;
+                let { eventId } = source;
+                const { sessionId } = source;
+                if (!eventId && !sessionId)
+                  throw new ForbiddenError('invalid source id argument');
 
-      if (sessionId) {
-        const session = await sessionStore(firestore).findSession(sessionId);
-        if (!session) throw new ForbiddenError('invalid session id');
-        eventId = session.eventId;
-      }
+                const { user, dataSources } = context;
+                const { firestore } = dataSources;
 
-      const allowResult = await checkMemberCanMutate({
-        user,
-        eventId,
-        firestore,
-      });
-      if (!allowResult) {
-        const err = new ForbiddenError(
-          'Insufficient privileges to mutate session in this event',
-        );
-        Sentry.configureScope(scope => {
-          scope.setLevel(Sentry.Severity.Info);
-          Sentry.captureException(err);
-        });
-        throw err;
-      }
-      return resolve.apply(this, args);
-    };
-  }
+                if (sessionId) {
+                  const session = await sessionStore(firestore).findSession(
+                    sessionId,
+                  );
+                  if (!session) throw new ForbiddenError('invalid session id');
+                  eventId = session.eventId;
+                }
+
+                dlog('check can mutate');
+                const allowResult = await checkMemberCanMutate({
+                  user,
+                  eventId,
+                  firestore,
+                });
+                if (!allowResult) {
+                  const err = new ForbiddenError(
+                    'Insufficient privileges to mutate session in this event',
+                  );
+                  Sentry.configureScope(scope => {
+                    scope.setLevel('info');
+                    Sentry.captureException(err);
+                  });
+                  throw err;
+                }
+                dlog('canMutate: true');
+                return resolve(source, args, context, info);
+              },
+            };
+          }
+
+          return fieldConfig;
+        },
+      }),
+  };
 }
-
-export default CanMutateDirective;
