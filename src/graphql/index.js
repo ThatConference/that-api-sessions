@@ -1,7 +1,7 @@
 import { pullAt, isNil } from 'lodash';
-import { ApolloServer, SchemaDirectiveVisitor } from 'apollo-server-express';
+import { ApolloServer } from 'apollo-server-express';
 import debug from 'debug';
-import { buildFederatedSchema } from '@apollo/federation';
+import { buildSubgraphSchema } from '@apollo/subgraph';
 import { security } from '@thatconference/api';
 import DataLoader from 'dataloader';
 import * as Sentry from '@sentry/node';
@@ -25,16 +25,27 @@ const jwtClient = security.jwt();
  *     createGateway(userContext)
  */
 const createServer = ({ dataSources }) => {
-  const schema = buildFederatedSchema([{ typeDefs, resolvers }]);
-  SchemaDirectiveVisitor.visitSchemaDirectives(schema, directives);
+  dlog('creating apollo server');
+  let schema = {};
+
+  schema = buildSubgraphSchema([{ typeDefs, resolvers }]);
+
+  const directiveTransformers = [
+    directives.auth('auth').authDirectiveTransformer,
+    directives.canMutate('canMutate').canMutateDirectiveTransformer,
+  ];
+
+  dlog('directiveTransformers: %O', directiveTransformers);
+  schema = directiveTransformers.reduce(
+    (curSchema, transformer) => transformer(curSchema),
+    schema,
+  );
 
   return new ApolloServer({
     schema,
     introspection: JSON.parse(process.env.ENABLE_GRAPH_INTROSPECTION || false),
-    playground: JSON.parse(process.env.ENABLE_GRAPH_PLAYGROUND)
-      ? { endpoint: '/' }
-      : false,
-
+    csrfPrevention: true,
+    cache: 'bounded',
     dataSources: () => {
       dlog('creating dataSources');
       const { firestore } = dataSources;
@@ -57,7 +68,6 @@ const createServer = ({ dataSources }) => {
         sessionLoader,
       };
     },
-
     context: async ({ req, res }) => {
       dlog('creating context');
       let context = {};
@@ -66,7 +76,7 @@ const createServer = ({ dataSources }) => {
         Sentry.addBreadcrumb({
           category: 'graphql context',
           message: 'user has authToken',
-          level: Sentry.Severity.Info,
+          level: 'info',
         });
 
         dlog('validating token for %o:', req.headers.authorization);
@@ -95,7 +105,6 @@ const createServer = ({ dataSources }) => {
 
       return context;
     },
-
     plugins: [],
     formatError: err => {
       Sentry.withScope(scope => {
