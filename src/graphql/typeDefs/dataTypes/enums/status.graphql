@@ -6,6 +6,8 @@ enum Status {
   SUBMITTED
   "Accepted"
   ACCEPTED
+  "Pending accepted status"
+  PENDING_ACCEPTED
   "Not Accepted"
   NOT_ACCEPTED
   "Withdrew"
