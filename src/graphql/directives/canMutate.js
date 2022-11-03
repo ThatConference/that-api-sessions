@@ -57,6 +57,10 @@ export default function canMutateDirectiveMapper(directiveName = 'canMutate') {
                   );
                   Sentry.configureScope(scope => {
                     scope.setLevel('info');
+                    scope.setTags({
+                      eventId,
+                      memberId: user.sub,
+                    });
                     Sentry.captureException(err);
                   });
                   throw err;

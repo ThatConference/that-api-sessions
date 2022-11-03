@@ -41,6 +41,7 @@ Sentry.init({
   environment: process.env.THAT_ENVIRONMENT,
   debug: process.env.NODE_ENV === 'development',
   release: process.env.SENTRY_VERSION || defaultVersion,
+  normalizeDepth: 6,
 });
 
 Sentry.configureScope(scope => {
@@ -64,8 +65,8 @@ const graphServer = apolloGraphServer(createConfig());
 
 const useSentry = async (req, res, next) => {
   Sentry.addBreadcrumb({
-    category: 'root',
-    message: 'init',
+    category: 'that-api-sessions',
+    message: 'sessions init',
     level: 'info',
   });
 
