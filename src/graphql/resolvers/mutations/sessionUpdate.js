@@ -90,7 +90,7 @@ function sendUserEvent({
       updatedSession.status === 'SUBMITTED')
   ) {
     eventTitle = 'sessionUpdated';
-  } else if (updatedSession.status === 'CANCELLED') {
+  } else if (['CANCELLED', 'WITHDREW'].includes(updatedSession.status)) {
     eventTitle = 'sessionCancelled';
   }
 

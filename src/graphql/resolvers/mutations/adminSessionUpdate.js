@@ -76,7 +76,7 @@ function sendAdminEvent({
   }
   if (updatedSession.status === 'ACCEPTED') {
     eventTitle = 'sessionUpdated';
-  } else if (updatedSession.status === 'CANCELLED') {
+  } else if (['CANCELLED', 'WITHDREW'].includes(updatedSession.status)) {
     eventTitle = 'sessionCancelled';
   }
   // determines if there are actual chages in update
