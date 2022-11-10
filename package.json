@@ -1,6 +1,6 @@
 {
   "name": "that-api-sessions",
-  "version": "3.2.1",
+  "version": "3.2.2",
   "description": "THAT Conference Sessions Service.",
   "main": "index.js",
   "engines": {

@@ -32,8 +32,10 @@ export default function adminEvents(postmark) {
     firestore,
   }) {
     dlog('sendFavoritesSessionUpdateEmail called %o', session);
-    if (!sendNotification) {
-      dlog(`sendNotification is ${sendNotification}, returning`);
+    if (sendNotification !== true || session?.status === 'WITHDREW') {
+      dlog(
+        `sendNotification: ${sendNotification}, session.status: ${session?.status}, returning`,
+      );
       return undefined;
     }
 
@@ -42,6 +44,7 @@ export default function adminEvents(postmark) {
       scope.setContext({
         sessionId: session?.id,
         sessionTitle: session?.title,
+        sessionStatus: session?.status,
       });
       scope.setLevel('error');
     });
@@ -244,8 +247,10 @@ export default function adminEvents(postmark) {
     sendNotification,
   }) {
     dlog('call sendSessionUpdatedSlack');
-    if (!sendNotification) {
-      dlog(`sendNotification is ${sendNotification}, returning`);
+    if (sendNotification !== true || session?.status === 'WITHDREW') {
+      dlog(
+        `sendNotification: ${sendNotification}, session.status: ${session?.status}, returning`,
+      );
       return;
     }
 
