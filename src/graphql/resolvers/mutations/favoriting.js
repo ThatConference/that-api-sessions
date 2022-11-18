@@ -47,11 +47,17 @@ export const fieldResolvers = {
             );
           // favSession doesn't need to be refreshed as the
           // favoriteCount and favortiedBy fields are updated by resolver
-          return favSession;
+          return {
+            id: sessionId,
+            session: favSession,
+          };
         }
       }
 
-      return null;
+      return {
+        id: sessionId,
+        session: null,
+      };
     },
   },
 };

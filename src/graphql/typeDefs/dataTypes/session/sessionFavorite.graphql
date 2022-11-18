@@ -1,0 +1,4 @@
+type SessionFavorite {
+  id: ID!
+  session: AcceptedSession
+}

@@ -56,7 +56,10 @@ export const fieldResolvers = {
       );
       dlog('favoriteSessions count: %d', favoriteSessions.length);
 
-      return favoriteSessions;
+      return favoriteSessions.map(s => ({
+        id: s.id,
+        session: s,
+      }));
     },
 
     submitted: async (_, __, { dataSources: { firestore }, user }) => {
