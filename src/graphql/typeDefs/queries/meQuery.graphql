@@ -11,5 +11,5 @@ type MeQuery {
   submitted: [TheSessions] @auth(requires: "sessions")
 
   "Return my favorites. Use 'ANY' to return favorites from any/all events"
-  favorites(eventId: ID!): [AcceptedSession] @auth(requires: "sessions")
+  favorites(eventId: ID!): [SessionFavorite] @auth(requires: "sessions")
 }
