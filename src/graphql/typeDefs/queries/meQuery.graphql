@@ -10,6 +10,11 @@ type MeQuery {
   "returns session me submitted"
   submitted: [TheSessions] @auth(requires: "sessions")
 
-  "Return my favorites. Use 'ANY' to return favorites from any/all events"
-  favorites(eventId: ID!): [SessionFavorite] @auth(requires: "sessions")
+  """
+  Return my favorites.
+  Use 'ANY' to return favorites from any/all events
+  historyDays: number of days before today to request
+  """
+  favorites(eventId: ID!, historyDays: Int): [SessionFavorite]
+    @auth(requires: "sessions")
 }
