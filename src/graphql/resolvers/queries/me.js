@@ -1,5 +1,6 @@
 import debug from 'debug';
 import { dataSources } from '@thatconference/api';
+import moment from 'moment';
 
 import sessionStore from '../../../dataSources/cloudFirestore/session';
 import favoriteStore from '../../../dataSources/cloudFirestore/favorite';
@@ -28,10 +29,14 @@ export const fieldResolvers = {
     },
     favorites: async (
       _,
-      { eventId },
+      { eventId, historyDays },
       { dataSources: { firestore, sessionLoader }, user },
     ) => {
-      dlog('my favorite sessions called');
+      dlog(
+        'my favorite sessions called for %s, history: %o',
+        eventId,
+        historyDays,
+      );
       let favorites;
       if (eventId.toUpperCase() === 'ANY') {
         favorites = await favoriteStore(firestore).findAllFavoritesForMember(
@@ -45,16 +50,29 @@ export const fieldResolvers = {
       }
       dlog('total favorites returned: %d', favorites.length);
 
-      const favoriteSessions = await Promise.all(
+      let favoriteSessions = await Promise.all(
         favorites.map(fav => sessionLoader.load(fav.sessionId)),
       ).then(fs =>
-        fs
-          .filter(s => s != null)
-          .filter(s =>
-            ['ACCEPTED', 'SCHEDULED', 'CANCELLED'].includes(s.status),
-          ),
+        fs.filter(s =>
+          ['ACCEPTED', 'SCHEDULED', 'CANCELLED'].includes(s?.status),
+        ),
       );
+
       dlog('favoriteSessions count: %d', favoriteSessions.length);
+      if (Number.isInteger(historyDays)) {
+        // valueOf() returns epoch in ms
+        const favoritesAfter = moment().subtract(historyDays, 'd').valueOf();
+        dlog('favorites after:: %O', favoritesAfter);
+        favoriteSessions = favoriteSessions.filter(
+          fs => moment(fs.startTime).valueOf() > favoritesAfter,
+        );
+
+        dlog(
+          'favoriteSessions count: %o  (historyDays: %d)',
+          favoriteSessions.length,
+          historyDays,
+        );
+      }
 
       return favoriteSessions.map(s => ({
         id: s.id,
