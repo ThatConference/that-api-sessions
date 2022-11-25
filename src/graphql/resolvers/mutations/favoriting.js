@@ -11,10 +11,17 @@ export const fieldResolvers = {
     toggle: async (
       { eventId },
       { sessionId },
-      { dataSources: { firestore }, user },
+      {
+        dataSources: {
+          firestore,
+          events: { favoritesEvents },
+        },
+        user,
+      },
     ) => {
       dlog('toggle favorite %s', sessionId);
       // see if favorite exists
+      favoritesEvents.emit('editFavorite', user.sub);
       const fav = await favoriteStore(firestore).findSessionForMember(
         sessionId,
         user,
