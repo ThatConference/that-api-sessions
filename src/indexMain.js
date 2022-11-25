@@ -30,11 +30,13 @@ const dlog = debug('that:api:sessions:index');
 const api = express();
 const defaultVersion = `that-api-sessions@${version}`;
 const graphCdnEmitter = apiEvents.graphCdn;
+const favEventEmitter = apiEvents.favorites;
 
 const postmark = new Postmark(envConfig.postmarkApiToken);
 const userEvents = userEventEmitter(postmark);
 const adminEvents = adminEventEmitter(postmark);
 const graphCdnEvents = graphCdnEmitter(Sentry);
+const favoritesEvents = favEventEmitter({ firestore, sentry: Sentry });
 
 Sentry.init({
   dsn: process.env.SENTRY_DSN,
@@ -57,6 +59,7 @@ const createConfig = () => ({
       userEvents,
       adminEvents,
       graphCdnEvents,
+      favoritesEvents,
     },
   },
 });
