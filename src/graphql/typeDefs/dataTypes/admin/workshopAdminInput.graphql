@@ -36,6 +36,8 @@ input WorkshopAdminCreateInput {
   speakers: [ID!]!
   "Is the primary speakers a minor?"
   isMinor: Boolean
+  "Set slug, if exists session id will be used"
+  slug: String
 }
 
 input WorkshopAdminUpdateInput {
