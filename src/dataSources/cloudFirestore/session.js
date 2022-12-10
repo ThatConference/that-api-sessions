@@ -482,9 +482,14 @@ function sessions(dbInstance) {
     );
     scrubbedSession.communities = community ? [community] : [];
     if (!scrubbedSession.startTime) scrubbedSession.startTime = null;
-    const slug = await genUniqueSlug(eventId, scrubbedSession.title);
+    const slug = await genUniqueSlug(
+      eventId,
+      scrubbedSession.slug ?? scrubbedSession.title,
+    );
     if (slug) {
       scrubbedSession.slug = slug;
+    } else {
+      delete scrubbedSession.slug;
     }
     dlog('saving session %o', scrubbedSession);
 
