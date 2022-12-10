@@ -33,7 +33,7 @@ input RegularAdminCreateInput {
   "Is the primary speakers a minor?"
   isMinor: Boolean
   "Set slug, if exists session id will be used"
-  slug: String
+  slug: Slug
 
   # Regular-specific fields
   "Items and tasks to be done PRIOR to attending session"
