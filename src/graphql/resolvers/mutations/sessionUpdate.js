@@ -1,7 +1,7 @@
 /* eslint-disable import/prefer-default-export */
 import debug from 'debug';
 import { dataSources } from '@thatconference/api';
-import { ForbiddenError } from 'apollo-server-express';
+import { GraphQLError } from 'graphql';
 
 import sessionStore from '../../../dataSources/cloudFirestore/session';
 import memberStore from '../../../dataSources/cloudFirestore/member';
@@ -54,8 +54,11 @@ async function validateEventIdUpdate({
       firestore,
     });
     if (!canMutate)
-      throw new ForbiddenError(
+      throw new GraphQLError(
         'User unable to mutate target eventId. Update failed',
+        {
+          extensions: { code: 'FORBIDDEN' },
+        },
       );
   }
 }

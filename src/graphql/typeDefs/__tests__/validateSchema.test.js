@@ -3,7 +3,7 @@
  * resulting schema from the build.
  */
 import { buildSubgraphSchema } from '@apollo/subgraph';
-import { ApolloServer } from 'apollo-server-express';
+import { ApolloServer } from '@apollo/server';
 import typeDefs from '../../typeDefs';
 import directives from '../../directives';
 
@@ -36,31 +36,33 @@ describe('validate schema test', () => {
 
   let schema = buildSubgraphSchema([{ typeDefs, resolvers }]);
 
+  // TODO: find other ways to validate all of this
   describe('Validate graphql schema', () => {
-    it('schema has successfully build and is and object', () => {
-      // TODO: find other ways to validate schema
+    it('schema has successfully built and is and object', () => {
       expect(typeof schema).toBe('object');
       expect(schema).toBeInstanceOf(Object);
+      expect(schema?._queryType.name).toBe('Query');
     });
-  });
-  it('will add auth directive successfully', () => {
-    const { authDirectiveTransformer } = directives.auth('auth');
-    schema = authDirectiveTransformer(schema);
-    // TODO: find other ways to validate schema
-    expect(typeof schema).toBe('object');
-    expect(schema).toBeInstanceOf(Object);
-  });
-  it('will add canMutate directive successfully', () => {
-    const { canMutateDirectiveTransformer } = directives.canMutate('canMutate');
-    schema = canMutateDirectiveTransformer(schema);
-    // TODO: find other ways to validate schema
-    expect(typeof schema).toBe('object');
-    expect(schema).toBeInstanceOf(Object);
-  });
-  it('will run in server correctly', () => {
-    const serv = new ApolloServer({ schema });
-    expect(typeof serv).toBe('object');
-    expect(serv?.graphqlPath).toBe('/graphql');
-    expect(serv?.requestOptions?.nodeEnv).toBe('test');
+    it('will add auth directive successfully', () => {
+      const { authDirectiveTransformer } = directives.auth('auth');
+      schema = authDirectiveTransformer(schema);
+
+      expect(typeof schema).toBe('object');
+      expect(schema).toBeInstanceOf(Object);
+      expect(schema?._directives?.length).toBeGreaterThan(0);
+    });
+    it('will run in server correctly', () => {
+      const serv = new ApolloServer({ schema });
+
+      expect(serv).toBeInstanceOf(ApolloServer);
+      expect(serv?.internals?.nodeEnv).toBe('test');
+
+      const csrfPreventionRequestHeaders =
+        serv?.internals?.csrfPreventionRequestHeaders;
+      const expected = ['x-apollo-operation-name', 'apollo-require-preflight'];
+      expect(csrfPreventionRequestHeaders).toEqual(
+        expect.arrayContaining(expected),
+      );
+    });
   });
 });
