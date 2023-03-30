@@ -183,16 +183,3 @@ api.use(Sentry.Handlers.errorHandler()).use(failure);
 api.listen({ port }, () =>
   console.log(`✨ Sessions 🗣️ is running on 🚢 port ${port}`),
 );
-
-// graphServer/Applications/Visual Studio Code.app/Contents/Resources/app/out/vs/code/electron-sandbox/workbench/workbench.html
-//   .start()
-//   .then(() => {
-//     graphServer.applyMiddleware({ app: api, path: '/' });
-//     api.listen({ port }, () =>
-//       console.log(`✨ Sessions 🗣️ is running 🏃‍♂️ on port 🚢 ${port}`),
-//     );
-//   })
-//   .catch(err => {
-//     console.log(`graphServer.start() error 💥: ${err.message}`);
-//     throw err;
-//   });
