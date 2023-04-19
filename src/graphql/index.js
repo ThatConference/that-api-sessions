@@ -43,23 +43,7 @@ const createServerParts = ({ dataSources, httpServer }) => {
     schema,
   );
 
-  dlog('🚜 assembling datasources');
-  const { firestore } = dataSources;
-  const amendedDataSources = {
-    ...dataSources,
-    sessionLoader: new DataLoader(async ids => {
-      const sessions = await sessionStore(firestore).batchFindSessions(ids);
-      return ids.map(id => {
-        const foundAt = sessions.findIndex(s => s.id === id);
-
-        if (foundAt < 0) return null;
-
-        const result = sessions[foundAt];
-        pullAt(sessions, foundAt);
-        return result;
-      });
-    }),
-  };
+  const amendedDataSources = {};
 
   dlog('🚜 creating new apollo server instance');
   const graphQlServer = new ApolloServer({
@@ -85,9 +69,23 @@ const createServerParts = ({ dataSources, httpServer }) => {
   dlog('🚜 creating createContext function');
   const createContext = async ({ req, res }) => {
     dlog('🚜 bujilding graphql user context');
+    dlog('🚜 assembling datasources');
+    const { firestore } = dataSources;
     let context = {
       dataSources: {
-        ...amendedDataSources,
+        ...dataSources,
+        sessionLoader: new DataLoader(async ids => {
+          const sessions = await sessionStore(firestore).batchFindSessions(ids);
+          return ids.map(id => {
+            const foundAt = sessions.findIndex(s => s.id === id);
+
+            if (foundAt < 0) return null;
+
+            const result = sessions[foundAt];
+            pullAt(sessions, foundAt);
+            return result;
+          });
+        }),
       },
     };
 
