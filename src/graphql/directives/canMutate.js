@@ -1,8 +1,7 @@
 import debug from 'debug';
 import * as Sentry from '@sentry/node';
 import { mapSchema, getDirective, MapperKind } from '@graphql-tools/utils';
-import { ForbiddenError } from 'apollo-server-express';
-import { defaultFieldResolver } from 'graphql';
+import { defaultFieldResolver, GraphQLError } from 'graphql';
 import sessionStore from '../../dataSources/cloudFirestore/session';
 import checkMemberCanMutate from '../../lib/checkMemberCanMutate';
 
@@ -32,7 +31,9 @@ export default function canMutateDirectiveMapper(directiveName = 'canMutate') {
                 let { eventId } = source;
                 const { sessionId } = source;
                 if (!eventId && !sessionId)
-                  throw new ForbiddenError('invalid source id argument');
+                  throw new GraphQLError('invalid source id argument', {
+                    extensions: { code: 'FORBIDDEN' },
+                  });
 
                 const { user, dataSources } = context;
                 const { firestore } = dataSources;
@@ -41,7 +42,10 @@ export default function canMutateDirectiveMapper(directiveName = 'canMutate') {
                   const session = await sessionStore(firestore).findSession(
                     sessionId,
                   );
-                  if (!session) throw new ForbiddenError('invalid session id');
+                  if (!session)
+                    throw new GraphQLError('invalid session id', {
+                      extensions: { code: 'FORBIDDEN' },
+                    });
                   eventId = session.eventId;
                 }
 
@@ -52,9 +56,12 @@ export default function canMutateDirectiveMapper(directiveName = 'canMutate') {
                   firestore,
                 });
                 if (!allowResult) {
-                  const err = new ForbiddenError(
+                  const err = new new GraphQLError(
                     'Insufficient privileges to mutate session in this event',
-                  );
+                    {
+                      extensions: { code: 'FORBIDDEN' },
+                    },
+                  )();
                   Sentry.configureScope(scope => {
                     scope.setLevel('info');
                     scope.setTags({

@@ -1,6 +1,10 @@
 /* eslint-disable no-console */
 /* eslint-disable import/no-unresolved */
 import express from 'express';
+import http from 'node:http';
+import { json } from 'body-parser';
+import { expressMiddleware } from '@apollo/server/express4';
+import cors from 'cors';
 import debug from 'debug';
 import { Firestore } from '@google-cloud/firestore';
 import { Client as Postmark } from 'postmark';
@@ -28,6 +32,7 @@ let version;
 const firestore = new Firestore();
 const dlog = debug('that:api:sessions:index');
 const api = express();
+const port = process.env.PORT || 8003;
 const defaultVersion = `that-api-sessions@${version}`;
 const graphCdnEmitter = apiEvents.graphCdn;
 const favEventEmitter = apiEvents.favorites;
@@ -50,23 +55,30 @@ Sentry.configureScope(scope => {
   scope.setTag('thatApp', 'that-api-sessions');
 });
 
-const createConfig = () => ({
-  dataSources: {
-    sentry: Sentry,
-    firestore,
-    postmark,
-    events: {
-      userEvents,
-      adminEvents,
-      graphCdnEvents,
-      favoritesEvents,
+const httpServer = http.createServer(api);
+
+const createConfig = () => {
+  dlog('createConfig');
+
+  return {
+    dataSources: {
+      sentry: Sentry,
+      firestore,
+      postmark,
+      events: {
+        userEvents,
+        adminEvents,
+        graphCdnEvents,
+        favoritesEvents,
+      },
     },
-  },
-});
+    httpServer,
+  };
+};
 
-const graphServer = apolloGraphServer(createConfig());
+const graphServerParts = apolloGraphServer(createConfig());
 
-const useSentry = async (req, res, next) => {
+const sentryMark = async (req, res, next) => {
   Sentry.addBreadcrumb({
     category: 'that-api-sessions',
     message: 'sessions init',
@@ -97,9 +109,7 @@ const createUserContext = (req, res, next) => {
       : uuidv4();
 
   Sentry.configureScope(scope => {
-    scope.setTags({
-      correlationId,
-    });
+    scope.setTag('correlationId', correlationId);
     scope.setContext('headers', {
       headers: req.headers,
     });
@@ -141,18 +151,35 @@ function failure(err, req, res, next) {
   res.set('Content-Type', 'application/json').status(500).json(err);
 }
 
-api.use(responseTime()).use(useSentry).use(createUserContext).use(failure);
+// api.use(responseTime()).use(useSentry).use(createUserContext).use(failure);
+api.use(
+  Sentry.Handlers.requestHandler(),
+  cors(),
+  responseTime(),
+  json(),
+  sentryMark,
+  createUserContext,
+);
 
-const port = process.env.PORT || 8003;
-graphServer
+const { graphQlServer, createContext } = graphServerParts;
+
+graphQlServer
   .start()
   .then(() => {
-    graphServer.applyMiddleware({ app: api, path: '/' });
-    api.listen({ port }, () =>
-      console.log(`✨ Sessions 🗣️ is running 🏃‍♂️ on port 🚢 ${port}`),
+    api.use(
+      expressMiddleware(graphQlServer, {
+        context: async ({ req }) => createContext({ req }),
+      }),
     );
   })
   .catch(err => {
     console.log(`graphServer.start() error 💥: ${err.message}`);
+    Sentry.captureException(err);
     throw err;
   });
+
+api.use(Sentry.Handlers.errorHandler()).use(failure);
+
+api.listen({ port }, () =>
+  console.log(`✨ Sessions 🗣️ is running on 🚢 port ${port}`),
+);
