@@ -105,7 +105,7 @@ function userEvents(postmark) {
     }
 
     const attachments = [];
-    if (session.StartTime && session.durationInMinutes) {
+    if (session.startTime && session.durationInMinutes) {
       attachments.push({
         Name: `${session.slug}@${user.site}.ics`,
         Content: createIcal({ session, user }),
@@ -118,6 +118,7 @@ function userEvents(postmark) {
         TemplateAlias,
         From: 'Hello@THATConference.com',
         To: user.email,
+        Tag: 'session',
         TemplateModel: {
           member: {
             firstName: user.firstName,
