@@ -1,6 +1,6 @@
 {
   "name": "that-api-sessions",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "description": "THAT Conference Sessions Service.",
   "main": "index.js",
   "engines": {
@@ -20,14 +20,14 @@
     "prepare": "husky install"
   },
   "dependencies": {
-    "@apollo/server": "^4.6.0",
-    "@apollo/subgraph": "^2.4.1",
+    "@apollo/server": "^4.7.0",
+    "@apollo/subgraph": "^2.4.2",
     "@google-cloud/firestore": "^6.5.0",
     "@google-cloud/trace-agent": "^7.1.2",
     "@graphql-tools/load-files": "^6.6.1",
     "@graphql-tools/merge": "^8.4.1",
     "@graphql-tools/utils": "^9.2.1",
-    "@sentry/node": "^7.48.0",
+    "@sentry/node": "^7.49.0",
     "@thatconference/api": "~4.1.0",
     "@thatconference/schema": "^4.0.0",
     "base32-encode": "~1.2.0",
@@ -61,7 +61,7 @@
     "babel-jest": "^29.5.0",
     "concurrently": "^8.0.1",
     "cross-env": "^7.0.3",
-    "eslint": "~8.38.0",
+    "eslint": "~8.39.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-babel": "^5.3.1",
