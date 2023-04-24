@@ -43,8 +43,6 @@ const createServerParts = ({ dataSources, httpServer }) => {
     schema,
   );
 
-  const amendedDataSources = {};
-
   dlog('🚜 creating new apollo server instance');
   const graphQlServer = new ApolloServer({
     schema,
@@ -57,9 +55,14 @@ const createServerParts = ({ dataSources, httpServer }) => {
         scope.setTag('formatError', true);
         scope.setLevel('warning');
         scope.setContext('originalError', { originalError: err.originalError });
+        scope.setContext('locations', { location: err.locations });
         scope.setContext('path', { path: err.path });
         scope.setContext('error object', { error: err });
-        Sentry.captureException(err);
+        if (err instanceof Error) {
+          Sentry.captureException(err);
+        } else {
+          Sentry.captureException(new Error(err.message));
+        }
       });
 
       return err;
@@ -100,6 +103,7 @@ const createServerParts = ({ dataSources, httpServer }) => {
       });
 
       const validatedToken = await jwtClient.verify(req.headers.authorization);
+      dlog('🚜 validated token: %o', validatedToken);
 
       Sentry.configureScope(scope => {
         scope.setUser({
@@ -108,7 +112,6 @@ const createServerParts = ({ dataSources, httpServer }) => {
         });
       });
 
-      dlog('🚜 validated token: %o', validatedToken);
       context = {
         ...context,
         user: {
