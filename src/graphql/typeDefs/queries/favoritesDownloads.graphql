@@ -1,0 +1,4 @@
+type FavoritesDownloadsQuery {
+  "Returns a comma-separated string of favorites"
+  csv: String
+}

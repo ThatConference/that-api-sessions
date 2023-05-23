@@ -79,7 +79,10 @@ export const fieldResolvers = {
         session: s,
       }));
     },
-
+    favoritesDownload: (_, { eventId = 'ANY', historyDays = 30 }) => ({
+      eventId,
+      historyDays,
+    }),
     submitted: async (_, __, { dataSources: { firestore }, user }) => {
       dlog('submitted called');
       return sessionStore(firestore).findMy({ user });

@@ -13,8 +13,17 @@ type MeQuery {
   """
   Return my favorites.
   Use 'ANY' to return favorites from any/all events
-  historyDays: number of days before today to request
+  historyDays: number of days before today to include
   """
   favorites(eventId: ID!, historyDays: Int): [SessionFavorite]
+    @auth(requires: "sessions")
+
+  """
+  Options for downloading favorited sessions
+  Use 'ANY' to return favorites from any/all events
+  historyDays: number of days before today to include
+  Defaults to 'ANY', 30
+  """
+  favoritesDownload(eventId: ID!, historyDays: Int): FavoritesDownloadsQuery
     @auth(requires: "sessions")
 }
