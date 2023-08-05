@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 /* eslint-disable import/no-unresolved */
-import express from 'express';
 import http from 'node:http';
+import express from 'express';
 import { json } from 'body-parser';
 import { expressMiddleware } from '@apollo/server/express4';
 import cors from 'cors';
@@ -18,16 +18,7 @@ import envConfig from './envConfig';
 import userEventEmitter from './events/user';
 import adminEventEmitter from './events/admin';
 
-let version;
-(async () => {
-  let p;
-  try {
-    p = await import('./package.json');
-  } catch {
-    p = await import('../package.json');
-  }
-  version = p.version;
-})();
+import { version } from './package.json';
 
 const firestore = new Firestore();
 const dlog = debug('that:api:sessions:index');
@@ -144,6 +135,11 @@ const createUserContext = (req, res, next) => {
   next();
 };
 
+function getVersion(req, res) {
+  dlog('method %s, defaultVersion %s', req.method, defaultVersion);
+  return res.json({ version: defaultVersion });
+}
+
 function failure(err, req, res, next) {
   dlog('error %o', err);
   Sentry.captureException(err);
@@ -160,6 +156,7 @@ api.use(
   sentryMark,
   createUserContext,
 );
+api.use('/version', getVersion);
 
 const { graphQlServer, createContext } = graphServerParts;
 
