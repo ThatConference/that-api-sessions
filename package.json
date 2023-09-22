@@ -1,6 +1,6 @@
 {
   "name": "that-api-sessions",
-  "version": "4.1.0",
+  "version": "4.2.0",
   "description": "THAT Conference Sessions Service.",
   "main": "index.js",
   "engines": {
@@ -34,6 +34,7 @@
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
     "dataloader": "^2.2.2",
+    "dayjs": "^1.11.10",
     "debug": "^4.3.4",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
@@ -43,8 +44,6 @@
     "graphql-type-json": "^0.3.2",
     "ical-generator": "^5.0.0",
     "lodash": "^4.17.21",
-    "moment": "^2.29.4",
-    "moment-timezone": "^0.5.43",
     "node-fetch": "~2.6.12",
     "postmark": "^3.0.19",
     "response-time": "^2.3.2",
