@@ -1,6 +1,9 @@
 import { EventEmitter } from 'events';
 import debug from 'debug';
-import moment from 'moment';
+import dayjs from 'dayjs';
+import djsUTC from 'dayjs/plugin/utc';
+import djsTimezone from 'dayjs/plugin/timezone';
+import advancedFormat from 'dayjs/plugin/advancedFormat';
 import iCal from 'ical-generator';
 import * as Sentry from '@sentry/node';
 import { orbitLove } from '@thatconference/api';
@@ -15,6 +18,11 @@ const calEvent = calendarEvent(
   envConfig.calendarCredentals,
   envConfig.sharedCalendarId,
 );
+dayjs.extend(djsUTC);
+dayjs.extend(djsTimezone);
+dayjs.extend(advancedFormat);
+const inPersonEventTypes = ['MULTI_DAY', 'HYBRID_MULTI_DAY', 'SINGLE_DAY'];
+const onlineEventTypes = ['ONLINE', 'DAILY'];
 
 const baseUris = {
   thatus: {
@@ -22,7 +30,8 @@ const baseUris = {
     join: 'https://that.us/join',
   },
   thatconference: {
-    session: 'https://www.thatconference.com/member/my-sessions',
+    session: 'https://thatconference.com/activities',
+    mySessions: 'https://thatconference.com/my/submissions',
   },
 };
 
@@ -38,26 +47,35 @@ const pmTemplates = {
   },
 };
 
-function createIcal({ session, user }) {
+function createIcal({ session, user, event }) {
   dlog('create ical for postmark email');
-  const iEvent = {
-    uid: `that-${session.id}@${user.site}`,
-    start: moment(session.startTime),
-    end: moment(session.startTime).add(session.durationInMinutes, 'minutes'),
-    summary: session.title,
-    description: session.shortDescription,
-    location: 'THAT.us',
-  };
   let link;
-  if (user.site === 'www.thatconference.com') {
-    link = `${baseUris.thatconference.session}`;
+  let location;
+  if (
+    inPersonEventTypes.includes(event.type) &&
+    session?.location?.isOnline !== true
+  ) {
+    location = event.name;
+    link = `${baseUris.thatconference.session}/${session.id}`;
   } else {
+    location = 'THAT.us';
     link = `${baseUris.thatus.session}/${session.id}`;
   }
-  iEvent.url = link;
+
+  const iEvent = {
+    uid: `that-${session.id}@${user.site}`,
+    start: dayjs(session.startTime).utc(),
+    end: dayjs(session.startTime)
+      .utc()
+      .add(session.durationInMinutes, 'minute'),
+    summary: session.title,
+    description: session.shortDescription,
+    link,
+    location,
+  };
 
   const ical = iCal();
-  ical.prodId('//THAT Conference//THAT.us//EN');
+  ical.prodId('//THAT Conference//THAT//EN');
   ical.createEvent(iEvent);
   const icalString = ical.toString();
 
@@ -74,10 +92,10 @@ function userEvents(postmark) {
     let TemplateAlias;
     let link;
 
-    if (['MULTI_DAY', 'HYBRID_MULTI_DAY', 'SINGLE_DAY'].includes(event.type)) {
+    if (inPersonEventTypes.includes(event.type)) {
       TemplateAlias = pmTemplates.thatconference.created;
-      link = baseUris.thatconference.session;
-    } else if (['ONLINE', 'DAILY'].includes(event.type)) {
+      link = `${baseUris.thatconference.session}/${session.id}`;
+    } else if (onlineEventTypes.includes(event.type)) {
       TemplateAlias = pmTemplates.thatus.created;
       link = `${baseUris.thatus.session}/${session.id}`;
     } else {
@@ -108,7 +126,7 @@ function userEvents(postmark) {
     if (session.startTime && session.durationInMinutes) {
       attachments.push({
         Name: `${session.slug}@${user.site}.ics`,
-        Content: createIcal({ session, user }),
+        Content: createIcal({ session, user, event }),
         ContentType: 'text/calendar; charset=utf-8; method=REQUEST',
       });
     }
@@ -127,11 +145,11 @@ function userEvents(postmark) {
           session: {
             id: session.id,
             title: session.title,
-            createdAt: moment
-              .utc(session.createdAt)
+            createdAt: dayjs(session.createdAt)
+              .utc()
               .format('M/D/YYYY h:mm:ss A'),
-            startTime: moment
-              .utc(session.startTime)
+            startTime: dayjs(session.startTime)
+              .utc()
               .format('M/D/YYYY h:mm:ss A'),
             duration: session.durationInMinutes,
             shortDescription: session.shortDescription,
@@ -139,12 +157,14 @@ function userEvents(postmark) {
           },
           event: {
             name: event.name,
-            startDate: moment.utc(event.startDate).format('M/D/YYYY h:mm:ss A'),
-            cfpOpen: moment
-              .utc(event.callForSpeakersOpenDate)
+            startDate: dayjs(event.startDate)
+              .utc()
+              .format('M/D/YYYY h:mm:ss A'),
+            cfpOpen: dayjs(event.callForSpeakersOpenDate)
+              .utc()
               .format('M/D/YYYY'),
-            cfpClose: moment
-              .utc(event.callForSpeakersCloseDate)
+            cfpClose: dayjs(event.callForSpeakersCloseDate)
+              .utc()
               .format('M/D/YYYY'),
           },
         },
@@ -162,10 +182,10 @@ function userEvents(postmark) {
     let TemplateAlias;
     let link;
 
-    if (['MULTI_DAY', 'HYBRID_MULTI_DAY', 'SINGLE_DAY'].includes(event.type)) {
+    if (inPersonEventTypes.includes(event.type)) {
       TemplateAlias = pmTemplates.thatconference.updated;
-      link = `${baseUris.thatconference.session}`;
-    } else if (['ONLINE', 'DAILY'].includes(event.type)) {
+      link = `${baseUris.thatconference.session}/${session.id}`;
+    } else if (onlineEventTypes.includes(event.type)) {
       TemplateAlias = pmTemplates.thatus.updated;
       link = `${baseUris.thatus.session}/${session.id}`;
     } else {
@@ -214,14 +234,16 @@ function userEvents(postmark) {
           session: {
             id: session.id,
             title: session.title,
-            lastUpdatedAt: moment
-              .utc(session.lastUpdatedAt)
+            lastUpdatedAt: dayjs(session.lastUpdatedAt)
+              .utc()
               .format('M/D/YYYY h:mm:ss A'),
             link,
           },
           event: {
             name: event.name,
-            startDate: moment.utc(event.startDate).format('M/D/YYYY h:mm:ss A'),
+            startDate: dayjs(event.startDate)
+              .utc()
+              .format('M/D/YYYY h:mm:ss A'),
           },
         },
         Attachments: attachments,
@@ -238,10 +260,10 @@ function userEvents(postmark) {
 
     if (
       session.status === 'ACCEPTED' &&
-      ['ONLINE', 'DAILY'].includes(event.type)
+      onlineEventTypes.includes(event.type)
     ) {
       calEvent
-        .create(session)
+        .create(session, event)
         .then(result =>
           dlog('Event created %d, %o', result.status, result.data),
         )
@@ -260,7 +282,7 @@ function userEvents(postmark) {
       ['ONLINE', 'DAILY'].includes(event.type)
     ) {
       calEvent
-        .update(session)
+        .update(session, event)
         .then(result =>
           dlog('Event updated %d, %o', result.status, result.data),
         )
