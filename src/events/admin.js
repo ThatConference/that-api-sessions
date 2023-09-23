@@ -1,7 +1,10 @@
 import { EventEmitter } from 'events';
 import debug from 'debug';
 import * as Sentry from '@sentry/node';
-import moment from 'moment-timezone';
+import dayjs from 'dayjs';
+import djsUTC from 'dayjs/plugin/utc';
+import djsTimezone from 'dayjs/plugin/timezone';
+import advancedFormat from 'dayjs/plugin/advancedFormat';
 import { NotificationError, SharedCalendarError } from '../lib/errors';
 import favoriteStore from '../dataSources/cloudFirestore/favorite';
 import memberStore from '../dataSources/cloudFirestore/member';
@@ -16,6 +19,11 @@ const calEvent = calendarEvent(
   envConfig.calendarCredentals,
   envConfig.sharedCalendarId,
 );
+dayjs.extend(djsUTC);
+dayjs.extend(djsTimezone);
+dayjs.extend(advancedFormat);
+const inPersonEventTypes = ['MULTI_DAY', 'HYBRID_MULTI_DAY', 'SINGLE_DAY'];
+const onlineEventTypes = ['ONLINE', 'DAILY'];
 
 export default function adminEvents(postmark) {
   const adminEventEmitter = new EventEmitter();
@@ -41,7 +49,7 @@ export default function adminEvents(postmark) {
 
     Sentry.configureScope(scope => {
       scope.setTag('adminEvents', 'sessionUpdate');
-      scope.setContext({
+      scope.setContext('session info', {
         sessionId: session?.id,
         sessionTitle: session?.title,
         sessionStatus: session?.status,
@@ -65,6 +73,14 @@ export default function adminEvents(postmark) {
 
     const { id: sessionId, status: sessionStatus } = session;
 
+    let baseActivityUrl = 'https://that.us/activities';
+    if (
+      inPersonEventTypes.includes(event.type) &&
+      session?.location?.isOnline !== true
+    ) {
+      baseActivityUrl = 'https://thatconference.com/activities';
+    }
+
     // get list of session's followers
     const favorited = await favoriteStore(firestore).findFavoritesForSession(
       sessionId,
@@ -76,8 +92,8 @@ export default function adminEvents(postmark) {
     const members = await memberStore(firestore).batchFindMembers([...fIds]);
     if (members.length !== fIds.size) {
       Sentry.withScope(scope => {
-        scope.setContext('followerIdCount', fIds.size);
-        scope.setContext('memberCount', members.length);
+        scope.setContext('followerIdCount', { size: fIds.size });
+        scope.setContext('memberCount', { length: members.length });
         Sentry.captureMessage(
           `Members retrieved count doesn't match follower count`,
           {
@@ -87,7 +103,7 @@ export default function adminEvents(postmark) {
       });
     }
     let timezone = 'US/Central';
-    if (['ONLINE', 'DAILY'].includes(event.type)) timezone = 'UTC';
+    if (onlineEventTypes.includes(event.type)) timezone = 'UTC';
     const timeFormat = 'dddd, MMMM Do @ HH:mm z';
     let sendMail;
 
@@ -98,10 +114,10 @@ export default function adminEvents(postmark) {
         originalSession,
         updatedSession: session,
       });
-      changes.time.original = moment(changes.time.original)
+      changes.time.original = dayjs(changes.time.original)
         .tz(timezone)
         .format(timeFormat);
-      changes.time.updated = moment(changes.time.updated)
+      changes.time.updated = dayjs(changes.time.updated)
         .tz(timezone)
         .format(timeFormat);
       const room = changes.room.changed
@@ -128,7 +144,7 @@ export default function adminEvents(postmark) {
               room,
               startTime,
               targetLocation,
-              link: `https://THAT.us/activities/${session.id}`,
+              link: `${baseActivityUrl}/${session.id}`,
             },
             event: {
               name: event.name,
@@ -147,7 +163,7 @@ export default function adminEvents(postmark) {
     } else if (sessionStatus === 'CANCELLED') {
       // cancelled session
       let startTime = originalSession.startTime
-        ? moment(originalSession.startTime).tz(timezone).format(timeFormat)
+        ? dayjs(originalSession.startTime).tz(timezone).format(timeFormat)
         : '';
       startTime += ' ➡️ CANCELLED';
 
@@ -164,7 +180,7 @@ export default function adminEvents(postmark) {
               title: session.title,
               room: originalSession?.location?.destination || 'THAT.us',
               startTime,
-              link: `https://THAT.us/activities/${session.id}`,
+              link: `${baseActivityUrl}/${session.id}`,
             },
             event: {
               name: event.name,
@@ -188,12 +204,12 @@ export default function adminEvents(postmark) {
   // ***************
   // Calendar things
   // Creates a new event on a shared google calendar
-  function insertSharedCalendar({ session }) {
+  function insertSharedCalendar({ session, event }) {
     dlog('insertSharedCalendar');
 
     if (session.status === 'ACCEPTED' && session.startTime instanceof Date) {
       calEvent
-        .create(session)
+        .create(session, event)
         .then(result =>
           dlog('Event created %d, %o', result.status, result.data),
         )
@@ -206,12 +222,12 @@ export default function adminEvents(postmark) {
   }
 
   // Updates an event on a shared google calendar
-  function updateSharedCalendar({ session }) {
+  function updateSharedCalendar({ session, event }) {
     dlog('updateSharedCalendar');
 
     if (session.status === 'ACCEPTED' && session.startTime instanceof Date) {
       calEvent
-        .update(session)
+        .update(session, event)
         .then(result =>
           dlog('Event updated %d, %o', result.status, result.data),
         )
@@ -255,17 +271,17 @@ export default function adminEvents(postmark) {
     }
 
     let timezone = 'US/Central';
-    if (['ONLINE', 'DAILY'].includes(event.type)) timezone = 'UTC';
+    if (onlineEventTypes.includes(event.type)) timezone = 'UTC';
     const timeFormat = 'dddd, MMMM Do @ HH:mm z';
     const changes = determineSessionChanges({
       originalSession,
       updatedSession: session,
     });
     changes.time.original = changes.time.original
-      ? moment(changes.time.original).tz(timezone).format(timeFormat)
+      ? dayjs(changes.time.original).tz(timezone).format(timeFormat)
       : 'TBD';
     changes.time.updated = changes.time.updated
-      ? moment(changes.time.updated).tz(timezone).format(timeFormat)
+      ? dayjs(changes.time.updated).tz(timezone).format(timeFormat)
       : 'TBD';
     changes.room.value = changes.room.changed
       ? `${changes.room.original}  :arrow_right:  ${changes.room.updated}`

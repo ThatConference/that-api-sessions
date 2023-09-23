@@ -5,7 +5,7 @@ import base32 from 'base32-encode';
 
 const dlog = debug('that:api:sessions:calendar');
 const salt = 'THAT-salt';
-//
+const inPersonEventTypes = ['MULTI_DAY', 'HYBRID_MULTI_DAY', 'SINGLE_DAY'];
 
 function calendarEvent(credentials, calendarId) {
   dlog('calendar Event created');
@@ -41,18 +41,28 @@ function calendarEvent(credentials, calendarId) {
     }).toLowerCase();
   }
 
-  function makeEventPayload(session) {
+  function makeEventPayload(session, event) {
     const endTime = new Date(
       session.startTime.getTime() + 60000 * session.durationInMinutes,
     );
+
+    let baseActivityUrl = 'https://that.us/activities';
+    if (
+      inPersonEventTypes.includes(event.type) &&
+      session?.location?.isOnline !== true
+    ) {
+      baseActivityUrl = 'https://thatconference.com/activities';
+    }
+
     let description = `${session.shortDescription}\n\n`;
-    if (!session.location || session?.location?.isOnline === true)
-      description += 'Join ';
-    else description += 'Details ';
-    description += `at: https://that.us/activities/${session.id}`;
     let location = 'THAT.us';
-    if (session?.location?.destination && session?.location?.isOnline !== true)
-      location = `Room: ${session.location.destination}`;
+    if (!session.location || session?.location?.isOnline === true) {
+      description += 'Join ';
+    } else {
+      description += 'Details ';
+      location = `Room: ${session.location.destination ?? 'TBD'}`;
+    }
+    description += `at: ${baseActivityUrl}/${session.id}`;
 
     const payload = {
       start: {
@@ -74,10 +84,10 @@ function calendarEvent(credentials, calendarId) {
   }
 
   // Action functions
-  function create(session) {
+  function create(session, event) {
     dlog('create');
 
-    const eventPayload = makeEventPayload(session);
+    const eventPayload = makeEventPayload(session, event);
 
     return calendar.events.insert({
       calendarId,
@@ -87,10 +97,10 @@ function calendarEvent(credentials, calendarId) {
     // code 409, already exists
   }
 
-  function update(session) {
+  function update(session, event) {
     dlog('update');
 
-    const eventPayload = makeEventPayload(session);
+    const eventPayload = makeEventPayload(session, event);
     const eventId = eventPayload.id;
     delete eventPayload.id;
 

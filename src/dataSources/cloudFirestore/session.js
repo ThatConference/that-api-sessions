@@ -2,7 +2,7 @@ import debug from 'debug';
 import slugify from 'slugify';
 import * as Sentry from '@sentry/node';
 import { utility, mentions } from '@thatconference/api';
-import moment from 'moment';
+import dayjs from 'dayjs';
 import eventStore from './event';
 
 const { entityDateForge } = utility.firestoreDateForge;
@@ -350,7 +350,7 @@ function sessions(dbInstance) {
       throw new Error('findByEventRoom, asOfDate must be a Date object');
 
     // get all sessions for 'today' from datastore
-    const queryDate = moment(asOfDate).startOf('day').toDate();
+    const queryDate = dayjs(asOfDate).startOf('day').toDate();
     return sessionsCol
       .where('eventId', '==', eventId)
       .where('location.destination', '==', distination)
@@ -371,8 +371,8 @@ function sessions(dbInstance) {
         const filteredRoomSessions = roomSessions
           .map(s => ({
             ...s,
-            stopTime: moment(s.startTime)
-              .add(s.durationInMinutes ?? 60)
+            stopTime: dayjs(s.startTime)
+              .add(s.durationInMinutes ?? 60, 'minute')
               .toDate(),
           }))
           .filter(s => s.stopTime.getTime() >= asOfDate.getTime())

@@ -1,6 +1,6 @@
 import debug from 'debug';
 import { dataSources } from '@thatconference/api';
-import moment from 'moment';
+import dayjs from 'dayjs';
 
 import sessionStore from '../../../dataSources/cloudFirestore/session';
 import favoriteStore from '../../../dataSources/cloudFirestore/favorite';
@@ -61,10 +61,10 @@ export const fieldResolvers = {
       dlog('favoriteSessions count: %d', favoriteSessions.length);
       if (Number.isInteger(historyDays)) {
         // valueOf() returns epoch in ms
-        const favoritesAfter = moment().subtract(historyDays, 'd').valueOf();
+        const favoritesAfter = dayjs().subtract(historyDays, 'day').valueOf();
         dlog('favorites after:: %O', favoritesAfter);
         favoriteSessions = favoriteSessions.filter(
-          fs => moment(fs.startTime).valueOf() > favoritesAfter,
+          fs => dayjs(fs.startTime).valueOf() > favoritesAfter,
         );
 
         dlog(
