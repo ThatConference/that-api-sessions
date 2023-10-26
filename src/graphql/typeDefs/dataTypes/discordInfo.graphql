@@ -1,0 +1,16 @@
+type DiscordInfo {
+  "Guild/server this information relates to"
+  guildId: String
+  "The voice channel setup for this session"
+  channelId: String
+  "The url pointing directly to the channel"
+  channelUrl: URL
+  "A discord channel invite for the referenced channel"
+  inviteUrl: URL
+  "The event setup for this session which references the channel"
+  guildScheduledEventId: String
+  "The url pointing directly to the guild scheduled event"
+  guildScheduledEventUrl: URL
+  "Event invite (same as channel with event id parameter)"
+  guildScheduledEventInviteUrl: URL
+}

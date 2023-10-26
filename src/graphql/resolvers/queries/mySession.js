@@ -1,5 +1,6 @@
 import debug from 'debug';
 import { findAssets } from '../shared/resolveSessionAssets';
+import { parseDiscordInfo } from '../shared/discordInfo';
 
 const dlog = debug('that:api:sessions:query:MySession');
 
@@ -26,5 +27,6 @@ export const fieldResolvers = {
       dlog('session assets requested');
       return findAssets({ entityId, firestore });
     },
+    discord: ({ discord }) => parseDiscordInfo(discord),
   },
 };
