@@ -40,6 +40,8 @@ type MySession @key(fields: "id") {
   communities: [Slug]
   "Assets assigned to this session"
   assets: [Asset]
+  "Discord channel information for hosting online session"
+  discord: DiscordInfo
 
   rating: [Rating]
   createdAt: Date!

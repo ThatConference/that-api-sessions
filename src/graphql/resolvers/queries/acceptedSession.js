@@ -2,6 +2,7 @@ import debug from 'debug';
 import favoriteStore from '../../../dataSources/cloudFirestore/favorite';
 import favoritedByFunc from '../shared/favoritedBy';
 import { findAssets } from '../shared/resolveSessionAssets';
+import { parseDiscordInfo } from '../shared/discordInfo';
 
 const dlog = debug('that:api:sessions:query:AcceptedSession');
 
@@ -48,6 +49,7 @@ export const fieldResolvers = {
       dlog('session assets requested');
       return findAssets({ entityId, firestore });
     },
+    discord: ({ discord }) => parseDiscordInfo(discord),
     location: ({ location }) => location || null,
     secondaryLocations: ({ secondaryLocations }) => secondaryLocations || [],
   },

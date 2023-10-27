@@ -58,6 +58,8 @@ type AcceptedSession @key(fields: "id") {
   communities: [Slug]
   "Assets assigned to this session"
   assets: [Asset]
+  "Discord channel information for hosting online session"
+  discord: DiscordInfo
   "FUTURE: possible rating holder"
   rating: [Rating]
   "Date time session last updated"

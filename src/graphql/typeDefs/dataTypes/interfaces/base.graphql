@@ -49,6 +49,8 @@ interface Base @key(fields: "id") {
   communities: [Slug]
   "Assets assigned to this session"
   assets: [Asset]
+  "Discord channel information for hosting online session"
+  discord: DiscordInfo
   "Date time session created"
   createdAt: Date!
   "Date time session last updated"
