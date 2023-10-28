@@ -26,7 +26,7 @@ function sendUserEvent({
   sessionResults,
   userResults,
   eventResults,
-  userEvents,
+  adminEvents,
   user,
 }) {
   if (
@@ -34,7 +34,7 @@ function sendUserEvent({
       sessionResults.status === 'ACCEPTED') &&
     sessionResults.startTime
   ) {
-    userEvents.emit('adminSessionCreated', {
+    adminEvents.emit('sessionCreated', {
       user: {
         ...user,
         ...userResults,
@@ -62,7 +62,7 @@ export const fieldResolvers = {
       {
         dataSources: {
           firestore,
-          events: { userEvents, graphCdnEvents },
+          events: { adminEvents, graphCdnEvents },
         },
         user,
       },
@@ -79,7 +79,7 @@ export const fieldResolvers = {
         sessionResults,
         userResults,
         eventResults,
-        userEvents,
+        adminEvents,
         user,
       });
       sendGraphCdnEvent({ graphCdnEvents, sessionResults });
@@ -92,7 +92,7 @@ export const fieldResolvers = {
       {
         dataSources: {
           firestore,
-          events: { userEvents, graphCdnEvents },
+          events: { adminEvents, graphCdnEvents },
         },
         user,
       },
@@ -109,7 +109,7 @@ export const fieldResolvers = {
         sessionResults,
         userResults,
         eventResults,
-        userEvents,
+        adminEvents,
         user,
       });
       sendGraphCdnEvent({ graphCdnEvents, sessionResults });
@@ -122,7 +122,7 @@ export const fieldResolvers = {
       {
         dataSources: {
           firestore,
-          events: { userEvents, graphCdnEvents },
+          events: { adminEvents, graphCdnEvents },
         },
         user,
       },
@@ -139,7 +139,7 @@ export const fieldResolvers = {
         sessionResults,
         userResults,
         eventResults,
-        userEvents,
+        adminEvents,
         user,
       });
       sendGraphCdnEvent({ graphCdnEvents, sessionResults });
@@ -152,7 +152,7 @@ export const fieldResolvers = {
       {
         dataSources: {
           firestore,
-          events: { userEvents, graphCdnEvents },
+          events: { adminEvents, graphCdnEvents },
         },
         user,
       },
@@ -169,7 +169,7 @@ export const fieldResolvers = {
         sessionResults,
         userResults,
         eventResults,
-        userEvents,
+        adminEvents,
         user,
       });
       sendGraphCdnEvent({ graphCdnEvents, sessionResults });
@@ -182,7 +182,7 @@ export const fieldResolvers = {
       {
         dataSources: {
           firestore,
-          events: { userEvents, graphCdnEvents },
+          events: { adminEvents, graphCdnEvents },
         },
         user,
       },
@@ -199,7 +199,7 @@ export const fieldResolvers = {
         sessionResults,
         userResults,
         eventResults,
-        userEvents,
+        adminEvents,
         user,
       });
       sendGraphCdnEvent({ graphCdnEvents, sessionResults });
