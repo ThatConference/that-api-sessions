@@ -400,12 +400,6 @@ function userEvents(postmark) {
   userEventEmitter.on('sessionUpdated', setOgImage);
   userEventEmitter.on('sessionUpdated', sendOrbitLoveActivtyOnUpdate);
   userEventEmitter.on('sessionCancelled', cancelSharedCalendar);
-  // on admin events
-  userEventEmitter.on('adminSessionCreated', insertSharedCalendar);
-  userEventEmitter.on('adminSessionCreated', setOgImage);
-  userEventEmitter.on('adminSessionUpdated', updateSharedCalendar);
-  userEventEmitter.on('adminSessionUpdated', setOgImage);
-  userEventEmitter.on('adminSessionCancelled', cancelSharedCalendar);
 
   return userEventEmitter;
 }
