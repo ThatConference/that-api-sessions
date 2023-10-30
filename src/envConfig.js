@@ -20,6 +20,14 @@ const requiredConfig = () => ({
     process.env.NOTIFICATION_EMAIL_FROM || 'hello@thatconference.com',
   ogImageBaseUrl:
     process.env.OG_IMAGE_BASE_URL || configMissing('OG_IMAGE_BASE_URL'),
+  thatJoinDiscordBot: {
+    baseUrl:
+      process.env.THAT_JOIN_BOT_BASE_URL ??
+      configMissing('THAT_JOIN_BOT_BASE_URL'),
+  },
+  thatRequestSigningKey:
+    process.env.THAT_REQUEST_SIGNING_KEY ||
+    configMissing('THAT_REQUEST_SIGNING_KEY'),
 });
 
 export default requiredConfig();

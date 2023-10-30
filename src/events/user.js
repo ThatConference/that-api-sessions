@@ -11,6 +11,7 @@ import envConfig from '../envConfig';
 import calendarEvent from '../lib/calendarEvent';
 import slackNotifications from '../lib/slackNotifications';
 import callOgImage from '../lib/callOgImage';
+import { createVoiceChannelForSession } from '../lib/callThatJoinDiscordBot';
 import { SharedCalendarError, SendEmailError } from '../lib/errors';
 
 const dlog = debug('that:api:sessions:events:user');
@@ -326,6 +327,19 @@ function userEvents(postmark) {
       .catch(e => process.nextTick(() => userEventEmitter.emit('error', e)));
   }
 
+  function createDiscordVoiceChannel({ session }) {
+    dlog('createDiscordVoiceChannel called');
+    if (session.status === 'ACCEPTED') {
+      createVoiceChannelForSession({ session })
+        .then(() => dlog('createVoiceChannelForSession done.'))
+        .catch(err =>
+          process.nextTick(() => userEventEmitter.emit('error', err)),
+        );
+    } else {
+      dlog('session not accepted, not creating discord channel');
+    }
+  }
+
   function sendOrbitLoveActivityOnCreate({ session, user, event, firestore }) {
     dlog('call sendOrbitLove Activity, on create');
     const orbitLoveApi = orbitLove.orbitLoveApi({ firestore });
@@ -377,15 +391,18 @@ function userEvents(postmark) {
   }
 
   userEventEmitter.on('emailError', err => {
+    dlog('emailError %O', err);
     Sentry.setTag('section', 'userEventEmitter');
     Sentry.captureException(new SendEmailError(err.message));
   });
 
   userEventEmitter.on('calendarError', err => {
+    dlog('calendarError %O', err);
     Sentry.setTag('section', 'userEventEmitter');
     Sentry.captureException(new SharedCalendarError(err.message));
   });
   userEventEmitter.on('error', err => {
+    dlog('error %O', err);
     Sentry.setTag('section', 'adminEventEmitter');
     Sentry.captureException(new Error(err.message));
   });
@@ -394,10 +411,12 @@ function userEvents(postmark) {
   userEventEmitter.on('sessionCreated', insertSharedCalendar);
   userEventEmitter.on('sessionCreated', sendSessionCreatedSlack);
   userEventEmitter.on('sessionCreated', setOgImage);
+  userEventEmitter.on('sessionCreated', createDiscordVoiceChannel);
   userEventEmitter.on('sessionCreated', sendOrbitLoveActivityOnCreate);
   userEventEmitter.on('sessionUpdated', sendSessionUpdatedEmail);
   userEventEmitter.on('sessionUpdated', updateSharedCalendar);
   userEventEmitter.on('sessionUpdated', setOgImage);
+  userEventEmitter.on('sessionUpdated', createDiscordVoiceChannel);
   userEventEmitter.on('sessionUpdated', sendOrbitLoveActivtyOnUpdate);
   userEventEmitter.on('sessionCancelled', cancelSharedCalendar);
 

@@ -13,6 +13,7 @@ import calendarEvent from '../lib/calendarEvent';
 import determineSessionChanges from '../lib/determineSessionChanges';
 import slackNotifications from '../lib/slackNotifications';
 import callOgImage from '../lib/callOgImage';
+import { createVoiceChannelForSession } from '../lib/callThatJoinDiscordBot';
 
 const dlog = debug('that:api:sessions:events:admin');
 const calEvent = calendarEvent(
@@ -329,24 +330,41 @@ export default function adminEvents(postmark) {
       .catch(e => process.nextTick(() => adminEventEmitter.emit('error', e)));
   }
 
+  function createDiscordVoiceChannel({ session }) {
+    dlog('createDiscordVoiceChannel called');
+    if (session.status === 'ACCEPTED') {
+      createVoiceChannelForSession({ session })
+        .then(() => dlog('creteVoiceChannelForSessions done. %o'))
+        .catch(err =>
+          process.nextTick(() => adminEventEmitter.emit('error', err)),
+        );
+    } else {
+      dlog('session not accepted, not creating discord channel');
+    }
+  }
+
   // ********************
   // Intiaialize emitters
   adminEventEmitter.on('calendarError', err => {
+    dlog('calendarError %O', err);
     Sentry.setTag('section', 'adminEventEmitter');
     Sentry.captureException(new SharedCalendarError(err.message));
   });
 
   adminEventEmitter.on('error', err => {
+    dlog('error %O', err);
     Sentry.setTag('section', 'adminEventEmitter');
     Sentry.captureException(new Error(err.message));
   });
 
   adminEventEmitter.on('sessionCreated', insertSharedCalendar);
   adminEventEmitter.on('sessionCreated', setOgImage);
+  adminEventEmitter.on('sessionCreated', createDiscordVoiceChannel);
   adminEventEmitter.on('sessionUpdated', sendFavoritesSessionUpdateEmail);
   adminEventEmitter.on('sessionUpdated', updateSharedCalendar);
   adminEventEmitter.on('sessionUpdated', sendSessionUpdatedSlack);
   adminEventEmitter.on('sessionUpdated', setOgImage);
+  adminEventEmitter.on('sessionUpdated', createDiscordVoiceChannel);
   adminEventEmitter.on('sessionCancelled', sendFavoritesSessionUpdateEmail);
   adminEventEmitter.on('sessionCancelled', cancelSharedCalendar);
   adminEventEmitter.on('sessionCancelled', sendSessionCancelledSlack);
