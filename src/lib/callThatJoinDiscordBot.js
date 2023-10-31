@@ -102,7 +102,9 @@ export function createVoiceChannelForSession({ session }) {
   // startTime < time of next batch
   // time of next batch (assuming batches are at 08:00)
   const sessionStart = dayjs(session.startTime);
-  const nextBatchTime = dayjs(findDateAtNextHour(8));
+  let nextBatchTime = dayjs(findDateAtNextHour(8));
+  // skip to next batch so activities are listed longer (at least 24 hours)
+  nextBatchTime = nextBatchTime.add(1, 'day');
   if (
     session.status === 'ACCEPTED' &&
     session.type === 'OPEN_SPACE' &&
