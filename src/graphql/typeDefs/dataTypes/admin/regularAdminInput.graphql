@@ -25,6 +25,8 @@ input RegularAdminCreateInput {
   category: Category
   primaryCategory: SessionCategory
   secondaryCategory: [SessionCategory]
+  "Is this session approved for families"
+  isFamilyApproved: Boolean
 
   canRecord: Boolean
   "Session status. ENUM. E.g. accepted, submitted, etc. "
@@ -71,6 +73,8 @@ input RegularAdminUpdateInput {
   category: Category
   primaryCategory: SessionCategory
   secondaryCategory: [SessionCategory]
+  "Is this session approved for families"
+  isFamilyApproved: Boolean
 
   "Has the speaker indicated this session may be recorded"
   canRecord: Boolean
