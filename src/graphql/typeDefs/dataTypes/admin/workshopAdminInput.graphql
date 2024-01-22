@@ -29,6 +29,8 @@ input WorkshopAdminCreateInput {
   category: Category
   primaryCategory: SessionCategory
   secondaryCategory: [SessionCategory]
+  "Is this session approved for families"
+  isFamilyApproved: Boolean
 
   canRecord: Boolean
   "Session status. ENUM. E.g. accepted, submitted, etc. "
@@ -75,6 +77,8 @@ input WorkshopAdminUpdateInput {
   category: Category
   primaryCategory: SessionCategory
   secondaryCategory: [SessionCategory]
+  "Is this session approved for families"
+  isFamilyApproved: Boolean
 
   "Has the speaker indicated this session may be recorded"
   canRecord: Boolean

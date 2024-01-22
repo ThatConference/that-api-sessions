@@ -22,6 +22,8 @@ input WorkshopCreateInput {
   category: Category
   primaryCategory: SessionCategory
   secondaryCategory: [SessionCategory]
+  "Is this session approved for families"
+  isFamilyApproved: Boolean
 
   canRecord: Boolean
   status: Status
@@ -64,6 +66,8 @@ input WorkshopUpdateInput {
   category: Category
   primaryCategory: SessionCategory
   secondaryCategory: [SessionCategory]
+  "Is this session approved for families"
+  isFamilyApproved: Boolean
 
   canRecord: Boolean
   status: Status

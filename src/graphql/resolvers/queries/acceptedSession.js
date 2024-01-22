@@ -52,5 +52,6 @@ export const fieldResolvers = {
     discord: ({ discord }) => parseDiscordInfo(discord),
     location: ({ location }) => location || null,
     secondaryLocations: ({ secondaryLocations }) => secondaryLocations || [],
+    isFamilyApproved: ({ isFamilyApproved }) => isFamilyApproved ?? false,
   },
 };

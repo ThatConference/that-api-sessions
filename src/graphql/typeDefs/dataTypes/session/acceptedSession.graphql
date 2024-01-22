@@ -38,6 +38,8 @@ type AcceptedSession @key(fields: "id") {
   primaryCategory: SessionCategory
   "secondary interests categories for the session"
   secondaryCategory: [SessionCategory]
+  "Is this session approved for families"
+  isFamilyApproved: Boolean!
   "session being recorded if set true"
   isRecored: Boolean
   "Session status. ENUM. E.g. accepted, submitted, etc. "

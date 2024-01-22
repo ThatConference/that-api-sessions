@@ -21,6 +21,8 @@ input KeynoteCreateInput {
   category: Category
   primaryCategory: SessionCategory
   secondaryCategory: [SessionCategory]
+  "Is this session approved for families"
+  isFamilyApproved: Boolean
 
   canRecord: Boolean
   status: Status
@@ -60,6 +62,8 @@ input KeynoteUpdateInput {
   category: Category
   primaryCategory: SessionCategory
   secondaryCategory: [SessionCategory]
+  "Is this session approved for families"
+  isFamilyApproved: Boolean
 
   canRecord: Boolean
   status: Status

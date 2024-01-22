@@ -15,6 +15,8 @@ type Panel implements EyesFront & Base @key(fields: "id") {
   shortDescription: String!
   "Primary interests category for the session"
   primaryCategory: SessionCategory
+  "Is this session approved for families"
+  isFamilyApproved: Boolean!
   "Session's associated speakers. Each will see session under their profile"
   speakers: [PublicProfile]
   "Is the primary speakers a minor?"

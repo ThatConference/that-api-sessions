@@ -42,5 +42,6 @@ export const fieldResolvers = {
     location: ({ location }) => location || null,
     secondaryLocations: ({ secondaryLocations }) => secondaryLocations || [],
     shortDescription: ({ shortDescription }) => shortDescription ?? '',
+    isFamilyApproved: ({ isFamilyApproved }) => isFamilyApproved ?? false,
   },
 };
