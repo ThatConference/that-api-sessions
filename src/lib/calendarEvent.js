@@ -113,7 +113,8 @@ function calendarEvent(credentials, calendarId) {
       })
       .catch(res => {
         if (res.code === 404) {
-          return create(session);
+          dlog(`calendar event doesn't exist, creating.`);
+          return create(session, event);
         }
         return res;
       });
@@ -139,11 +140,20 @@ function calendarEvent(credentials, calendarId) {
     const eventId = makeEventId(session.id);
 
     // Make call
-    return calendar.events.update({
-      calendarId,
-      eventId,
-      requestBody: eventPayload,
-    });
+    return calendar.events
+      .update({
+        calendarId,
+        eventId,
+        requestBody: eventPayload,
+      })
+      .catch(res => {
+        if (res.code === 404) {
+          dlog('caledar event already cancelled');
+          return res;
+        }
+
+        throw res;
+      });
   }
 
   return {
