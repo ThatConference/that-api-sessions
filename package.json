@@ -1,6 +1,6 @@
 {
   "name": "that-api-sessions",
-  "version": "4.8.1",
+  "version": "4.8.2",
   "description": "THAT Conference Sessions Service.",
   "main": "index.js",
   "engines": {
@@ -28,7 +28,7 @@
     "@graphql-tools/merge": "^9.0.1",
     "@graphql-tools/utils": "^10.0.12",
     "@sentry/node": "^7.118.0",
-    "@thatconference/api": "~4.5.0",
+    "@thatconference/api": "~4.5.1",
     "@thatconference/schema": "^4.1.0",
     "base32-encode": "~1.2.0",
     "body-parser": "^1.20.2",
